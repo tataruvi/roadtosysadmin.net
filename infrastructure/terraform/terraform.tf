@@ -11,12 +11,15 @@ terraform {
 
 terraform {
   backend "local" {
-    path = "./.terraform/terraform.tfstate"
+    path = "./.terraform.tfstate"
   }
 }
 
 # Configure the Vultr Provider
 provider "vultr" {
-  api_key = "VULTR_API_KEY_env_var"
+  api_key = var.VULTR_API_KEY
 }
+
+# Variable originates in ENV
+variable "VULTR_API_KEY" {}
 
