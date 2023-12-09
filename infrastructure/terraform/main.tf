@@ -32,6 +32,23 @@ resource "vultr_instance" "webserver01" {
   }
 }
 
+resource "vultr_instance" "webserver02" {
+  plan              = "vhp-1c-1gb-amd"
+  region            = "icn"
+  os_id             = 1869 #Rocky Linux 9
+  firewall_group_id = "af3a8c3a-5e59-4988-abbd-9ebf8e0dab36"
+  label             = "webserver02"
+  hostname          = "webserver02"
+  tags              = ["webserver", "www"]
+  backups           = "disabled"
+  enable_ipv6       = false
+  ssh_key_ids       = [vultr_ssh_key.rtsa_ssh_key.id]
+
+  lifecycle {
+    ignore_changes = [ssh_key_ids]
+  }
+}
+
 resource "vultr_ssh_key" "rtsa_ssh_key" {
   name    = "rtsa_ssh_key"
   ssh_key = file("${path.root}/rtsa_ssh_key.txt")
