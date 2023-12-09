@@ -1,0 +1,13 @@
+# Start by ignoring everything except the .gitignore file
+*
+!.gitignore
+
+# Don't ignore Markdown files
+!**/*.md
+
+# Don't ignore relevant Terraform files
+!/infrastructure
+!/infrastructure/terraform
+!/infrastructure/terraform/*.tf
+!/infrastructure/terraform/*.hcl
+!/infrastructure/terraform/*.txt
