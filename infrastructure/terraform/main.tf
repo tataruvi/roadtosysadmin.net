@@ -6,8 +6,8 @@ resource "vultr_instance" "bastion_host" {
   hostname          = var.vultr_api_instance_args["bastion"].hostname
   label             = var.vultr_api_instance_args["bastion"].hostname
   tags              = var.vultr_api_instance_args["bastion"].tags
-  backups           = "disabled"
-  enable_ipv6       = false
+  backups           = local.BACKUPS
+  enable_ipv6       = local.ENABLE_IPV6
   ssh_key_ids       = [vultr_ssh_key.rtsa_ssh_key.id]
 
   lifecycle {
@@ -23,8 +23,8 @@ resource "vultr_instance" "webserver01" {
   hostname          = var.vultr_api_instance_args["webserver01"].hostname
   label             = var.vultr_api_instance_args["webserver01"].hostname
   tags              = var.vultr_api_instance_args["webserver01"].tags
-  backups           = "disabled"
-  enable_ipv6       = false
+  backups           = local.BACKUPS
+  enable_ipv6       = local.ENABLE_IPV6
   ssh_key_ids       = [vultr_ssh_key.rtsa_ssh_key.id]
 
   lifecycle {
@@ -40,8 +40,8 @@ resource "vultr_instance" "webserver02" {
   hostname          = var.vultr_api_instance_args["webserver02"].hostname
   label             = var.vultr_api_instance_args["webserver02"].hostname
   tags              = var.vultr_api_instance_args["webserver02"].tags
-  backups           = "disabled"
-  enable_ipv6       = false
+  backups           = local.BACKUPS
+  enable_ipv6       = local.ENABLE_IPV6
   ssh_key_ids       = [vultr_ssh_key.rtsa_ssh_key.id]
 
   lifecycle {

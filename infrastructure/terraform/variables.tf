@@ -1,3 +1,9 @@
+locals {
+  # emulate constant values
+  BACKUPS     = "disabled"
+  ENABLE_IPV6 = false
+}
+
 variable "vultr_api_instance_os" {
   description = "Controls the OS of the various instances; also maps Vultr API's <os_id> arg to meaningful data"
 
