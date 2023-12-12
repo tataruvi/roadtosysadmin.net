@@ -2,12 +2,20 @@
 *
 !.gitignore
 
+# Don't ignore de IaC directory
+!/infrastructure
+
 # Don't ignore Markdown files
 !**/*.md
 
 # Don't ignore relevant Terraform files
-!/infrastructure
 !/infrastructure/terraform
 !/infrastructure/terraform/*.tf
 !/infrastructure/terraform/*.hcl
 !/infrastructure/terraform/*.txt
+
+# Don't ignore relevant Ansible files
+!/infrastructure/ansible
+!/infrastructure/ansible/*.cfg
+!/infrastructure/ansible/*.ini
+!/infrastructure/ansible/*.yaml
