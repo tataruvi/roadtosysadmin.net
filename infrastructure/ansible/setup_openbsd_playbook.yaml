@@ -1,0 +1,28 @@
+---
+- name: Perform the initial setup of the bastion host
+  hosts: bastion
+  remote_user: root
+  tasks:
+    - name: Apply available OpenBSD patches; store module's return values
+      community.general.syspatch:
+      register: syspatch_module_retvals
+
+    - name: Output the return values of the syspatch module's run
+      ansible.builtin.debug:
+        var: output_syspatch_module_retvals
+      vars:
+        output_syspatch_module_retvals:
+          return_code: "{{ syspatch_module_retvals.rc }}"
+          stdout: "{{ syspatch_module_retvals.stdout | ansible.builtin.split('\n') }}"
+          stderr: "{{ syspatch_module_retvals.stderr | ansible.builtin.split('\n') }}"
+          reboot_needed: "{{ syspatch_module_retvals.reboot_needed }}"
+
+    - name: Reboot the host is required to apply the patches
+      ansible.builtin.reboot:
+      when: syspatch_module_retvals.reboot_needed
+
+    - name: Update all packages installed on the host
+      community.general.openbsd_pkg:
+        name: '*'
+        state: latest
+      register: pkg_add_update
