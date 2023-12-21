@@ -2,7 +2,33 @@
 - name: Perform the initial setup of the bastion host
   hosts: bastion
   remote_user: root
+  vars:
+    pf_table_file: "ssh_bruteforce.table"
+    pf_table_dir: "/var/db/pf"
   tasks:
+    - name: Configure the host's firewall for its bastion role
+      block:
+        - name: Create the {{ pf_table_dir }} directory when missing
+          ansible.builtin.command:
+            cmd: "/bin/mkdir {{ pf_table_dir }}"
+            creates: "{{ pf_table_dir }}"
+
+        - name: Create the {{ pf_table_file }} file when missing
+          ansible.builtin.command:
+            cmd: "/usr/bin/touch {{ pf_table_dir }}/{{ pf_table_file }}"
+            creates: "{{ pf_table_dir }}/{{ pf_table_file }}"
+
+        - name: Copy the PF configuration file over to the host
+          ansible.builtin.copy:
+            src: ./files/pf.conf
+            dest: /etc/pf.conf
+            backup: true
+            validate: /sbin/pfctl -n -f %s
+
+        - name: Reload the PF configuration
+          ansible.builtin.command:
+            cmd: /sbin/pfctl -f /etc/pf.conf
+
     - name: Apply available OpenBSD patches; store module's return values
       community.general.syspatch:
       register: syspatch_module_retvals
