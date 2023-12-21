@@ -19,3 +19,5 @@
 !/infrastructure/ansible/*.cfg
 !/infrastructure/ansible/*.ini
 !/infrastructure/ansible/*.yaml
+!/infrastructure/ansible/files
+!/infrastructure/ansible/files/*
