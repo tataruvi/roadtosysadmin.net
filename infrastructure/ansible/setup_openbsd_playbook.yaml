@@ -52,3 +52,19 @@
         name: '*'
         state: latest
       register: pkg_add_update
+
+    - name: Create a dedicated group for the CM user
+      ansible.builtin.group:
+        name: "cm_group"
+
+    - name: Create a dedicated user for CM operations
+      ansible.builtin.user:
+        name: "cm_user"
+        group: "cm_group"
+        comment: "Remote user for Ansible operations"
+        password: '!' # locked
+
+    - name: Add SSH key to Ansible user's list of authorized keys
+      ansible.posix.authorized_key:
+        user: cm_user
+        key: "{{ lookup('file', '../terraform/rtsa_ssh_key.txt') }}"
