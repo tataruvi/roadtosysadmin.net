@@ -7,7 +7,7 @@
   tasks:
     - name: Configure the host's firewall for its bastion role
       block:
-        - name: Create the subdir of {{ pf_bruteforce_table_f }} if missing
+        - name: Create the subdir for {{ pf_bruteforce_table_f }} if missing
           ansible.builtin.file:
             path: "{{ pf_bruteforce_table_f | dirname }}"
             state: directory
@@ -37,12 +37,14 @@
         var: output_syspatch_module_retvals
       vars:
         output_syspatch_module_retvals:
-          return_code: "{{ syspatch_module_retvals.rc }}"
-          stdout: "{{ syspatch_module_retvals.stdout | ansible.builtin.split('\n') }}"
-          stderr: "{{ syspatch_module_retvals.stderr | ansible.builtin.split('\n') }}"
           reboot_needed: "{{ syspatch_module_retvals.reboot_needed }}"
+          return_code: "{{ syspatch_module_retvals.rc }}"
+          stderr: >
+            {{ syspatch_module_retvals.stderr | ansible.builtin.split('\n') }}
+          stdout: >
+            {{ syspatch_module_retvals.stdout | ansible.builtin.split('\n') }}
 
-    - name: Reboot the host is required to apply the patches
+    - name: Reboot the host if required to apply the system patches
       ansible.builtin.reboot:
       when: syspatch_module_retvals.reboot_needed
 
@@ -60,7 +62,7 @@
       ansible.builtin.user:
         name: "cm_user"
         group: "cm_group"
-        comment: "Remote user for Ansible operations"
+        comment: "Remote user for Ansible"
         password: '!' # locked
 
     - name: Add SSH key to Ansible user's list of authorized keys
