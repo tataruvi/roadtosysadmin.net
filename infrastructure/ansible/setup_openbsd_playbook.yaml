@@ -28,44 +28,55 @@
           ansible.builtin.command:
             cmd: /sbin/pfctl -f /etc/pf.conf
 
-    - name: Apply available OpenBSD patches; store module's return values
-      community.general.syspatch:
-      register: syspatch_module_retvals
+        # TODO: add tasks for dumping the <ssh_bruteforce> table to the
+        #       corresponding file on reboot, perhaps even expire the table
+        #       entries, as per the rather nice write up at:
+        #
+        #       https://www.bsdhowto.ch/savepftables.html
 
-    - name: Output the return values of the syspatch module's run
-      ansible.builtin.debug:
-        var: output_syspatch_module_retvals
-      vars:
-        output_syspatch_module_retvals:
-          reboot_needed: "{{ syspatch_module_retvals.reboot_needed }}"
-          return_code: "{{ syspatch_module_retvals.rc }}"
-          stderr: >
-            {{ syspatch_module_retvals.stderr | ansible.builtin.split('\n') }}
-          stdout: >
-            {{ syspatch_module_retvals.stdout | ansible.builtin.split('\n') }}
+    - name: Apply available OpenBSD patches and update installed packages
+      block:
+        - name: Apply the patches, if found, and store module returns
+          community.general.syspatch:
+          register: syspatch_module_retvals
 
-    - name: Reboot the host if required to apply the system patches
-      ansible.builtin.reboot:
-      when: syspatch_module_retvals.reboot_needed
+        - name: Output the return values of the syspatch module
+          ansible.builtin.debug:
+            var: output_syspatch_module_retvals
+          vars:
+            output_syspatch_module_retvals:
+              reboot_needed: "{{ syspatch_module_retvals.reboot_needed }}"
+              return_code: "{{ syspatch_module_retvals.rc }}"
+              stderr: >
+                {{ syspatch_module_retvals.stderr |
+                  ansible.builtin.split('\n') }}
+              stdout: >
+                {{ syspatch_module_retvals.stdout |
+                  ansible.builtin.split('\n') }}
 
-    - name: Update all packages installed on the host
-      community.general.openbsd_pkg:
-        name: '*'
-        state: latest
-      register: pkg_add_update
+        - name: Reboot the host if needed for the patching
+          ansible.builtin.reboot:
+          when: syspatch_module_retvals.reboot_needed
 
-    - name: Create a dedicated group for the CM user
-      ansible.builtin.group:
-        name: "cm_group"
+        - name: Update all installed packages
+          community.general.openbsd_pkg:
+            name: '*'
+            state: latest
 
-    - name: Create a dedicated user for CM operations
-      ansible.builtin.user:
-        name: "cm_user"
-        group: "cm_group"
-        comment: "Remote user for Ansible"
-        password: '!' # locked
+    - name: Create a dedicated user for configuration management operations
+      block:
+        - name: Create a group for the user
+          ansible.builtin.group:
+            name: "cm_group"
 
-    - name: Add SSH key to Ansible user's list of authorized keys
-      ansible.posix.authorized_key:
-        user: cm_user
-        key: "{{ lookup('file', '../terraform/rtsa_ssh_key.txt') }}"
+        - name: Create the user account
+          ansible.builtin.user:
+            name: "cm_user"
+            group: "cm_group"
+            comment: "Remote user for Ansible"
+            password: '!' # locked
+
+        - name: Add RTSA SSH key to user's list of authorized keys
+          ansible.posix.authorized_key:
+            user: cm_user
+            key: "{{ lookup('file', '../terraform/rtsa_ssh_key.txt') }}"
