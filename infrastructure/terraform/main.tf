@@ -54,7 +54,7 @@ resource "vultr_instance" "webserver02" {
 
 resource "vultr_ssh_key" "rtsa_ssh_key" {
   name    = "rtsa_ssh_key"
-  ssh_key = file("${path.root}/rtsa_ssh_key.txt")
+  ssh_key = file("${path.root}/files/rtsa_ssh_key.pub")
 
   lifecycle {
     ignore_changes  = [ssh_key]

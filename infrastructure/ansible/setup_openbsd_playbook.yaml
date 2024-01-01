@@ -79,4 +79,4 @@
         - name: Add RTSA SSH key to user's list of authorized keys
           ansible.posix.authorized_key:
             user: cm_user
-            key: "{{ lookup('file', '../terraform/rtsa_ssh_key.txt') }}"
+            key: "{{ lookup('file', '../terraform/files/rtsa_ssh_key.pub') }}"
