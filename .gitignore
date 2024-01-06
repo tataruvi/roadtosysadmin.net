@@ -1,23 +1,21 @@
-# Start by ignoring everything except the .gitignore file
+# Ignore everything except for the .gitignore file
 *
 !.gitignore
-
-# Don't ignore de IaC directory
-!/infrastructure
 
 # Don't ignore Markdown files
 !**/*.md
 
-# Don't ignore relevant Terraform files
-!/infrastructure/terraform
-!/infrastructure/terraform/*.tf
-!/infrastructure/terraform/*.hcl
-!/infrastructure/terraform/*.txt
+# Don't ignore the IaC directory
+!/infrastructure
 
-# Don't ignore relevant Ansible files
+# Don't ignore Terraform files, unless they're dotfiles
+!/infrastructure/terraform
+!/infrastructure/terraform/[^.]*
+
+# Don't ignore Ansible files, unless they're dotfiles
 !/infrastructure/ansible
-!/infrastructure/ansible/*.cfg
-!/infrastructure/ansible/*.ini
-!/infrastructure/ansible/*.yaml
-!/infrastructure/ansible/files
-!/infrastructure/ansible/files/*
+!/infrastructure/ansible/[^.]*
+
+# Don't ignore static files used by both Ansible and TF
+!/infrastructure/**/files
+!/infrastructure/**/files/*
