@@ -18,6 +18,6 @@ provider "vultr" {
 }
 
 variable "VULTR_API_KEY" {
-  description = "Current personal best practice is to inject this var via the shell's environment"
+  description = "API key for the Vultr account, provided via the environment"
   type        = string
 }
