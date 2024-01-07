@@ -14,10 +14,8 @@ variable "instance_args" {
     plan_id     = string
     region_id   = string
     region_name = optional(string)
-    hostname    = string
     os_id       = number
     os_name     = optional(string)
-    os_version  = optional(string)
     tags        = list(string)
   }))
 }
