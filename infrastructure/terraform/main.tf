@@ -22,8 +22,8 @@ resource "vultr_instance" "host" {
 
   firewall_group_id = (
     each.key == "bastion" ?
-      local.TEMP_FIREWALL_GROUP_ID["bastion"] :
-      local.TEMP_FIREWALL_GROUP_ID["webservers"]
+    local.TEMP_FIREWALL_GROUP_ID["bastion"] :
+    local.TEMP_FIREWALL_GROUP_ID["webservers"]
   )
 
   lifecycle {
