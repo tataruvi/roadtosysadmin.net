@@ -9,12 +9,13 @@ resource "vultr_instance" "host" {
   tags        = each.value.tags
   backups     = local.BACKUPS
   enable_ipv6 = local.ENABLE_IPV6
+  ssh_key_ids = [vultr_ssh_key.rtsa_ssh_key.id]
+
   firewall_group_id = (
     each.key == "bastion" ?
-    "4af0bd5a-4164-44b8-8a26-6f81acdfc4f5" :
-    "af3a8c3a-5e59-4988-abbd-9ebf8e0dab36"
+      local.TEMP_FIREWALL_GROUP_ID["bastion"] :
+      local.TEMP_FIREWALL_GROUP_ID["webservers"]
   )
-  ssh_key_ids = [vultr_ssh_key.rtsa_ssh_key.id]
 
   lifecycle {
     ignore_changes        = [ssh_key_ids]
