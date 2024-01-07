@@ -5,7 +5,7 @@ instance_args = {
     region_name = "New Jersey"
     os_id       = 2187
     os_name     = "OpenBSD 7.4"
-    tags        = ["jumphost"]
+    tags        = ["ssh", "icmp"]
   }
   webserver01 = {
     plan_id     = "vhp-1c-1gb-amd"
@@ -13,7 +13,7 @@ instance_args = {
     region_name = "London"
     os_id       = 2136
     os_name     = "Debian 12"
-    tags        = ["www"]
+    tags        = ["http", "https", "icmp"]
   }
   webserver02 = {
     plan_id     = "vhp-1c-1gb-amd"
@@ -21,6 +21,6 @@ instance_args = {
     region_name = "Seoul"
     os_id       = 1869
     os_name     = "Rocky Linux 9"
-    tags        = ["www"]
+    tags        = ["http", "https", "icmp"]
   }
 }
