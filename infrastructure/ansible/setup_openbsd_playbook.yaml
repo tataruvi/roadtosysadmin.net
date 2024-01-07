@@ -19,7 +19,7 @@
 
         - name: Copy the PF configuration file over to the host
           ansible.builtin.copy:
-            src: ./files/pf.conf
+            src: files/pf.conf
             dest: /etc/pf.conf
             backup: true
             validate: /sbin/pfctl -n -f %s
@@ -79,4 +79,4 @@
         - name: Add RTSA SSH key to user's list of authorized keys
           ansible.posix.authorized_key:
             user: cm_user
-            key: "{{ lookup('file', '../terraform/files/rtsa_ssh_key.pub') }}"
+            key: "{{ lookup('file', 'files/id_rtsa.pub') }}"
