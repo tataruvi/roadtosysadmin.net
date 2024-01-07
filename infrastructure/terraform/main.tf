@@ -1,3 +1,12 @@
+resource "vultr_ssh_key" "rtsa" {
+  name    = "RTSA"
+  ssh_key = trimspace(file("files/id_rtsa.pub"))
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 resource "vultr_instance" "host" {
   for_each = var.instance_args
 
@@ -9,7 +18,7 @@ resource "vultr_instance" "host" {
   tags        = each.value.tags
   backups     = local.BACKUPS
   enable_ipv6 = local.ENABLE_IPV6
-  ssh_key_ids = [vultr_ssh_key.rtsa_ssh_key.id]
+  ssh_key_ids = [vultr_ssh_key.rtsa.id]
 
   firewall_group_id = (
     each.key == "bastion" ?
@@ -18,17 +27,6 @@ resource "vultr_instance" "host" {
   )
 
   lifecycle {
-    ignore_changes        = [ssh_key_ids]
     create_before_destroy = true
-  }
-}
-
-resource "vultr_ssh_key" "rtsa_ssh_key" {
-  name    = "rtsa_ssh_key"
-  ssh_key = file("${path.root}/files/rtsa_ssh_key.pub")
-
-  lifecycle {
-    ignore_changes  = [ssh_key]
-    prevent_destroy = true
   }
 }
