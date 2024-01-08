@@ -1,0 +1,3 @@
+#!/bin/sh
+
+pfctl -t ssh_bruteforce -T show > /var/db/pf/ssh_bruteforce.table

@@ -14,6 +14,7 @@
         - name: Create the {{ pf_bruteforce_table_f }} file itself if missing
           ansible.builtin.file:
             path: "{{ pf_bruteforce_table_f }}"
+            mode: '0600'
             state: touch
 
         - name: Copy the PF configuration file over to the host
@@ -27,11 +28,11 @@
           ansible.builtin.command:
             cmd: /sbin/pfctl -f /etc/pf.conf
 
-        # TODO: add tasks for dumping the <ssh_bruteforce> table to the
-        #       corresponding file on reboot, perhaps even expire the table
-        #       entries, as per the rather nice write up at:
-        #
-        #       https://www.bsdhowto.ch/savepftables.html
+        - name: Dump ssh_bruteforce PF table to file via rc.shutdown
+          ansible.builtin.copy:
+            src: files/rc.shutdown
+            dest: /etc/rc.shutdown
+            validate: /bin/sh %s
 
     - name: Apply available OpenBSD patches and update installed packages
       block:
