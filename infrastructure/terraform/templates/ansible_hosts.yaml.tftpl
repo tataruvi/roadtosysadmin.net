@@ -1,0 +1,11 @@
+bastion:
+  hosts:
+    openbsd:
+      ansible_host: "${host_ip_addr.openbsd}"
+
+webservers:
+  hosts:
+    debian:
+      ansible_host: "${host_ip_addr.debian}"
+    rocky:
+      ansible_host: "${host_ip_addr.rocky}"

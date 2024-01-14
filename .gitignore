@@ -12,6 +12,9 @@
 !/infrastructure/terraform
 !/infrastructure/terraform/[^.]*
 
+# Don't ignore Terraform templates
+!/infrastructure/terraform/templates/*.tftpl
+
 # Don't ignore Ansible files, unless they're dotfiles
 !/infrastructure/ansible
 !/infrastructure/ansible/[^.]*
