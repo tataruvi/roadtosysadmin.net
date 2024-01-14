@@ -6,7 +6,6 @@ all:
 bastion:
   hosts:
     openbsd:
-      ansible_host: 64.176.195.110
       ansible_python_interpreter: /usr/local/bin/python3
   vars:
     pf_bruteforce_table_f: "/var/db/pf/ssh_bruteforce.table"
@@ -14,8 +13,6 @@ bastion:
 webservers:
   hosts:
     debian:
-      ansible_host: 192.248.152.141
       ansible_python_interpreter: /usr/bin/python3
     rocky:
-      ansible_host: 141.164.56.123
       ansible_python_interpreter: /usr/bin/python

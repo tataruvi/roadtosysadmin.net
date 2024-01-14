@@ -1,0 +1,25 @@
+---
+- name: Build a semi-dynamic inventory of TF-managed hosts
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Register the YAML inventory that TF provides as an output
+      ansible.builtin.command:
+        argv:
+          - terraform
+          - output
+          - -state=../terraform/.terraform.tfstate
+          - -raw
+          - ansible_hosts
+      register: hosts_yaml
+
+    - name: Save the retrieved YAML data as a local hosts file
+      ansible.builtin.copy:
+        content: "{{ hosts_yaml.stdout + '\n' }}"
+        dest: inventory/hosts.yaml
+        validate: ansible-inventory --inventory=%s --list
+
+    - name: Refresh inventory to reflect any changes in the hosts file
+      ansible.builtin.meta: refresh_inventory

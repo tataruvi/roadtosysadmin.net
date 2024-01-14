@@ -19,6 +19,11 @@
 !/infrastructure/ansible
 !/infrastructure/ansible/[^.]*
 
+# Don't ignore Ansible's static "inventory" files,
+# but do ignore the semi-dynamic hosts.yaml file
+!/infrastructure/ansible/inventory/*.yaml
+/infrastructure/ansible/inventory/hosts.yaml
+
 # Don't ignore static files used by both Ansible and TF
 !/infrastructure/**/files
 !/infrastructure/**/files/*

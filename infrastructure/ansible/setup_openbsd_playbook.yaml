@@ -1,4 +1,7 @@
 ---
+- name: Import the playbook which builds the hosts.yaml file
+  ansible.builtin.import_playbook: inventory_playbook.yaml
+
 - name: Perform the initial setup of the bastion host
   hosts: bastion
   remote_user: root
