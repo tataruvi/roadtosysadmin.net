@@ -1,6 +1,7 @@
 output "hosts_to_ip_addr" {
   description = <<-EOT
-    Map the hostnames of managed hosts to their corresponding IPv4 addresses
+    Map the hostnames of managed hosts to their corresponding routable IPv4
+    addresses, should the hosts exist (see var.deployable_hosts)
   EOT
 
   value = {
@@ -18,10 +19,7 @@ output "ansible_hosts" {
   value = templatefile(
     "templates/ansible_hosts.yaml.tftpl",
     {
-      host_ip_addr = {
-        for instance, attributes in vultr_instance.host :
-        lower(regex("\\w+", attributes.os)) => attributes.main_ip
-      }
+      host_ip_addr = local.host_ip_addr
     }
   )
 }

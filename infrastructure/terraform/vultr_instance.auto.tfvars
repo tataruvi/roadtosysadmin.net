@@ -1,3 +1,9 @@
+deployable_instances = [
+  "bastion",
+  "webserver01",
+  "webserver02"
+]
+
 instance_args = {
   bastion = {
     plan_id     = "vc2-1c-0.5gb"

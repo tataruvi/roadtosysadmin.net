@@ -8,7 +8,10 @@ resource "vultr_ssh_key" "rtsa" {
 }
 
 resource "vultr_instance" "host" {
-  for_each = var.instance_args
+  for_each = {
+    for instance, args in var.instance_args : instance => args
+    if contains(var.deployable_instances, instance)
+  }
 
   os_id       = each.value.os_id
   plan        = each.value.plan_id
