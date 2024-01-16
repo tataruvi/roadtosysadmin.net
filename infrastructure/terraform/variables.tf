@@ -1,3 +1,5 @@
+# TODO: move the local values out of variables.tf
+
 locals {
   # emulate constant values
   BACKUPS     = "disabled"
@@ -13,17 +15,18 @@ locals {
     for instance, args in var.instance_args :
     instance => lower(regex("\\w+", args.os_name))
   }
-  NULL_IP_ADDR = "169.254.254.169" # "null" in respect to routing
-  host_ip_addr = {
-    for instance in var.deployable_instances :
-    local.os_shortname[trimprefix(instance, "!")] => (
-      !startswith(instance, "!") ?
+
+  NULL_IPADDR = "169.254.254.169" # "null" in respect to routing
+  ansible_hosts_ipaddr = {
+    for instance, args in var.instance_args :
+    local.os_shortname[instance] => (
+      contains(var.deployable_instances, instance) ?
       vultr_instance.host[instance].main_ip :
-      local.NULL_IP_ADDR
+      local.NULL_IPADDR
     )
   }
 
-  bastion_ip_addr = local.host_ip_addr[local.os_shortname["bastion"]]
+  bastion_ipaddr = local.ansible_hosts_ipaddr[local.os_shortname["bastion"]]
 }
 
 variable "deployable_instances" {
