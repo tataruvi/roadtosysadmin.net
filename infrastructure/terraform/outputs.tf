@@ -1,13 +1,11 @@
-output "hosts_to_ip_addr" {
+output "hosts_public_ipaddr" {
   description = <<-EOT
-    Map the hostnames of managed hosts to their corresponding routable IPv4
-    addresses, should the hosts exist
+    Map the hostnames of managed hosts to their corresponding public -routable-
+    IPv4 addresses, if they have been deployed; resulting map can be empty
   EOT
 
   value = {
-    for instance, attributes in vultr_instance.host :
-    instance => attributes.main_ip
-    if contains(var.deployable_instances, instance)
+    for host, attr in vultr_instance.host : host => attr.main_ip
   }
 }
 
