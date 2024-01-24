@@ -20,7 +20,8 @@ output "ansible_hosts" {
   value = templatefile(
     "templates/ansible_hosts.yaml.tftpl",
     {
-      ansible_hosts_ipaddr = local.ansible_hosts_ipaddr
+      # TODO: the local value might do with being moved directly below
+      ansible_hosts = local.ansible_hosts
     }
   )
 }

@@ -1,15 +1,25 @@
-# TODO: align the references to hosts between Terraform and
-#       Ansible, as one uses hostnames and the other the OS.
-#       The current approach is not scalable.
-
-bastion:
+---
+ungrouped:
   hosts:
-    openbsd:
-      ansible_host: "${ansible_hosts_ipaddr.openbsd}"
+    bastion:
+      ansible_host: ${ansible_hosts["bastion"].ipaddr}
 
-webservers:
+debian:
   hosts:
-    debian:
-      ansible_host: "${ansible_hosts_ipaddr.debian}"
-    rocky:
-      ansible_host: "${ansible_hosts_ipaddr.rocky}"
+%{~ for host, attr in ansible_hosts ~}
+  %{ if attr.os_shortname == "debian" }
+    ${host}:
+      ansible_host: ${attr.ipaddr}
+  %{ endif }
+%{~ endfor ~}
+
+rocky:
+  hosts:
+%{~ for host, attr in ansible_hosts ~}
+  %{ if attr.os_shortname == "rocky" }
+    ${host}:
+      ansible_host: ${attr.ipaddr}
+  %{ endif }
+%{~ endfor ~}
+
+...

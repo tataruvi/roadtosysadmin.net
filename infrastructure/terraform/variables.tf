@@ -11,22 +11,18 @@ locals {
   }
 
   # generate a dynamic map of hosts' IP addresses based on deployment status
-  os_shortname = {
-    for instance, args in var.instance_args :
-    instance => lower(regex("\\w+", args.os_name))
-  }
-
   NULL_IPADDR = "169.254.254.169" # "null" in respect to routing
-  ansible_hosts_ipaddr = {
+  ansible_hosts = {
     for instance, args in var.instance_args :
-    local.os_shortname[instance] => (
-      contains(var.deployable_instances, instance) ?
-      vultr_instance.host[instance].main_ip :
-      local.NULL_IPADDR
-    )
+    instance => {
+      os_shortname : lower(regex("\\w+", args.os_name))
+      ipaddr : (
+        contains(var.deployable_instances, instance) ?
+        vultr_instance.host[instance].main_ip :
+        local.NULL_IPADDR
+      )
+    }
   }
-
-  bastion_ipaddr = local.ansible_hosts_ipaddr[local.os_shortname["bastion"]]
 }
 
 variable "deployable_instances" {

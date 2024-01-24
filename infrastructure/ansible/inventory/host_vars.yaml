@@ -3,16 +3,22 @@ all:
   vars:
     ansible_remote_user: cm_user
 
-bastion:
+ungrouped:
   hosts:
-    openbsd:
+    bastion:
       ansible_python_interpreter: /usr/local/bin/python3
   vars:
-    pf_bruteforce_table_f: "/var/db/pf/ssh_bruteforce.table"
+    pf_bruteforce_table_f: /var/db/pf/ssh_bruteforce.table
+
+debian:
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+rocky:
+  vars:
+    ansible_python_interpreter: /usr/bin/python
 
 webservers:
-  hosts:
+  children:
     debian:
-      ansible_python_interpreter: /usr/bin/python3
     rocky:
-      ansible_python_interpreter: /usr/bin/python

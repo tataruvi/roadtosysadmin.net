@@ -34,11 +34,13 @@ resource "vultr_firewall_group" "webservers" {
   EOT
 }
 
+# TODO: alternatively, create the rule only if the bastion exists,
+#       by using lookup() or checking the deployable_instances set.
 resource "vultr_firewall_rule" "webservers_restrict_ssh" {
   firewall_group_id = vultr_firewall_group.webservers.id
   protocol          = "tcp"
   ip_type           = "v4"
-  subnet            = local.bastion_ipaddr
+  subnet            = local.ansible_hosts["bastion"].ipaddr
   subnet_size       = 32
   port              = "22"
   notes             = "pf: pass in inet proto tcp port 22 from <bastion>"
