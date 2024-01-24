@@ -1,3 +1,9 @@
+CONST = {
+  backups     = "disabled"
+  enable_ipv6 = false
+  null_ipaddr = "169.254.254.169"
+}
+
 deployable_instances = [
   "bastion",
   "webserver01",

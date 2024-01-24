@@ -20,8 +20,17 @@ output "ansible_hosts" {
   value = templatefile(
     "templates/ansible_hosts.yaml.tftpl",
     {
-      # TODO: the local value might do with being moved directly below
-      ansible_hosts = local.ansible_hosts
+      ansible_hosts = {
+        for instance, args in var.instance_args :
+        instance => {
+          os_shortname : lower(regex("\\w+", args.os_name))
+          ipaddr : (
+            contains(var.deployable_instances, instance) ?
+            vultr_instance.host[instance].main_ip :
+            var.CONST.null_ipaddr
+          )
+        }
+      }
     }
   )
 }
