@@ -76,6 +76,7 @@
           ansible.builtin.user:
             name: "cm_user"
             group: "cm_group"
+            groups: "wheel"
             comment: "Remote user for Ansible"
             password: '!' # locked
 
