@@ -82,8 +82,7 @@ ClientAliveCountMax 0
 Banner none
 
 # override default of no subsystems
-# 'disable unused sftp'
-#Subsystem	sftp	/usr/libexec/sftp-server -f AUTHPRIV -l INFO
+Subsystem	sftp	/usr/libexec/sftp-server -f AUTHPRIV -l INFO
 
 # Example of overriding settings on a per-user basis
 #Match User anoncvs
