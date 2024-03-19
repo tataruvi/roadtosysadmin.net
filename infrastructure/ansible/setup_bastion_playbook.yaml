@@ -83,3 +83,18 @@
           ansible.posix.authorized_key:
             user: cm_user
             key: "{{ lookup('file', 'files/id_rtsa.pub') }}"
+
+    - name: Configure sshd explicitly
+      block:
+        - name: Copy sshd_config over to the host and validate its syntax
+          ansible.builtin.copy:
+            src: files/sshd_config
+            dest: /etc/ssh/sshd_config
+            backup: true
+            validate: /usr/sbin/sshd -t -f %s
+
+        - name: Enable the new configuration
+          ansible.builtin.service:
+            name: sshd
+            state: reloaded
+...
