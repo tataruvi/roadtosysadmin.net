@@ -37,7 +37,13 @@ resource "vultr_instance" "host" {
     local.TEMP_FIREWALL_GROUP_ID["webservers"]
   )
 
+  user_data = (
+    each.key == "bastion" ? null :
+    file("files/user_data.yaml")
+  )
+
   lifecycle {
     create_before_destroy = true
+    ignore_changes        = [user_data]
   }
 }
