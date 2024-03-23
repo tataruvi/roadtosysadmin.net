@@ -1,0 +1,92 @@
+---
+- name: Import the playbook which builds the hosts.yaml file
+  ansible.builtin.import_playbook: inventory_playbook.yaml
+
+- name: Perform the initial setup of the Debian webserver(s)
+  hosts: debian
+  remote_user: root
+
+  tasks:
+    - name: Secure SSH access to the host via the firewall
+      block:
+        - name: Add rule allowing SSH access only from <bastion>
+          community.general.ufw:
+            name: "OpenSSH"
+            from_ip: "{{ hostvars.bastion.ansible_host }}"
+            rule: "allow"
+
+        - name: Remove default rule allowing SSH access from <any>
+          community.general.ufw:
+            from_ip: "any"
+            to_port: "22"
+            proto: "tcp"
+            rule: "allow"
+            delete: "true"
+
+    - name: Upgrade installed packages and install Nginx
+      block:
+        - name: Update the packages list
+          ansible.builtin.apt:
+            update_cache: true
+
+        - name: Upgrade the installed packages
+          ansible.builtin.apt:
+            upgrade: "safe"
+
+        - name: Install Nginx
+          ansible.builtin.apt:
+            pkg: "nginx"
+            state: "present"
+
+    - name: Set up the webserver and serve the website
+      block:
+        #TODO: provide a custom configuration for the webserver
+
+        #TODO: switch to the actual website files after Nginx is configured
+        #       potentially host the website under /srv instead of /var
+        - name: Copy over the website's files
+          ansible.builtin.copy:
+            src: ../../website/test.d/
+            dest: /var/www/html/
+
+        - name: Add firewall rule allowing HTTP/HTTPS traffic from <any>
+          community.general.ufw:
+            name: "Nginx Full"
+            from_ip: "0.0.0.0/0"
+            rule: "allow"
+
+    - name: Create a dedicated user for configuration management operations
+      block:
+        - name: Create a group for the user
+          ansible.builtin.group:
+            name: "cm_group"
+
+        - name: Create the user account
+          ansible.builtin.user:
+            name: "cm_user"
+            group: "cm_group"
+            groups: "sudo"
+            comment: "Remote user for Ansible"
+            password: '!' # locked
+
+        - name: Add RTSA SSH key to user's list of authorized keys
+          ansible.posix.authorized_key:
+            user: cm_user
+            key: "{{ lookup('file', 'files/id_rtsa.pub') }}"
+
+                #TODO: provide a custom sshd_config variant for Linux distros
+
+              # - name: Configure sshd explicitly
+              #   block:
+              #     - name: Copy sshd_config over to the host and validate its syntax
+              #       ansible.builtin.copy:
+              #         src: files/sshd_config
+              #         dest: /etc/ssh/sshd_config
+              #         backup: true
+              #         validate: /usr/sbin/sshd -t -f %s
+
+              #     - name: Enable the new configuration
+              #       ansible.builtin.service:
+              #         name: sshd
+              #         state: reloaded
+...
