@@ -2,6 +2,7 @@
 all:
   vars:
     ansible_remote_user: cm_user
+    ansible_python_interpreter: /usr/bin/python3
 
 ungrouped:
   hosts:
@@ -10,17 +11,11 @@ ungrouped:
   vars:
     pf_bruteforce_table_f: /var/db/pf/ssh_bruteforce.table
 
-debian:
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
-
-rocky:
-  vars:
-    ansible_python_interpreter: /usr/bin/python
-
 webservers:
   children:
     debian:
     rocky:
-
+  vars:
+    ansible_ssh_common_args: >
+      -J cm_user@"{{ hostvars.bastion.ansible_host }}"
 ...
