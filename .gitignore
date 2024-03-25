@@ -24,6 +24,9 @@
 !/infrastructure/ansible/inventory/*.yaml
 /infrastructure/ansible/inventory/hosts.yaml
 
+# Don't ignore Ansbible templates
+!/infrastructure/ansible/templates/*.j2
+
 # Don't ignore static files used by both Ansible and TF
 !/infrastructure/**/files
 !/infrastructure/**/files/*

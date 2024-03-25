@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>Public</short>
+  <description>Public (default) zone customized for RTSA.</description>
+  <service name="http"/>
+  <service name="https"/>
+
+  <rule family="ipv4">
+    <source address="{{ hostvars.bastion.ansible_host }}/32"/>
+
+    <service name="ssh"/>
+    <accept/>
+  </rule>
+</zone>

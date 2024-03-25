@@ -1,0 +1,84 @@
+---
+- name: Import the playbook which builds the hosts.yaml file
+  ansible.builtin.import_playbook: inventory_playbook.yaml
+
+- name: Perform the initial setup of the Rocky webserver(s)
+  hosts: rocky
+  remote_user: root
+
+  tasks:
+    - name: Set firewalld to allow SSH from <bastion> & HTTP/HTTPS from <any>
+      block:
+        - name: Overwrite firewalld's Public zone definition file
+          ansible.builtin.template:
+            src: templates/public.xml.j2
+            dest: /etc/firewalld/zones/public.xml
+            backup: true
+            validate: /usr/bin/xmllint --noout %s
+
+        - name: Confirm the validity of the new permanent configuration
+          ansible.builtin.command:
+            cmd: "/usr/bin/firewall-cmd --check-config"
+
+        - name: Reload firewalld to enable new zone definition in runtime
+          ansible.builtin.systemd_service:
+            name: "firewalld.service"
+            state: "reloaded"
+
+    - name: Upgrade installed packages and deploy Nginx
+      block:
+        - name: Update the packages list
+          ansible.builtin.dnf:
+            state: "present"
+            update_cache: true
+
+        - name: Upgrade the installed packages
+          ansible.builtin.dnf:
+            pkg: "*"
+            state: "latest"
+            update_only: true
+
+        - name: Install Nginx
+          ansible.builtin.dnf:
+            pkg: "nginx"
+            state: "present"
+
+        - name: Enable the Nginx systemd unit and start it
+          ansible.builtin.systemd_service:
+            name: "nginx.service"
+            state: "started"
+            enabled: true
+
+    - name: Create a dedicated user for configuration management operations
+      block:
+        - name: Create a group for the user
+          ansible.builtin.group:
+            name: "cm_group"
+
+        - name: Create the user account
+          ansible.builtin.user:
+            name: "cm_user"
+            group: "cm_group"
+            groups: "wheel"
+            comment: "Remote user for Ansible"
+            password: '!' # locked
+
+        - name: Add RTSA SSH key to user's list of authorized keys
+          ansible.posix.authorized_key:
+            user: cm_user
+            key: "{{ lookup('file', 'files/id_rtsa.pub') }}"
+
+              #    - name: Configure sshd explicitly
+              #      block:
+              #        - name: Copy sshd_config over to the host and validate its syntax
+              #          ansible.builtin.copy:
+              #            src: files/sshd_config
+              #            dest: /etc/ssh/sshd_config
+              #            backup: true
+              #            validate: /usr/sbin/sshd -t -f %s
+              #
+              #        - name: Enable the new configuration
+              #          ansible.builtin.service:
+              #            name: sshd
+              #            state: reloaded
+...
