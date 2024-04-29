@@ -53,7 +53,12 @@
       block:
         #TODO: provide a custom configuration for the webserver
 
-        #TODO: copy over the website files
+        #TODO: switch to the actual website files after Nginx is configured
+        #       potentially host the website under /srv instead of /var
+        - name: Copy over the website's files
+          ansible.builtin.copy:
+            src: ../../website/test.d/
+            dest: /var/www/html/
 
     - name: Create a dedicated user for configuration management operations
       block:
