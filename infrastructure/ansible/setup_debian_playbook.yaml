@@ -51,28 +51,9 @@
 
         - name: Add firewall rules allowing HTTP/HTTPS traffic from <any>
           community.general.ufw:
-            name: Nginx Full
+            name: Nginx HTTP
             from_ip: 0.0.0.0/0
             rule: allow
-
-        # temporary: redirect HTTPS to HTTP until it gets configured
-        # https://serverfault.com/questions/238563/
-        - name: Redirect HTTPS traffic to HTTP
-          ansible.builtin.blockinfile:
-            backup: true
-            block: |
-              *nat
-              :PREROUTING ACCEPT [0:0]
-              -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 80
-              COMMIT
-            append_newline: true
-            insertbefore: "# Don't delete these required lines"
-            path: /etc/ufw/before.rules
-            validate: /usr/sbin/iptables-restore --test %s
-
-        - name: Reload ufw to enable the traffic redirect
-          community.general.ufw:
-            state: reloaded
 
     - name: Create a dedicated user for configuration management operations
       block:

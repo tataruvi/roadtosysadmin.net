@@ -55,18 +55,6 @@
 
         #TODO: copy over the website files
 
-        # temporary: redirect HTTPS to HTTP until it gets configured
-        # https://serverfault.com/questions/238563/
-        - name: Redirect HTTPS traffic to HTTP
-          ansible.posix.firewalld:
-            permanent: true
-            immediate: true
-            port_forward:
-            - port: 443
-              proto: tcp
-              toport: 80
-            state: enabled
-
     - name: Create a dedicated user for configuration management operations
       block:
         - name: Create a group for the user
