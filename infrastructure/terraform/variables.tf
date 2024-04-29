@@ -2,9 +2,10 @@ variable "CONST" {
   description = "A collection of values to emulate the use of constants"
 
   type = object({
-    backups     = string
-    enable_ipv6 = bool
-    null_ipaddr = string
+    backups        = string
+    enable_ipv6    = bool
+    null_ipaddr    = string
+    dns_record_ttl = number
   })
 }
 
