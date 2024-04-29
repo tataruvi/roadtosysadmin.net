@@ -17,7 +17,7 @@
         - name: Create the {{ pf_bruteforce_table_f }} file itself if missing
           ansible.builtin.file:
             path: "{{ pf_bruteforce_table_f }}"
-            mode: '0600'
+            mode: 0600
             state: touch
 
         - name: Copy the PF configuration file over to the host
@@ -50,12 +50,16 @@
             output_syspatch_module_retvals:
               reboot_needed: "{{ syspatch_module_retvals.reboot_needed }}"
               return_code: "{{ syspatch_module_retvals.rc }}"
-              stderr: >
-                {{ syspatch_module_retvals.stderr |
-                  ansible.builtin.split('\n') }}
-              stdout: >
-                {{ syspatch_module_retvals.stdout |
-                  ansible.builtin.split('\n') }}
+              stderr: |
+                {{
+                  syspatch_module_retvals.stderr |
+                  ansible.builtin.split('\n')
+                }}
+              stdout: |
+                {{
+                  syspatch_module_retvals.stdout |
+                  ansible.builtin.split('\n')
+                }}
 
         - name: Reboot the host if needed for the patching
           ansible.builtin.reboot:
@@ -70,14 +74,14 @@
       block:
         - name: Create a group for the user
           ansible.builtin.group:
-            name: "cm_group"
+            name: cm_group
 
         - name: Create the user account
           ansible.builtin.user:
-            name: "cm_user"
-            group: "cm_group"
-            groups: "wheel"
-            comment: "Remote user for Ansible"
+            name: cm_user
+            group: cm_group
+            groups: wheel
+            comment: Remote user for Ansible
             password: '!' # locked
 
         - name: Add RTSA SSH key to user's list of authorized keys

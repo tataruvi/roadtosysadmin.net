@@ -11,17 +11,17 @@
       block:
         - name: Add rule allowing SSH access only from <bastion>
           community.general.ufw:
-            name: "OpenSSH"
+            name: OpenSSH
             from_ip: "{{ hostvars.bastion.ansible_host }}"
-            rule: "allow"
+            rule: allow
 
         - name: Remove default rule allowing SSH access from <any>
           community.general.ufw:
-            from_ip: "any"
-            to_port: "22"
-            proto: "tcp"
-            rule: "allow"
-            delete: "true"
+            from_ip: any
+            to_port: 22
+            proto: tcp
+            rule: allow
+            delete: true
 
     - name: Upgrade installed packages and install Nginx
       block:
@@ -31,12 +31,12 @@
 
         - name: Upgrade the installed packages
           ansible.builtin.apt:
-            upgrade: "safe"
+            upgrade: safe
 
         - name: Install Nginx
           ansible.builtin.apt:
-            pkg: "nginx"
-            state: "present"
+            pkg: nginx
+            state: present
 
     - name: Set up the webserver and serve the website
       block:
@@ -51,9 +51,9 @@
 
         - name: Add firewall rules allowing HTTP/HTTPS traffic from <any>
           community.general.ufw:
-            name: "Nginx Full"
-            from_ip: "0.0.0.0/0"
-            rule: "allow"
+            name: Nginx Full
+            from_ip: 0.0.0.0/0
+            rule: allow
 
         # temporary: redirect HTTPS to HTTP until it gets configured
         # https://serverfault.com/questions/238563/
@@ -67,25 +67,25 @@
               COMMIT
             append_newline: true
             insertbefore: "# Don't delete these required lines"
-            path: "/etc/ufw/before.rules"
-            validate: "/usr/sbin/iptables-restore --test %s"
+            path: /etc/ufw/before.rules
+            validate: /usr/sbin/iptables-restore --test %s
 
         - name: Reload ufw to enable the traffic redirect
           community.general.ufw:
-            state: "reloaded"
+            state: reloaded
 
     - name: Create a dedicated user for configuration management operations
       block:
         - name: Create a group for the user
           ansible.builtin.group:
-            name: "cm_group"
+            name: cm_group
 
         - name: Create the user account
           ansible.builtin.user:
-            name: "cm_user"
-            group: "cm_group"
-            groups: "sudo"
-            comment: "Remote user for Ansible"
+            name: cm_user
+            group: cm_group
+            groups: sudo
+            comment: Remote user for Ansible
             password: '!' # locked
 
         - name: Add RTSA SSH key to user's list of authorized keys
