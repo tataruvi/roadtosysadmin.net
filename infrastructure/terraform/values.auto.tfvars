@@ -22,16 +22,16 @@ instance_args = {
   }
   webserver01 = {
     plan_id     = "vhp-1c-1gb-amd"
-    region_id   = "lhr"
-    region_name = "London"
+    region_id   = "ams"
+    region_name = "Amsterdam"
     os_id       = 2136
     os_name     = "Debian 12"
     tags        = ["http", "https", "icmp"]
   }
   webserver02 = {
     plan_id     = "vhp-1c-1gb-amd"
-    region_id   = "icn"
-    region_name = "Seoul"
+    region_id   = "sgp"
+    region_name = "Singapore"
     os_id       = 1869
     os_name     = "Rocky Linux 9"
     tags        = ["http", "https", "icmp"]
