@@ -58,12 +58,15 @@
             backup: true
             validate: /usr/sbin/nginx -t -c %s
 
-        #TODO: switch to the actual website files after Nginx is configured
-        #       potentially host the website under /srv instead of /var
+        - name: Create the webroot referenced by the conf
+          ansible.builtin.file:
+            path: /srv/www/html/rtsa_current
+            state: directory
+
         - name: Copy over the website's files
           ansible.builtin.copy:
-            src: ../../website/test.d/
-            dest: /var/www/html/
+            src: ../../website/live/rtsa_current
+            dest: /srv/www/html/rtsa_current
 
     - name: Create a dedicated user for configuration management operations
       block:
