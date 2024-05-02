@@ -6,15 +6,15 @@ locals {
   }
 }
 
-resource "vultr_ssh_key" "rtsa" {
-  name    = "RTSA"
-  ssh_key = trimspace(file("files/id_rtsa.pub"))
-
-  lifecycle {
-    prevent_destroy = true
+data "vultr_ssh_key" "rtsa" {
+  filter {
+    name   = "name"
+    values = ["RTSA"]
   }
 }
 
+#TODO: consider using custom conditions or checks to verify that
+#      the hosts are operational before 'terraform apply' is done
 resource "vultr_instance" "host" {
   for_each = {
     for instance, args in var.instance_args : instance => args
@@ -29,7 +29,7 @@ resource "vultr_instance" "host" {
   tags        = each.value.tags
   backups     = var.CONST.backups
   enable_ipv6 = var.CONST.enable_ipv6
-  ssh_key_ids = [vultr_ssh_key.rtsa.id]
+  ssh_key_ids = [data.vultr_ssh_key.rtsa.id]
 
   firewall_group_id = (
     each.key == "bastion" ?

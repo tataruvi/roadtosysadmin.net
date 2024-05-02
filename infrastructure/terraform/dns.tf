@@ -1,18 +1,9 @@
-resource "vultr_dns_domain" "rtsa" {
+data "vultr_dns_domain" "rtsa" {
   domain = "roadtosysadmin.net"
-  ip     = "45.76.82.118"
-}
-
-resource "vultr_dns_record" "www_current" {
-  domain = vultr_dns_domain.rtsa.id
-  name   = "www"
-  data   = "45.76.82.118"
-  type   = "A"
-
 }
 
 resource "vultr_dns_record" "bastion" {
-  domain = vultr_dns_domain.rtsa.id
+  domain = data.vultr_dns_domain.rtsa.id
   name   = "bastion"
   data   = vultr_instance.host["bastion"].main_ip
   type   = "A"
@@ -25,7 +16,7 @@ resource "vultr_dns_record" "www_next" {
     if host != "bastion"
   }
 
-  domain = vultr_dns_domain.rtsa.id
+  domain = data.vultr_dns_domain.rtsa.id
   name   = "www-next"
   data   = each.value.main_ip
   type   = "A"

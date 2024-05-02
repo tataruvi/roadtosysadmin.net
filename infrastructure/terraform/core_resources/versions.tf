@@ -1,6 +1,6 @@
 terraform {
   backend "local" {
-    path = "./.terraform/rtsa_infra_resources.tfstate.local"
+    path = "./.terraform/rtsa_core_resources.tfstate.local"
   }
 
   required_providers {
