@@ -1,0 +1,12 @@
+#!/bin/sh
+
+groupadd cm_group
+useradd -c "Remote user for Ansible" -g cm_group -G wheel -m  cm_user
+
+mkdir -p /home/cm_user/.ssh
+chown cm_user:cm_group /home/cm_user/.ssh
+chmod 700 /home/cm_user/.ssh
+printf "%s\\n" "${rtsa_ssh_key}" > /home/cm_user/.ssh/authorized_keys
+chmod 600 /home/cm_user/.ssh/authorized_keys
+
+printf "%s\\n" "permit keepenv nopass :wheel as root" > /etc/doas.conf

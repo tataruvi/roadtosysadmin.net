@@ -13,6 +13,19 @@ data "vultr_ssh_key" "rtsa" {
   }
 }
 
+resource "vultr_startup_script" "bastion" {
+  name   = "bootstrap_openbsd_for_ansible"
+  type   = "boot"
+  script = base64encode(
+    templatefile(
+      "templates/firstboot.exec.tftpl",
+      {
+        rtsa_ssh_key = data.vultr_ssh_key.rtsa.ssh_key
+      }
+    )
+  )
+}
+
 #TODO: consider using custom conditions or checks to verify that
 #      the hosts are operational before 'terraform apply' is done
 resource "vultr_instance" "host" {
@@ -37,8 +50,15 @@ resource "vultr_instance" "host" {
     local.TEMP_FIREWALL_GROUP_ID["webservers"]
   )
 
+  script_id = (
+    each.key == "bastion" ?
+    vultr_startup_script.bastion.id :
+    null
+  )
+
   user_data = (
-    each.key == "bastion" ? null :
+    each.key == "bastion" ?
+    null :
     file("files/user_data.yaml")
   )
 
