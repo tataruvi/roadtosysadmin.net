@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<!--[if lte IE 9]>
+    	<p id="#outdatedIE">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  		<![endif]-->	
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
+		<link rel="stylesheet" type="text/css" href="/css/normalize.css">
+		<link rel="stylesheet" type="text/css" href="/css/markdown.css">
+		<title>RTSA - on the road to becoming a sysadmin</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work.">
+	</head>
+
+	<body id="content">
+		<header>
+			<h3>Initial login for newly created user account failing</h3>
+			<p>System: Server 2012R2</p>
+			<p>Category: Windows</p>
+			<p id="updated">- last updated on <time datetime="2018-09-10">10.09.2018</time> -</p>
+		</header>
+
+		<main class="md">
+			<p><strong>About:</strong> This document is meant to detail a peculiar fault encountered with the initial login for a newly created user account on a Windows Server 2012R2 system, as the failure was quite bizarre in manifestation and root cause.</p>
+
+			<p><strong>Symptoms and context:</strong> A new user account, which had administrative privileges, had been created on a Server 2012R2 system and the initial login for said account would not go through, instead failing with an </p>
+
+			<blockquote>
+				<p>The user profile service failed the logon - User profile cannot be loaded. </p>
+			</blockquote>
+
+			<p>error message showing on the login screen.</p>
+			<p>The <code>System EventLog</code> would record an event with the <code>ID #1509</code>, originating from the <code>User Profile Service</code> source, reading:</p>
+
+			<blockquote>
+				<p>Windows cannot copy file <code>\\\?\C:\Users\Default\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\System Tools\Command Prompt.lnk</code> to location <code>\\\?\C:\Users\%username%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\System Tools\Command Prompt.lnk</code>. This error may be caused by network problems or insufficient security rights. </p>
+				<p>DETAIL - Access is denied.</p>
+			</blockquote>
+
+			<p><strong>Root cause analysis:</strong> Troubleshooting attempts turned up the fact that the a new user profile gets created by duplicating/copying the <code>C:\Users\Default</code> folder (marked as <em>Hidden</em>) to the target user profile folder, <code>C:\Users\%username%</code> - in this particular situation, the folder copying failed for no apparent reason. It turned out that the <code>C:\Users\Default</code> folder was missing the standard <code>Read&amp;Execute</code> permission for the <code>Everyone</code> user group, as at least the copying of the <code>[...]Start Menu\Programs\System Tools</code> section of the default profile was done by using the security token of the <code>Everyone</code> group, and it failed, which in turn blocked the entire profile duplication - this is no doubt a protection mechanism aimed at making sure that an initial profile is created properly.</p>
+
+			<p><strong>Resolution:</strong> The solution has been to (re)grant the <code>Everyone</code> group <code>Read&amp;Execute</code> permissions on the <code>C:\Users\Default</code> folder. The quickest way of achieving this is to execute the below command in an elevated <code>cmd.exe</code> shell:</p>
+				<p><code>icacls C:\Users\Default /grant Everyone:(OI)(CI)RX</code></p>
+			
+			<p><strong>Note:</strong> The <code>%username%</code> 'variable' is meant to represent the actual user name.</p>
+
+			<p><strong>References:</strong></p>
+				<ol>
+					<li><a href="http://serverfault.com/questions/590651/copying-default-profile-for-new-users-fails-with-the-process-cannot-access-the">http://serverfault.com/questions/590651/copying-default-profile-for-new-users-fails-with-the-process-cannot-access-the</a></li>
+					<li><a href="http://serverfault.com/questions/388242/the-user-profile-service-failed-the-logon-user-profile-cannot-be-loaded">http://serverfault.com/questions/388242/the-user-profile-service-failed-the-logon-user-profile-cannot-be-loaded</a></li>
+				</ol>
+			<p><strong>keywords:</strong> Windows, Server, 2012/R2/2012R2, user, useraccount/userlogin/userprofile, initial, account/login/profile, new</p>
+		</main>
+
+		<footer>
+			<hr />
+			<nav>
+				<ul>
+					<li> <a href="/">Home</a>				</li>
+					<li> <a href="/about.html">About</a>	</li>
+					<li> <a href="/contact.html">Contact</a></li>
+				</ul>
+			</nav>
+		</footer>
+	</body>
+</html>

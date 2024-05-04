@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+	<head>
+		<!--[if lte IE 9]>
+    	<p id="#outdatedIE">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  		<![endif]-->
+		<link rel="stylesheet" href="/css/style.css">
+		<link rel="stylesheet" href="/css/normalize.css">
+		<link rel="stylesheet" href="/css/markdown.css">
+		<title>RTSA - on the road to becoming a sysadmin</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work.">
+	</head>
+
+	<body id="content">
+		<header>
+			<h3>Slow RDP connection establishing to a target system employing a self-signed certificate</h3>
+			<p>System: Server 2008R2/2012R2</p>
+			<p>Category: Windows</p>
+			<p id="updated">- last updated on <time datetime="2018-12-28">28.12.2018</time> -</p>
+		</header>
+
+		<main class="md">
+      <p><strong>About:</strong> The purpose of this document is to detail a problem that should rarely be encountered under normal
+        circumstances (unlikely to manifest in non-highly restricted environment), but which is annoying enough, and
+        difficult enough to troubleshoot, that it merits having its own dedicated page.</p>
+      <p><strong>The problem and its context:</strong> Establishing an RDP connection takes some 15-20 seconds; that is, after the point
+         were the credentials are provided to, and accepted by, the remote server and before being presented with the remote desktop session,
+         during which time the RDP client's status messages are of the </p>
+      <blockquote>
+      <p>Securing remote session...</p>
+      </blockquote>
+      <p>and </p>
+      <blockquote>
+      <p>Configuring remote session...</p>
+      </blockquote>
+      <p>variety. Subsequent connections are slightly faster in establishing. The problem manifests in the context of the source system not
+        having access to <em>update.microsoft.com</em> and the target server employing a self-signed certificate for securing its RDP connections
+         - it turns out that, in such a situation, the source system will time-out attempting to contact <code>Windows Update</code>, to interrogate
+         it about the existence of the "apparent CA" that has signed the target server's certificate, or perhaps to simply check if a newer variant of
+         the Root CA store exists, which would possibly include this "new CA" (this appears to be a failure in logic on the part of the code
+         responsible for the behaviour, as it does not capitalize on the difference between a self-signed certificate and one signed by an actual
+         third party Certification Authority).</p>
+      <p>For an exact description of the problem, see <a href="https://support.microsoft.com/en-us/help/2915774/remote-desktop-connection-is-sometimes-stuck-on-the-securing-remote-connection-screen">KB2915774</a>; for more details about the described mechanism, see this <a href="https://technet.microsoft.com/en-us/library/cc749331%28v=ws.10%29.aspx#BKMK_How">Technet article section</a>
+        and this <a href="https://technet.microsoft.com/en-us/library/cc734054%28v=ws.10%29.aspx">Technet description of the CAPI 2 source's EventID #8</a>.</p>
+      <p><strong>Solution:</strong> The quick fix to the problem is to disable the mechanism responsible with interrogating Windows Update
+        when encountering a certificate which cannot be validated based on the system's current <code>Root CA</code> store, which can be
+        achieved by using the <code>Local Policy Editor (gpedit.msc)</code>, navigating to <code>Computer Configuration\Administrative Templates\System\Internet Communication Management\Internet Communication settings\Turn off Automatic Root Certificates Update</code>
+        and enabling the policy in question.</p>
+      <p><strong>Corollary:</strong> The proper fix for such an issue, especially in a production environment, is using certificates issued
+        by a proper third party CA and making sure that the system initiating the connection has the CA's certificate(s) installed in its
+        respective certificate store(s).</p>
+      <p><strong>keywords:</strong> RDP, seconds, slow, connection, initiation, 10-15-20 seconds, remote desktop connection/remote desktop
+        protocol, certificate, SSL, self-signed/self signed</p>
+    </main>
+
+<footer>
+  <hr />
+  <nav>
+    <ul>
+      <li> <a href="/">Home</a>				</li>
+      <li> <a href="/about.html">About</a>	</li>
+      <li> <a href="/contact.html">Contact</a></li>
+    </ul>
+  </nav>
+</footer>
+</body>
+</html>
+

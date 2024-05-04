@@ -1,0 +1,133 @@
+
+/* Main CSS stylesheet for roadtosysadmin.net */
+
+/* GLOBAL values */ /* https://stackoverflow.com/questions/609517/why-em-instead-of-px#609561 */
+/* --------------*/
+
+body { 
+	color: #000000;
+   	background-color: #ffffff;
+   	font-size: 14px;
+   	font-family: Verdana;
+   	text-align: center;
+}
+
+body#about > main> p, body#contact > main > p { 
+	line-height: 2em; 
+	margin-left: 10em;
+	margin-right: 10em;
+}
+
+body > p#outdatedIE {
+	margin: 0.2em 0;
+	background: #ccc;
+	color: #000;
+	padding:0.2em 0;
+}
+
+body > main {
+    margin: 12em auto 4.8em;
+    padding-top: 3em;
+  }
+
+body#error > main > p:not(.exclusions) { margin-top: 5em; }
+
+body#error > main > a { margin-left: 2em; }
+
+body#content > main.md {
+	/* margin: 12em auto 4.8em; */
+	margin: 12em auto 4.8em;
+	padding: 2em;
+	text-align: left;
+}
+
+a:link { 
+	color: #0000EE; 
+	text-decoration: none;
+}
+a:visited { color: #551A8B; }
+a:hover { text-decoration: underline; }
+
+/*strong { background-color: #e0e0e0; }*/
+
+/* ------------ */
+/* LOCAL values */
+/* ------------ */
+/* Common main, header and footer styling */
+main, header, footer {
+  	position: fixed;
+	right: 0;
+  	left: 0;
+}
+	
+header, footer { background-color: #e0e0e0; }
+
+/* --------------------- */
+/* main specific styling */
+main {
+	top: 0;
+	bottom: 0; 
+	overflow-y: scroll;
+}
+
+main > nav > a { 
+    /* https://www.w3.org/Style/Examples/007/center.en.html */
+    margin-left: auto;
+    margin-right: auto;
+    /* width: max-content; */
+    /* display: block;     */
+    display: table;
+    line-height: 2.5em;
+}
+
+/* ----------------------- */
+/* header specific styling */
+header { /* https://stackoverflow.com/questions/6431881/css-layout-for-fixed-header-and-100-content-height#6432052 */
+	top: 0;
+  	height: 12em;
+}
+
+header > h3 { padding-top: 1em; }
+
+header > p {
+	background-color: #e0e0e0;
+	line-height: 1em;
+}
+
+header > p#updated { font-family:monospace; }
+
+header > p:last-child { padding-bottom: 2em; }
+
+/* ----------------------- */
+/* footer specific styling */
+footer { /* https://stackoverflow.com/questions/13609006/floating-footer-always-on-the-bottom-and-visible#13609095 */
+	bottom: 0; 
+	padding-top: 1em;
+} /*http://jsfiddle.net/ZsnuZ/*/
+
+footer > nav > ul {
+	/*DISABLED -- margin-left: -35px;*/
+	/*DISABLED -- background-color: #e0e0e0;*/ 
+	margin-left: -35px;
+	background-color: #e0e0e0;
+}
+
+footer > nav > ul > li {
+	/*DISABLED -- display: inline;*/
+	/*DISABLED -- background-color: #e0e0e0;*/
+	display: inline;
+	background-color: #e0e0e0;
+}
+
+footer > nav > ul > li > a {
+	background-color: #e0e0e0;
+	padding: 5px;
+}
+
+hr {
+	border-top: 2px solid #8c8b8b;
+	border-bottom: 2px solid #e0e0e0;
+	background-color: #e0e0e0;
+	border-color: #8c8b8b;
+	width: 15em;
+}

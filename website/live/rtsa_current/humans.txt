@@ -1,0 +1,25 @@
+# humanstxt.org
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Ion Tataru
+
+# THANKS
+
+    To the people making knowledge, tools and code available through the Internet, such as:
+
+    		http://htmldog.com
+		https://www.w3schools.com
+		https://www.w3.org
+		https://stackoverflow.com
+		https://developer.mozilla.org/en-US/docs/Web/HTML
+		https://www.quackit.com/css/css_color_codes.cfm
+		http://www.markdownpad.com
+		https://github.com/necolas/normalize.css
+		https://github.com/h5bp/html5-boilerplate
+
+# TECHNOLOGY COLOPHON
+
+    CSS3, HTML5, Markdown, Normalize.css, HTML5 Boilerplate
+ 
