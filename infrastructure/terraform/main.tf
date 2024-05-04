@@ -14,8 +14,9 @@ data "vultr_ssh_key" "rtsa" {
 }
 
 resource "vultr_startup_script" "bastion" {
-  name   = "bootstrap_openbsd_for_ansible"
-  type   = "boot"
+  name = "bootstrap_openbsd_for_ansible"
+  type = "boot"
+
   script = base64encode(
     templatefile(
       "templates/firstboot.exec.tftpl",
