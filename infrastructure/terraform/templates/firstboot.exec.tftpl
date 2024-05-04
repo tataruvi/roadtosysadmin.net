@@ -10,3 +10,8 @@ printf "%s\\n" "${rtsa_ssh_key}" > /home/cm_user/.ssh/authorized_keys
 chmod 600 /home/cm_user/.ssh/authorized_keys
 
 printf "%s\\n" "permit keepenv nopass :wheel as root" > /etc/doas.conf
+
+# generalize Python binary version
+cd /usr/local/bin
+ln -s $(ls python3* | grep -v config) python3
+chown -h :bin python3

@@ -65,8 +65,8 @@
 
         - name: Copy over the website's files
           ansible.builtin.copy:
-            src: ../../website/live/rtsa_current
-            dest: /srv/www/html/rtsa_current
+            src: ../../website/live/rtsa_current/
+            dest: /srv/www/html/rtsa_current/
 
               #    - name: Configure sshd explicitly
               #      block:
