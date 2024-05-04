@@ -4,7 +4,7 @@
 
 - name: Perform the initial setup of the Debian webserver(s)
   hosts: debian
-  remote_user: root
+  become: true
 
   tasks:
     - name: Secure SSH access to the host via the firewall
@@ -62,25 +62,6 @@
             name: Nginx HTTP
             from_ip: 0.0.0.0/0
             rule: allow
-
-    - name: Create a dedicated user for configuration management operations
-      block:
-        - name: Create a group for the user
-          ansible.builtin.group:
-            name: cm_group
-
-        - name: Create the user account
-          ansible.builtin.user:
-            name: cm_user
-            group: cm_group
-            groups: sudo
-            comment: Remote user for Ansible
-            password: '!' # locked
-
-        - name: Add RTSA SSH key to user's list of authorized keys
-          ansible.posix.authorized_key:
-            user: cm_user
-            key: "{{ lookup('file', 'files/id_rtsa.pub') }}"
 
                 #TODO: provide a custom sshd_config variant for Linux distros
 

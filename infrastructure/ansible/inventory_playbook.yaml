@@ -10,7 +10,7 @@
         argv:
           - terraform
           - output
-          - -state=../terraform/.terraform.tfstate
+          - -state=../terraform/.terraform/rtsa_infra_resources.tfstate.local
           - -raw
           - ansible_hosts
       register: hosts_yaml

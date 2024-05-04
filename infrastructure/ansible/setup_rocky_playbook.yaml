@@ -4,7 +4,7 @@
 
 - name: Perform the initial setup of the Rocky webserver(s)
   hosts: rocky
-  remote_user: root
+  become: true
 
   tasks:
     - name: Set firewalld to allow SSH from <bastion> & HTTP/HTTPS from <any>
@@ -67,25 +67,6 @@
           ansible.builtin.copy:
             src: ../../website/live/rtsa_current
             dest: /srv/www/html/rtsa_current
-
-    - name: Create a dedicated user for configuration management operations
-      block:
-        - name: Create a group for the user
-          ansible.builtin.group:
-            name: cm_group
-
-        - name: Create the user account
-          ansible.builtin.user:
-            name: cm_user
-            group: cm_group
-            groups: wheel
-            comment: Remote user for Ansible
-            password: '!' # locked
-
-        - name: Add RTSA SSH key to user's list of authorized keys
-          ansible.posix.authorized_key:
-            user: cm_user
-            key: "{{ lookup('file', 'files/id_rtsa.pub') }}"
 
               #    - name: Configure sshd explicitly
               #      block:

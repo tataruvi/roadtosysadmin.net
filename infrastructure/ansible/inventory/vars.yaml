@@ -1,12 +1,14 @@
 ---
 all:
   vars:
-    ansible_remote_user: cm_user
+    ansible_user: cm_user
+    ansible_become_method: sudo
     ansible_python_interpreter: /usr/bin/python3
 
 ungrouped:
   hosts:
     bastion:
+      ansible_become_method: doas
       ansible_python_interpreter: /usr/local/bin/python3
   vars:
     pf_bruteforce_table_f: /var/db/pf/ssh_bruteforce.table
