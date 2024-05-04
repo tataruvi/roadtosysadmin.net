@@ -1,0 +1,27 @@
+#cloud-config
+
+# bootstrap Ansible APT/DNF module
+packages:
+  - python3-${distro.pkg_manager}
+
+# create dedicated Ansible user
+groups:
+  - cm_group
+
+users:
+  - name: cm_user
+    gecos: Remote user for Ansible
+    groups:
+      - cm_group
+      - ${distro.sudoers_group}
+    primary_group: cm_group
+    lock_passwd: true
+    no_user_group: true
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - '${rtsa_ssh_key}'
+    sudo: 'ALL = (ALL) NOPASSWD: ALL'
+
+# TODO: ssh host keys: created via a bash script run by TF (or directly via a
+# TF resource?), read into this template via templatefile() and thus known by
+# both the hosts and subsequent, TF-managed, DNS SSHFP records

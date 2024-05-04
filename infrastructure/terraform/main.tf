@@ -56,10 +56,22 @@ resource "vultr_instance" "host" {
     null
   )
 
+  # potential alternative approach to the cloud-init user_data:
+  # https://registry.terraform.io/providers/hashicorp/cloudinit/latest
   user_data = (
     each.key == "bastion" ?
     null :
-    file("files/user_data.yaml")
+    templatefile(
+      "templates/user_data.yaml.tftpl",
+      {
+        distro = (
+          lower(regex("\\w+", each.value.os_name)) == "debian" ?
+          { "pkg_manager" = "apt", "sudoers_group" = "sudo" } :
+          { "pkg_manager" = "dnf", "sudoers_group" = "wheel" }
+        ),
+        rtsa_ssh_key = data.vultr_ssh_key.rtsa.ssh_key
+      }
+    )
   )
 
   lifecycle {
