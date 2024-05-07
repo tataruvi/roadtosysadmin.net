@@ -8,10 +8,16 @@ terraform {
       source  = "vultr/vultr"
       version = ">= 2.17.1"
     }
+    tls = {
+      source = "hashicorp/tls"
+      version = "4.0.5"
+    }
   }
 
   required_version = ">= 1.6.5"
 }
+
+provider "tls" {}
 
 provider "vultr" {
   api_key = var.VULTR_API_KEY
@@ -20,4 +26,5 @@ provider "vultr" {
 variable "VULTR_API_KEY" {
   description = "API key for the Vultr account, provided via the environment"
   type        = string
+  sensitive   = true
 }
