@@ -22,6 +22,12 @@ users:
       - '${rtsa_ssh_key}'
     sudo: 'ALL = (ALL) NOPASSWD: ALL'
 
+ssh_deletekeys: true
+ssh_genkeytypes: [ed25519]
+disable_root: true
+ssh_quiet_keygen: true
+ssh_pwauth: false
+
 # TODO: ssh host keys: created via a bash script run by TF (or directly via a
 # TF resource?), read into this template via templatefile() and thus known by
 # both the hosts and subsequent, TF-managed, DNS SSHFP records

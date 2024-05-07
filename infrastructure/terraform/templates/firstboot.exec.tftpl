@@ -15,3 +15,11 @@ printf "%s\\n" "permit keepenv nopass :wheel as root" > /etc/doas.conf
 cd /usr/local/bin
 ln -s $(ls python3* | grep -v config) python3
 chown -h :bin python3
+
+# basic sshd lock down
+cd /etc/ssh
+rm ssh_host_{rsa,ecdsa}_key{,.pub}
+sed -i'.default' 's/# Authentication:/&\
+AuthenticationMethods: publickey' sshd_config
+sed -i'' 's/PermitRootLogin yes/PermitRootLogin no/' sshd_config
+rcctl reload sshd
