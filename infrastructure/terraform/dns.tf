@@ -2,7 +2,11 @@ data "vultr_dns_domain" "rtsa" {
   domain = "roadtosysadmin.net"
 }
 
-resource "vultr_dns_record" "bastion" {
+resource "vultr_dns_record" "host" {
+  for_each = toset([
+    for host, attr in vultr_instance.host : host if host == "bastion"
+  ])
+
   domain = data.vultr_dns_domain.rtsa.id
   name   = "bastion"
   data   = vultr_instance.host["bastion"].main_ip
