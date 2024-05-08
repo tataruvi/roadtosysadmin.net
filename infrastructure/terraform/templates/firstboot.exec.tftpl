@@ -18,8 +18,15 @@ chown -h :bin python3
 
 # basic sshd lock down
 cd /etc/ssh
-rm ssh_host_{rsa,ecdsa}_key{,.pub}
+rm ssh_host_{rsa,ecdsa,ed25519}_key{,.pub}
 sed -i'.default' 's/# Authentication:/&\
-AuthenticationMethods: publickey' sshd_config
+AuthenticationMethods publickey/' sshd_config
 sed -i'' 's/PermitRootLogin yes/PermitRootLogin no/' sshd_config
+
+# inject Ed25519 ssh host key
+printf "%s" "${ssh_host_key}" > /etc/ssh/ssh_host_ed25519_key
+chmod 600 /etc/ssh/ssh_host_ed25519_key
+
+printf "%s" "${ssh_host_pub}" > /etc/ssh/ssh_host_ed25519_key.pub
+
 rcctl reload sshd

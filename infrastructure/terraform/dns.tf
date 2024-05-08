@@ -26,3 +26,16 @@ resource "vultr_dns_record" "www_next" {
   type   = "A"
   ttl    = var.CONST.dns_record_ttl
 }
+
+resource "vultr_dns_record" "sshfp" {
+  for_each = {
+    for ssh_host, attr in tls_private_key.ssh_host :
+    ssh_host => sha256(attr.public_key_openssh)
+  }
+
+  domain = data.vultr_dns_domain.rtsa.id
+  name   = each.key
+  data   = "4 2 ${each.value}"
+  type   = "SSHFP"
+  ttl    = var.CONST.dns_record_ttl
+}

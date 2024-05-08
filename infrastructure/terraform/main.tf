@@ -13,8 +13,22 @@ data "vultr_ssh_key" "rtsa" {
   }
 }
 
-resource "vultr_startup_script" "bastion" {
-  name = "bootstrap_openbsd_for_ansible"
+resource "tls_private_key" "ssh_host" {
+  for_each = toset([
+    for instance, args in var.instance_args : instance
+    if contains(var.deployable_instances, instance)
+  ])
+
+  algorithm = "ED25519"
+}
+
+resource "vultr_startup_script" "host" {
+  for_each = toset([
+    for ssh_host, attr in tls_private_key.ssh_host : "bastion"
+    if ssh_host == "bastion"
+  ])
+
+  name = "bastion_host_initial_setup"
   type = "boot"
 
   script = base64encode(
@@ -22,6 +36,8 @@ resource "vultr_startup_script" "bastion" {
       "templates/firstboot.exec.tftpl",
       {
         rtsa_ssh_key = data.vultr_ssh_key.rtsa.ssh_key
+        ssh_host_key = tls_private_key.ssh_host["bastion"].private_key_openssh
+        ssh_host_pub = tls_private_key.ssh_host["bastion"].public_key_openssh
       }
     )
   )
@@ -53,7 +69,7 @@ resource "vultr_instance" "host" {
 
   script_id = (
     each.key == "bastion" ?
-    vultr_startup_script.bastion.id :
+    vultr_startup_script.host["bastion"].id :
     null
   )
 
@@ -62,17 +78,19 @@ resource "vultr_instance" "host" {
   user_data = (
     each.key == "bastion" ?
     null :
-    templatefile(
+    sensitive(templatefile(
       "templates/user_data.yaml.tftpl",
       {
         distro = (
           lower(regex("\\w+", each.value.os_name)) == "debian" ?
           { "pkg_manager" = "apt", "sudoers_group" = "sudo" } :
           { "pkg_manager" = "dnf", "sudoers_group" = "wheel" }
-        ),
+        )
         rtsa_ssh_key = data.vultr_ssh_key.rtsa.ssh_key
+        ssh_host_key = tls_private_key.ssh_host[each.key].private_key_openssh
+        ssh_host_pub = tls_private_key.ssh_host[each.key].public_key_openssh
       }
-    )
+    ))
   )
 
   lifecycle {
