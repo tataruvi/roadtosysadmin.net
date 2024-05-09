@@ -16,3 +16,6 @@ Terraform
 - Add the source\_env.sh script to source control
 - Consider describing the infrastructure in a YAML that would then be used as
 a source of truth by both Terraform and Ansible
+- ~~Clean up the excessive for\_each duplication of iterators and employ local
+variables for the job~~
+- Move the implementation of the controlled host SSH keys outside of Terraform; correct the use of SSHFP as a result
