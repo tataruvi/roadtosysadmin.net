@@ -13,11 +13,11 @@ resource "vultr_dns_record" "host" {
 }
 
 resource "vultr_dns_record" "www_next" {
-  for_each = local.webserver_hosts_map
+  for_each = local.webserver_hosts_set
 
   domain = data.vultr_dns_domain.rtsa.id
   name   = "www-next"
-  data   = each.value.main_ip
+  data   = vultr_instance.host[each.key].main_ip
   type   = "A"
   ttl    = var.CONST.dns_record_ttl
 }
