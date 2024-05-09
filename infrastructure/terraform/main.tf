@@ -25,16 +25,14 @@ resource "vultr_startup_script" "host" {
   name = "bastion_host_initial_setup"
   type = "boot"
 
-  script = base64encode(
-    templatefile(
-      "templates/firstboot.exec.tftpl",
-      {
-        rtsa_ssh_key = data.vultr_ssh_key.rtsa.ssh_key
-        ssh_host_key = tls_private_key.ssh_host["bastion"].private_key_openssh
-        ssh_host_pub = tls_private_key.ssh_host["bastion"].public_key_openssh
-      }
-    )
-  )
+  script = sensitive(base64encode(templatefile(
+    "templates/firstboot.exec.tftpl",
+    {
+      rtsa_ssh_key = data.vultr_ssh_key.rtsa.ssh_key
+      ssh_host_key = tls_private_key.ssh_host["bastion"].private_key_openssh
+      ssh_host_pub = tls_private_key.ssh_host["bastion"].public_key_openssh
+    }
+  )))
 }
 
 #TODO: consider using custom conditions or checks to verify that
