@@ -3,9 +3,7 @@ data "vultr_dns_domain" "rtsa" {
 }
 
 resource "vultr_dns_record" "host" {
-  for_each = toset([
-    for host, attr in vultr_instance.host : host if host == "bastion"
-  ])
+  for_each = local.bastion_host_set
 
   domain = data.vultr_dns_domain.rtsa.id
   name   = "bastion"
@@ -15,10 +13,7 @@ resource "vultr_dns_record" "host" {
 }
 
 resource "vultr_dns_record" "www_next" {
-  for_each = {
-    for host, attr in vultr_instance.host : host => attr
-    if host != "bastion"
-  }
+  for_each = local.webserver_hosts_map
 
   domain = data.vultr_dns_domain.rtsa.id
   name   = "www-next"
@@ -28,10 +23,7 @@ resource "vultr_dns_record" "www_next" {
 }
 
 resource "vultr_dns_record" "sshfp" {
-  for_each = {
-    for ssh_host, attr in tls_private_key.ssh_host :
-    ssh_host => sha256(attr.public_key_openssh)
-  }
+  for_each = local.all_ssh_hosts_sshfp_map
 
   domain = data.vultr_dns_domain.rtsa.id
   name   = each.key

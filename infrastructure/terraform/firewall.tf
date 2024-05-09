@@ -35,9 +35,7 @@ resource "vultr_firewall_group" "webservers" {
 }
 
 resource "vultr_firewall_rule" "webservers_restrict_ssh" {
-  for_each = toset([
-    for host, attr in vultr_instance.host : host if host == "bastion"
-  ]) # perhaps more expressive than using 'count'
+  for_each = local.bastion_host_set
 
   firewall_group_id = vultr_firewall_group.webservers.id
   protocol          = "tcp"
