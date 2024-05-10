@@ -44,7 +44,7 @@ resource "vultr_instance" "host" {
 
   firewall_group_id = (
     each.key == "bastion" ?
-    vultr_firewall_group.bastion.id :
+    "4af0bd5a-4164-44b8-8a26-6f81acdfc4f5" :
     vultr_firewall_group.webservers.id
   )
 
