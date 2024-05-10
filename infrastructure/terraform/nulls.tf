@@ -5,6 +5,7 @@
 #        for Ansible to do its magic on their replacements; this will work
 #        best when the code is run through a GitHub Actions pipeline
 
+#TODO: consider changing resource name to "compute_sshfp_rdata"
 resource "terraform_data" "sshfp_value" {
   for_each = local.all_ssh_hosts_set
 
@@ -18,4 +19,13 @@ resource "terraform_data" "sshfp_value" {
       )[1]
     }
   }
+}
+
+data "local_file" "dns_sshfp_rdata" {
+  for_each = local.all_sshfp_values_set
+
+  filename = "files/${each.key}_pubkey.sshfp"
+
+  #TODO: need a better way to enforce dependencies between 'nulls'
+  depends_on = [local.all_sshfp_values_set]
 }

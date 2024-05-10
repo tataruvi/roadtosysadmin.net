@@ -25,4 +25,7 @@ locals {
     local.all_ssh_hosts_set,
     local.bastion_set
   )
+
+  all_sshfp_values_set    = toset(keys(terraform_data.sshfp_value))
+  all_dns_sshfp_rdata_set = toset(keys(data.local_file.dns_sshfp_rdata))
 }

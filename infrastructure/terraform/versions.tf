@@ -12,12 +12,17 @@ terraform {
       source  = "hashicorp/tls"
       version = "4.0.5"
     }
+    local = {
+      source  = "hashicorp/local"
+      version = ">= 2.5.1"
+    }
   }
 
   required_version = ">= 1.6.5"
 }
 
 provider "tls" {}
+provider "local" {}
 
 provider "vultr" {
   api_key = var.VULTR_API_KEY
