@@ -5,12 +5,11 @@
 #        for Ansible to do its magic on their replacements; this will work
 #        best when the code is run through a GitHub Actions pipeline
 
-#TODO: consider changing resource name to "compute_sshfp_rdata"
-resource "terraform_data" "sshfp_value" {
+resource "terraform_data" "sshfp_rdata" {
   for_each = local.ssh_host_keys.all
 
   provisioner "local-exec" {
-    command     = "bash compute_sshfp_value.sh > ${each.key}_pubkey.sshfp"
+    command     = "bash compute_sshfp_rdata.sh > ${each.key}_sshfp_rdata"
     working_dir = "./files"
 
     environment = {
@@ -21,11 +20,10 @@ resource "terraform_data" "sshfp_value" {
   }
 }
 
-data "local_file" "dns_sshfp_rdata" {
-  for_each = local.all_sshfp_values_set
+data "local_file" "sshfp_rdata" {
+  for_each = local.ssh_host_keys.all
 
-  filename = "files/${each.key}_pubkey.sshfp"
+  filename = "files/${each.key}_sshfp_rdata"
 
-  #TODO: need a better way to enforce dependencies between 'nulls'
-  depends_on = [local.all_sshfp_values_set]
+  depends_on = [terraform_data.sshfp_rdata]
 }

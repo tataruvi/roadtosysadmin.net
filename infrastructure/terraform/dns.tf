@@ -23,16 +23,11 @@ resource "vultr_dns_record" "www_next" {
 }
 
 resource "vultr_dns_record" "sshfp" {
-  for_each = local.all_dns_sshfp_rdata_set
+  for_each = local.ssh_host_keys.all
 
   domain = data.vultr_dns_domain.rtsa.id
   name   = each.key
-  data   = data.local_file.dns_sshfp_rdata[each.key].content
+  data   = data.local_file.sshfp_rdata[each.key].content
   type   = "SSHFP"
   ttl    = var.CONST.dns_record_ttl
-
-  #TODO: a better way to order ops is needed for this chain of deps:
-  #      ssh host keys -> compute sshfp rdata outside TF and save it to disk
-  #      -> read same sshfp rdata from disk (during apply)-> dns sshfp rr
-  depends_on = [local.all_dns_sshfp_rdata_set]
 }
