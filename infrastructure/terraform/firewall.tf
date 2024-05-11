@@ -35,7 +35,7 @@ resource "vultr_firewall_group" "webservers" {
 }
 
 resource "vultr_firewall_rule" "webservers_restrict_ssh" {
-  for_each = local.bastion_host_set
+  for_each = local.deployed_hosts.bastion
 
   firewall_group_id = vultr_firewall_group.webservers.id
   protocol          = "tcp"

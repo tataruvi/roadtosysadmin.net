@@ -3,7 +3,7 @@ data "vultr_dns_domain" "rtsa" {
 }
 
 resource "vultr_dns_record" "host" {
-  for_each = local.bastion_host_set
+  for_each = local.deployed_hosts.bastion
 
   domain = data.vultr_dns_domain.rtsa.id
   name   = "bastion"
@@ -13,7 +13,7 @@ resource "vultr_dns_record" "host" {
 }
 
 resource "vultr_dns_record" "www_next" {
-  for_each = local.webserver_hosts_set
+  for_each = local.deployed_hosts.webservers
 
   domain = data.vultr_dns_domain.rtsa.id
   name   = "www-next"

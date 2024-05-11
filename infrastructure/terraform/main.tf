@@ -6,13 +6,13 @@ data "vultr_ssh_key" "rtsa" {
 }
 
 resource "tls_private_key" "ssh_host" {
-  for_each = local.deployable_instances_set
+  for_each = local.deployable_instances
 
   algorithm = "ED25519"
 }
 
 resource "vultr_startup_script" "host" {
-  for_each = local.bastion_ssh_host_set
+  for_each = local.ssh_host_keys.bastion
 
   name = "bastion_host_initial_setup"
   type = "boot"
@@ -30,7 +30,7 @@ resource "vultr_startup_script" "host" {
 #TODO: consider using custom conditions or checks to verify that
 #      the hosts are operational before 'terraform apply' is done
 resource "vultr_instance" "host" {
-  for_each = local.deployable_instances_map
+  for_each = local.deployable_instances
 
   os_id       = each.value.os_id
   plan        = each.value.plan_id

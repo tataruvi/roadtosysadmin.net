@@ -7,7 +7,7 @@
 
 #TODO: consider changing resource name to "compute_sshfp_rdata"
 resource "terraform_data" "sshfp_value" {
-  for_each = local.all_ssh_hosts_set
+  for_each = local.ssh_host_keys.all
 
   provisioner "local-exec" {
     command     = "bash compute_sshfp_value.sh > ${each.key}_pubkey.sshfp"
