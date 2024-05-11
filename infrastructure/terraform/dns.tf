@@ -9,7 +9,7 @@ resource "vultr_dns_record" "host" {
   name   = "bastion"
   data   = vultr_instance.host["bastion"].main_ip
   type   = "A"
-  ttl    = var.CONST.dns_record_ttl
+  ttl    = var.CONST.dns_rr_ttl
 }
 
 resource "vultr_dns_record" "www_next" {
@@ -19,7 +19,7 @@ resource "vultr_dns_record" "www_next" {
   name   = "www-next"
   data   = vultr_instance.host[each.key].main_ip
   type   = "A"
-  ttl    = var.CONST.dns_record_ttl
+  ttl    = var.CONST.dns_rr_ttl
 }
 
 resource "vultr_dns_record" "sshfp" {
@@ -29,5 +29,5 @@ resource "vultr_dns_record" "sshfp" {
   name   = each.key
   data   = data.local_file.sshfp_rdata[each.key].content
   type   = "SSHFP"
-  ttl    = var.CONST.dns_record_ttl
+  ttl    = var.CONST.dns_rr_ttl
 }

@@ -1,8 +1,8 @@
 CONST = {
-  backups        = "disabled"
-  enable_ipv6    = false
-  null_ipaddr    = "169.254.254.169"
-  dns_record_ttl = 600
+  backups     = "disabled"
+  enable_ipv6 = false
+  null_ipaddr = "169.254.254.169"
+  dns_rr_ttl  = 600
 }
 
 deployable_instances = [
