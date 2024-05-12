@@ -3,11 +3,11 @@ data "vultr_dns_domain" "rtsa" {
 }
 
 resource "vultr_dns_record" "host" {
-  for_each = local.deployed_hosts.bastion
+  for_each = local.deployed_hosts.all
 
   domain = data.vultr_dns_domain.rtsa.id
-  name   = "bastion"
-  data   = vultr_instance.host["bastion"].main_ip
+  name   = each.key
+  data   = vultr_instance.host[each.key].main_ip
   type   = "A"
   ttl    = var.CONST.dns_rr_ttl
 }

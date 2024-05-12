@@ -11,6 +11,7 @@ locals {
   }
 
   deployed_hosts = {
+    all     = local.all_deployed_hosts
     bastion = setintersection(
       local.all_deployed_hosts,
       local.bastion_literal
