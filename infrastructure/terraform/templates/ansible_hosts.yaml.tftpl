@@ -7,18 +7,18 @@ ungrouped:
 debian:
   hosts:
 %{~ for host, attr in ansible_hosts ~}
-  %{ if attr.os_shortname == "debian" }
+  %{~ if attr.os_shortname == "debian" }
     ${host}:
       ansible_host: ${attr.ipaddr}
-  %{ endif }
+  %{~ endif ~}
 %{~ endfor ~}
 
 rocky:
   hosts:
 %{~ for host, attr in ansible_hosts ~}
-  %{ if attr.os_shortname == "rocky" }
+  %{~ if attr.os_shortname == "rocky" }
     ${host}:
       ansible_host: ${attr.ipaddr}
-  %{ endif }
+  %{~ endif ~}
 %{~ endfor ~}
 ...
