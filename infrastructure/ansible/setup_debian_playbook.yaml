@@ -4,7 +4,6 @@
 
 - name: Perform the initial setup of the Debian webserver(s)
   hosts: debian
-  become: true
 
   tasks:
     - name: Secure SSH access to the host via the firewall
@@ -12,7 +11,7 @@
         - name: Add rule allowing SSH access only from <bastion>
           community.general.ufw:
             name: OpenSSH
-            from_ip: "{{ hostvars.bastion.ansible_host }}"
+            from_ip: "{{ hostvars.bastion.ansible_host_ipaddr }}"
             rule: allow
 
         - name: Remove default rule allowing SSH access from <any>

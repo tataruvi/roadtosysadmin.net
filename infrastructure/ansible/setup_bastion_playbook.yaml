@@ -4,7 +4,9 @@
 
 - name: Perform the initial setup of the bastion host
   hosts: bastion
-  become: true
+  vars:
+    pf_bruteforce_table_f: /var/db/pf/ssh_bruteforce.table
+
 
   tasks:
     - name: Configure the host's firewall for its bastion role

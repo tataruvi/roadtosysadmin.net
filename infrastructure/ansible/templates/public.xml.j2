@@ -5,7 +5,7 @@
   <service name="http"/>
 
   <rule family="ipv4">
-    <source address="{{ hostvars.bastion.ansible_host }}/32"/>
+    <source address="{{ hostvars.bastion.ansible_host_ipaddr }}/32"/>
 
     <service name="ssh"/>
     <accept/>

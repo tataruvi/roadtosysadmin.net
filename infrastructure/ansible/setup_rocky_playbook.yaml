@@ -4,7 +4,6 @@
 
 - name: Perform the initial setup of the Rocky webserver(s)
   hosts: rocky
-  become: true
 
   tasks:
     - name: Set firewalld to allow SSH from <bastion> & HTTP/HTTPS from <any>

@@ -18,6 +18,7 @@ output "ansible_hosts" {
   value = templatefile(
     "templates/ansible_hosts.yaml.tftpl",
     {
+      domain_name   = "roadtosysadmin.net"
       ansible_hosts = {
         for instance, args in var.instance_args :
         instance => {

@@ -1,15 +1,17 @@
 ---
-ungrouped:
+openbsd:
   hosts:
     bastion:
-      ansible_host: ${ansible_hosts["bastion"].ipaddr}
+      ansible_host: bastion.${domain_name}
+      ansible_host_ipaddr: ${ansible_hosts["bastion"].ipaddr}
 
 debian:
   hosts:
 %{~ for host, attr in ansible_hosts ~}
   %{~ if attr.os_shortname == "debian" }
     ${host}:
-      ansible_host: ${attr.ipaddr}
+      ansible_host: ${host}.${domain_name}
+      ansible_host_ipaddr: ${attr.ipaddr}
   %{~ endif ~}
 %{~ endfor ~}
 
@@ -18,7 +20,8 @@ rocky:
 %{~ for host, attr in ansible_hosts ~}
   %{~ if attr.os_shortname == "rocky" }
     ${host}:
-      ansible_host: ${attr.ipaddr}
+      ansible_host: ${host}.${domain_name}
+      ansible_host_ipaddr: ${attr.ipaddr}
   %{~ endif ~}
 %{~ endfor ~}
 ...
