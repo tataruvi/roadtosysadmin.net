@@ -58,7 +58,7 @@
 
         - name: Add firewall rules allowing HTTP/HTTPS traffic from <any>
           community.general.ufw:
-            name: Nginx HTTP
+            name: Nginx Full
             from_ip: 0.0.0.0/0
             rule: allow
 
