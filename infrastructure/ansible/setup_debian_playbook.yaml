@@ -50,11 +50,16 @@
           ansible.builtin.file:
             path: /srv/www/html/rtsa_current
             state: directory
+            group: www
+            owner: www
+            recurse: true
 
         - name: Copy over the website's files
           ansible.builtin.copy:
             src: ../../website/live/rtsa_current/
             dest: /srv/www/html/rtsa_current/
+            group: www
+            owner: www
 
         - name: Add firewall rules allowing HTTP/HTTPS traffic from <any>
           community.general.ufw:
