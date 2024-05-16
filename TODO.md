@@ -21,3 +21,4 @@ variables for the job~~
 - Move the implementation of the controlled host SSH keys outside of Terraform; correct the use of SSHFP as a result
 - Zip&compress the website files before copying them over to the webservers,
 and/or consider using ansible.posix.synchronize instead of ansible.builtin.copy
+- Break up the Ansible playbooks into corresponding roles to limit code duplication

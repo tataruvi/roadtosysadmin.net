@@ -37,6 +37,11 @@
             pkg: nginx
             state: present
 
+        - name: Ensure Nginx is not running yet
+          ansible.builtin.systemd_service:
+            name: nginx.service
+            state: stopped
+
     - name: Set up the webserver and serve the website
       block:
         - name: Overwrite the default Nginx configuration
@@ -60,6 +65,12 @@
             dest: /srv/www/html/rtsa_current/
             group: www
             owner: www
+
+        - name: Start and enable the Nginx systemd unit
+          ansible.builtin.systemd_service:
+            name: nginx.service
+            state: started
+            enabled: true
 
         - name: Add firewall rules allowing HTTP/HTTPS traffic from <any>
           community.general.ufw:
