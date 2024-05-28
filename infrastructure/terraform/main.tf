@@ -40,7 +40,6 @@ resource "vultr_instance" "host" {
   tags        = each.value.tags
   backups     = var.CONST.backups
   enable_ipv6 = var.CONST.enable_ipv6
-  ssh_key_ids = [data.vultr_ssh_key.rtsa.id]
 
   firewall_group_id = (
     each.key == "bastion" ?
