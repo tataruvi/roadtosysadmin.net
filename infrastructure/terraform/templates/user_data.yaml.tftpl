@@ -23,10 +23,9 @@ users:
     sudo: 'ALL = (ALL) NOPASSWD: ALL'
 
   - name: www
-    gecos: Local user for Nginx
+    gecos: System user for Nginx
     lock_passwd: true
-    no_create_home: true
-    no_user_group: false
+    system: true
     shell: /usr/sbin/nologin
 
 # basic sshd lockdown
