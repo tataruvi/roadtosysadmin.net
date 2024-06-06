@@ -27,8 +27,6 @@ resource "vultr_startup_script" "host" {
   )))
 }
 
-#TODO: consider using custom conditions or checks to verify that
-#      the hosts are operational before 'terraform apply' is done
 resource "vultr_instance" "host" {
   for_each = local.deployable_instances
 
@@ -77,4 +75,23 @@ resource "vultr_instance" "host" {
     create_before_destroy = true
     ignore_changes        = [user_data]
   }
+
+  provisioner "remote-exec" {
+    inline = ["true"]
+
+    connection {
+      type     = "ssh"
+      user     = "cm_user"
+      timeout  = "10m"
+      host     = self.main_ip
+
+      bastion_user = "cm_user"
+      bastion_host = (
+        each.key == "bastion" ?
+        "" :
+        "bastion.roadtosysadmin.net"
+      )
+    }
+  }
+
 }
