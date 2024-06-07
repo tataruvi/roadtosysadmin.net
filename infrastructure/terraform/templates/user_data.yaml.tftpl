@@ -1,5 +1,12 @@
 #cloud-config
 
+# add a swapfile to Rocky hosts
+%{~ if distro.pkg_manager == "dnf" }
+swap:
+  filename: /swapfile
+  size: 2.4G
+%{~ endif }
+
 # bootstrap Ansible APT/DNF module
 packages:
   - python3-${distro.pkg_manager}
