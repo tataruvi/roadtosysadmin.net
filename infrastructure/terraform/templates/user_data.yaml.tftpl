@@ -1,10 +1,20 @@
 #cloud-config
 
-# add a swapfile to Rocky hosts
+# improve deployment of Rocky Linux
 %{~ if distro.pkg_manager == "dnf" }
+# add swap to offset OOM
 swap:
   filename: /swapfile
   size: 2.4G
+
+# tweak DNF conf for performance
+write_files:
+  - path: /etc/dnf/dnf.conf
+    content: |
+      fastestmirror=True
+      max_parallel_downloads=10
+    append: true
+    defer: false
 %{~ endif }
 
 # bootstrap Ansible APT/DNF module
@@ -45,17 +55,6 @@ ssh_keys:
     ${indent(4, ssh_host_key)}
   ed25519_public: |
     ${ssh_host_pub}
-
-# tweak DNF configuration for perf
-%{~ if distro.pkg_manager == "dnf" }
-write_files:
-  - path: /etc/dnf/dnf.conf
-    content: |
-      fastestmirror=True
-      max_parallel_downloads=10
-    append: true
-    defer: false
-%{~ endif ~}
 
 # reboot host once done
 power_state:
