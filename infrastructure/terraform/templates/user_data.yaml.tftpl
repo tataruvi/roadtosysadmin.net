@@ -55,10 +55,3 @@ ssh_keys:
     ${indent(4, ssh_host_key)}
   ed25519_public: |
     ${ssh_host_pub}
-
-# reboot host once done
-power_state:
-  delay: now
-  mode: reboot
-  timeout: 30
-  condition: true
