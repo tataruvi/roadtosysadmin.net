@@ -60,7 +60,7 @@ resource "vultr_instance" "host" {
       "templates/user_data.yaml.tftpl",
       {
         distro = (
-          lower(regex("\\w+", each.value.os_name)) == "debian" ?
+          local.os_shortname[each.key] == "debian" ?
           { "pkg_manager" = "apt", "sudoers_group" = "sudo" } :
           { "pkg_manager" = "dnf", "sudoers_group" = "wheel" }
         )
@@ -106,17 +106,16 @@ resource "vultr_instance" "host" {
 
     working_dir = "../ansible"
     environment = {
-      os_shortname = lower(regex("\\w+", each.value.os_name))
+      os_shortname = local.os_shortname[each.key]
       hostname     = self.hostname
       ip_addr      = self.main_ip
       playbook     = (
         each.key == "bastion" ?
         "setup_bastion_playbook.yaml" :
-        "setup_${lower(regex("\\w+", each.value.os_name))}_playbook.yaml"
+        "setup_${local.os_shortname[each.key]}_playbook.yaml"
       )
-      #TODO: introduce a 'os_shortname' key into var.instance_args (or assign
-      #      the above expression to a local var) and normalize the naming of
-      #      the Ansible playbook files; replace the expression in .tf files
+      #TODO: and normalize the naming of the Ansible playbook files or move
+      #      the creation of the bastion to the core_resources configuration
     }
   }
 

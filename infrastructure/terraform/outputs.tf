@@ -22,7 +22,7 @@ output "ansible_hosts" {
       ansible_hosts = {
         for instance, args in var.instance_args :
         instance => {
-          os_shortname : lower(regex("\\w+", args.os_name))
+          os_shortname : local.os_shortname[instance]
           ipaddr : (
             contains(var.deployable_instances, instance) ?
             vultr_instance.host[instance].main_ip :

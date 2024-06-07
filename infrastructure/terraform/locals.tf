@@ -30,4 +30,9 @@ locals {
     )
   }
 
+  os_shortname = {
+    for instance, args in var.instance_args :
+    instance => lower(regex("\\w+", args.os_name))
+  }
+
 }
