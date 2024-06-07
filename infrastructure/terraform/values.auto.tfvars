@@ -30,8 +30,8 @@ instance_args = {
   }
   webserver02 = {
     plan_id     = "vhp-1c-1gb-amd"
-    region_id   = "sgp"
-    region_name = "Singapore"
+    region_id   = "fra"
+    region_name = "Frankfurt"
     os_id       = 1869
     os_name     = "Rocky Linux 9"
     tags        = ["http", "https", "icmp"]
