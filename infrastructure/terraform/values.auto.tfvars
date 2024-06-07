@@ -16,8 +16,8 @@ instance_args = {
     plan_id     = "vc2-1c-0.5gb"
     region_id   = "ewr"
     region_name = "New Jersey"
-    os_id       = 2187
-    os_name     = "OpenBSD 7.4"
+    os_id       = 2286
+    os_name     = "OpenBSD 7.5"
     tags        = ["ssh", "icmp"]
   }
   webserver01 = {
