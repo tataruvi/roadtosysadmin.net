@@ -71,11 +71,6 @@ resource "vultr_instance" "host" {
     ))
   )
 
-  lifecycle {
-    create_before_destroy = true
-    ignore_changes        = [user_data]
-  }
-
   provisioner "remote-exec" {
     inline = ["true"]
 
@@ -117,6 +112,10 @@ resource "vultr_instance" "host" {
       #TODO: and normalize the naming of the Ansible playbook files or move
       #      the creation of the bastion to the core_resources configuration
     }
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 
 }
