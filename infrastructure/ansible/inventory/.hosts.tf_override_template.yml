@@ -1,0 +1,6 @@
+---
+${os_shortname}:
+  hosts:
+    ${hostname}:
+      ansible_host: ${ip_addr}
+...

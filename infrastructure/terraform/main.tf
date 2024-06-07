@@ -94,4 +94,30 @@ resource "vultr_instance" "host" {
     }
   }
 
+  provisioner "local-exec" {
+    command = <<-EOT
+      cd inventory/
+      envsubst < .hosts.tf_override_template.yml > hosts.tf_override.yml
+      cp .vars.tf_override_source.yml vars.tf_override.yml
+      cd ..
+      env "ANSIBLE_INVENTORY_IGNORE=.yaml" ansible-playbook "$playbook"
+      trap 'rm inventory/*.tf_override.yml' INT TERM EXIT
+    EOT
+
+    working_dir = "../ansible"
+    environment = {
+      os_shortname = lower(regex("\\w+", each.value.os_name))
+      hostname     = self.hostname
+      ip_addr      = self.main_ip
+      playbook     = (
+        each.key == "bastion" ?
+        "setup_bastion_playbook.yaml" :
+        "setup_${lower(regex("\\w+", each.value.os_name))}_playbook.yaml"
+      )
+      #TODO: introduce a 'os_shortname' key into var.instance_args (or assign
+      #      the above expression to a local var) and normalize the naming of
+      #      the Ansible playbook files; replace the expression in .tf files
+    }
+  }
+
 }

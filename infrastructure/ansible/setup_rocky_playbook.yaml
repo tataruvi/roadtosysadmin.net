@@ -1,9 +1,9 @@
 ---
-- name: Import the playbook which builds the hosts.yaml file
-  ansible.builtin.import_playbook: inventory_playbook.yaml
-
 - name: Perform the initial setup of the Rocky webserver(s)
   hosts: rocky
+  vars:
+    bastion_host_ipaddr: >
+      {{ lookup('community.general.dig', 'bastion.roadtosysadmin.net.') }}
 
   tasks:
     - name: Set firewalld to allow SSH from <bastion> & HTTP/HTTPS from <any>

@@ -20,6 +20,3 @@
         content: "{{ hosts_yaml.stdout + '\n' }}"
         dest: inventory/hosts.yaml
         validate: ansible-inventory --inventory=%s --list
-
-    - name: Refresh inventory to reflect any changes in the hosts file
-      ansible.builtin.meta: refresh_inventory

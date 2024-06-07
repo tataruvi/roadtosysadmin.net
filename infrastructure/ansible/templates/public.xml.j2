@@ -6,7 +6,7 @@
   <service name="https"/>
 
   <rule family="ipv4">
-    <source address="{{ hostvars.bastion.ansible_host_ipaddr }}/32"/>
+    <source address="{{ bastion_host_ipaddr }}/32"/>
 
     <service name="ssh"/>
     <accept/>
