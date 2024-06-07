@@ -4,8 +4,22 @@
   vars:
     pf_bruteforce_table_f: /var/db/pf/ssh_bruteforce.table
 
-
   tasks:
+    - name: Guard against direct playbook invocation on "null" inventory
+      when: ansible_host_ipaddr is defined
+      block:
+        - name: Verify that the host was deployed via TF
+          ansible.builtin.assert:
+            that: "ansible_host_ipaddr != '169.254.254.169'"
+            fail_msg: "has build_inventory_playbook.yaml been invoked already?"
+            quiet: true
+          register: host_is_deployed
+          ignore_errors: true
+
+        - name: The host is not deployed, will not attempt to set it up
+          ansible.builtin.meta: end_host
+          when: host_is_deployed.failed
+
     - name: Configure the host's firewall for its bastion role
       block:
         - name: Create the subdir for {{ pf_bruteforce_table_f }} if missing
