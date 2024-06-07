@@ -2,7 +2,7 @@
 - name: Perform the initial setup of the Debian webserver(s)
   hosts: debian
   vars:
-    bastion_host_ipaddr: >
+    bastion_host_ipaddr: >-
       {{ lookup('community.general.dig', 'bastion.roadtosysadmin.net.') }}
 
   tasks:
