@@ -39,6 +39,17 @@ ssh_keys:
   ed25519_public: |
     ${ssh_host_pub}
 
+# tweak DNF configuration for perf
+%{~ if distro.pkg_manager == "dnf" }
+write_files:
+  - path: /etc/dnf/dnf.conf
+    content: |
+      fastestmirror=True
+      max_parallel_downloads=10
+    append: true
+    defer: false
+%{~ endif ~}
+
 # reboot host once done
 power_state:
   delay: now
