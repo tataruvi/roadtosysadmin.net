@@ -35,7 +35,7 @@
 
         - name: Copy the PF configuration file over to the host
           ansible.builtin.copy:
-            src: files/pf.conf
+            src: ./files/pf.conf
             dest: /etc/pf.conf
             backup: true
             validate: /sbin/pfctl -n -f %s
@@ -46,7 +46,7 @@
 
         - name: Dump ssh_bruteforce PF table to file via rc.shutdown
           ansible.builtin.copy:
-            src: files/rc.shutdown
+            src: ./files/rc.shutdown
             dest: /etc/rc.shutdown
             validate: /bin/sh %s
 
@@ -87,7 +87,7 @@
       block:
         - name: Copy sshd_config over to the host and validate its syntax
           ansible.builtin.copy:
-            src: files/sshd_config
+            src: ./files/sshd_config
             dest: /etc/ssh/sshd_config
             backup: true
             validate: /usr/sbin/sshd -t -f %s

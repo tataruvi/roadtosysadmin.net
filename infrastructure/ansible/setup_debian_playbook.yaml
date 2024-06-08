@@ -61,7 +61,7 @@
       block:
         - name: Overwrite the default Nginx configuration
           ansible.builtin.copy:
-            src: files/nginx.conf
+            src: ./files/nginx.conf
             dest: /etc/nginx/nginx.conf
             backup: true
             validate: /usr/sbin/nginx -t -c %s

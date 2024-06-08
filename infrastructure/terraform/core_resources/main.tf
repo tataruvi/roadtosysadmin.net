@@ -22,7 +22,7 @@ resource "vultr_dns_record" "www_current" {
 
 resource "vultr_ssh_key" "rtsa" {
   name    = "RTSA"
-  ssh_key = trimspace(file("files/id_rtsa.pub"))
+  ssh_key = chomp(file("files/id_rtsa.pub"))
 }
 
 resource "terraform_data" "protect_core_resources" {

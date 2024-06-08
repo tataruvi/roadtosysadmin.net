@@ -18,5 +18,6 @@
     - name: Save the retrieved YAML data as a local hosts file
       ansible.builtin.copy:
         content: "{{ hosts_yaml.stdout + '\n' }}"
-        dest: inventory/hosts.yaml
+        dest: ./inventory/hosts.yaml
         validate: ansible-inventory --inventory=%s --list
+...

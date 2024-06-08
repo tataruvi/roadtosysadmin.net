@@ -91,12 +91,12 @@ resource "vultr_instance" "host" {
 
   provisioner "local-exec" {
     command = <<-EOT
-      cd inventory/
+      cd ./inventory/
       envsubst < .hosts.tf_override_template.yml > hosts.tf_override.yml
       cp .vars.tf_override_source.yml vars.tf_override.yml
       cd ..
       env "ANSIBLE_INVENTORY_IGNORE=.yaml" ansible-playbook "$playbook"
-      trap 'rm inventory/*.tf_override.yml' INT TERM EXIT
+      trap 'rm ./inventory/*.tf_override.yml' INT TERM EXIT
     EOT
 
     working_dir = "../ansible"

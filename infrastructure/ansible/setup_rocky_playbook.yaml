@@ -25,7 +25,7 @@
       block:
         - name: Overwrite firewalld's Public zone definition file
           ansible.builtin.template:
-            src: templates/public.xml.j2
+            src: ./templates/public.xml.j2
             dest: /etc/firewalld/zones/public.xml
             backup: true
             validate: /usr/bin/xmllint --noout %s
@@ -66,7 +66,7 @@
       block:
         - name: Overwrite the default Nginx configuration
           ansible.builtin.copy:
-            src: files/nginx.conf
+            src: ./files/nginx.conf
             dest: /etc/nginx/nginx.conf
             backup: true
             validate: /usr/sbin/nginx -t -c %s
