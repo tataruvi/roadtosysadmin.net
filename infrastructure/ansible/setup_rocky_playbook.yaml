@@ -77,6 +77,9 @@
             state: directory
             group: www
             owner: www
+            serole: object_r
+            setype: httpd_sys_content_t
+            seuser: system_u
             recurse: true
 
         - name: Archive and compress website files
@@ -95,6 +98,7 @@
             dest: /srv/www/html/rtsa_current/
             group: www
             owner: www
+            seuser: system_u
 
         - name: Start and enable the Nginx systemd unit
           ansible.builtin.systemd_service:
