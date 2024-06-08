@@ -32,16 +32,6 @@ resource "vultr_dns_record" "www" {
   ttl    = 3600
 }
 
-resource "vultr_dns_record" "www_next" {
-  for_each = local.deployed_hosts.webservers
-
-  domain = data.vultr_dns_domain.rtsa.id
-  name   = "www-next"
-  data   = vultr_instance.host[each.key].main_ip
-  type   = "A"
-  ttl    = var.CONST.dns_rr_ttl
-}
-
 resource "vultr_dns_record" "sshfp" {
   for_each = local.ssh_host_keys.all
 
