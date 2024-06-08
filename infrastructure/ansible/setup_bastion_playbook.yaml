@@ -20,6 +20,20 @@
           ansible.builtin.meta: end_host
           when: host_is_deployed.failed
 
+    - name: Configure sshd explicitly
+      block:
+        - name: Copy sshd_config over to the host and validate its syntax
+          ansible.builtin.copy:
+            src: ./files/sshd_config.openbsd
+            dest: /etc/ssh/sshd_config
+            backup: true
+            validate: /usr/sbin/sshd -t -f %s
+
+        - name: Enable the new configuration
+          ansible.builtin.service:
+            name: sshd
+            state: reloaded
+
     - name: Configure the host's firewall for its bastion role
       block:
         - name: Create the subdir for {{ pf_bruteforce_table_f }} if missing
@@ -82,18 +96,4 @@
           community.general.openbsd_pkg:
             name: '*'
             state: latest
-
-    - name: Configure sshd explicitly
-      block:
-        - name: Copy sshd_config over to the host and validate its syntax
-          ansible.builtin.copy:
-            src: ./files/sshd_config
-            dest: /etc/ssh/sshd_config
-            backup: true
-            validate: /usr/sbin/sshd -t -f %s
-
-        - name: Enable the new configuration
-          ansible.builtin.service:
-            name: sshd
-            state: reloaded
 ...

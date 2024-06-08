@@ -39,6 +39,20 @@
             name: firewalld.service
             state: reloaded
 
+    - name: Configure sshd explicitly
+      block:
+        - name: Copy sshd_config over to the host and validate its syntax
+          ansible.builtin.copy:
+            src: ./files/sshd_config.rocky
+            dest: /etc/ssh/sshd_config
+            backup: true
+            validate: /usr/sbin/sshd -t -f %s
+
+        - name: Enable the new configuration
+          ansible.builtin.systemd_service:
+            name: sshd.service
+            state: reloaded
+
     - name: Upgrade installed packages and deploy Nginx
       block:
         - name: Update the packages list
@@ -105,18 +119,4 @@
             name: nginx.service
             state: started
             enabled: true
-
-              #    - name: Configure sshd explicitly
-              #      block:
-              #        - name: Copy sshd_config over to the host and validate its syntax
-              #          ansible.builtin.copy:
-              #            src: files/sshd_config
-              #            dest: /etc/ssh/sshd_config
-              #            backup: true
-              #            validate: /usr/sbin/sshd -t -f %s
-              #
-              #        - name: Enable the new configuration
-              #          ansible.builtin.service:
-              #            name: sshd
-              #            state: reloaded
 ...

@@ -37,6 +37,20 @@
             rule: allow
             delete: true
 
+    - name: Configure sshd explicitly
+      block:
+        - name: Copy sshd_config over to the host and validate its syntax
+          ansible.builtin.copy:
+            src: ./files/sshd_config.debian
+            dest: /etc/ssh/sshd_config
+            backup: true
+            validate: /usr/sbin/sshd -t -f %s
+
+        - name: Enable the new configuration
+          ansible.builtin.systemd_service:
+            name: ssh.service
+            state: reloaded
+
     - name: Upgrade installed packages and install Nginx
       block:
         - name: Update the packages list
@@ -102,20 +116,4 @@
             name: Nginx Full
             from_ip: 0.0.0.0/0
             rule: allow
-
-                #TODO: provide a custom sshd_config variant for Linux distros
-
-              # - name: Configure sshd explicitly
-              #   block:
-              #     - name: Copy sshd_config over to the host and validate its syntax
-              #       ansible.builtin.copy:
-              #         src: files/sshd_config
-              #         dest: /etc/ssh/sshd_config
-              #         backup: true
-              #         validate: /usr/sbin/sshd -t -f %s
-
-              #     - name: Enable the new configuration
-              #       ansible.builtin.service:
-              #         name: sshd
-              #         state: reloaded
 ...
