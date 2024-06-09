@@ -10,6 +10,7 @@ resource "vultr_dns_record" "zone_apex" {
   name   = ""
   data   = "45.76.82.118"
   type   = "A"
+  ttl    = 600
 }
 
 #TODO: delete this resource when the above is true
@@ -18,6 +19,7 @@ resource "vultr_dns_record" "www_current" {
   name   = "www"
   data   = "45.76.82.118"
   type   = "A"
+  ttl    = 600
 }
 
 resource "vultr_ssh_key" "rtsa" {

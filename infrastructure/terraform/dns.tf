@@ -12,24 +12,14 @@ resource "vultr_dns_record" "host" {
   ttl    = var.CONST.dns_rr_ttl
 }
 
-resource "vultr_dns_record" "zone_apex" {
+resource "vultr_dns_record" "www_next" {
   for_each = local.deployed_hosts.webservers
 
   domain = data.vultr_dns_domain.rtsa.id
-  name   = ""
+  name   = "www-next"
   data   = vultr_instance.host[each.key].main_ip
   type   = "A"
-  ttl    = 3600
-}
-
-resource "vultr_dns_record" "www" {
-  for_each = local.deployed_hosts.webservers
-
-  domain = data.vultr_dns_domain.rtsa.id
-  name   = "www"
-  data   = vultr_instance.host[each.key].main_ip
-  type   = "A"
-  ttl    = 3600
+  ttl    = var.CONST.dns_rr_ttl
 }
 
 resource "vultr_dns_record" "sshfp" {
