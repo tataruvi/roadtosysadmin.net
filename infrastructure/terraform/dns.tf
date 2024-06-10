@@ -12,6 +12,16 @@ resource "vultr_dns_record" "host" {
   ttl    = var.CONST.dns_rr_ttl
 }
 
+resource "vultr_dns_record" "apex_next" {
+  for_each = local.active_webservers
+
+  domain = data.vultr_dns_domain.rtsa.id
+  name   = "apex-next"
+  data   = vultr_instance.host[each.key].main_ip
+  type   = "A"
+  ttl    = var.CONST.dns_rr_ttl
+}
+
 resource "vultr_dns_record" "www_next" {
   for_each = local.active_webservers
 

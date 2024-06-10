@@ -37,8 +37,14 @@ output "ansible_hosts" {
 output "website_dns_records" {
   description = "Published DNS records through which the website is served"
 
-  value = {
-    for dns_record in vultr_dns_record.www_next :
-    "${dns_record.name}.${dns_record.domain}" => dns_record.data...
-  }
+  value = merge(
+    {
+      for dns_record in vultr_dns_record.www_next :
+      "${dns_record.name}.${dns_record.domain}" => dns_record.data...
+    },
+    {
+      for dns_record in vultr_dns_record.apex_next :
+      "${dns_record.name}.${dns_record.domain}" => dns_record.data...
+    }
+  )
 }
