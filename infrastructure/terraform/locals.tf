@@ -22,6 +22,11 @@ locals {
     )
   }
 
+  active_webservers = toset([
+    for webserver in local.deployed_hosts.webservers : webserver
+    if (var.instance_args[webserver].serves_http)
+  ])
+
   ssh_host_keys = {
     all     = local.all_ssh_host_keys
     bastion = setintersection(

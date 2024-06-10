@@ -24,6 +24,9 @@ variable "instance_args" {
   description = <<-EOT
     Arguments used by vultr_instance resources; the optional values are used
     used to map Vultr API specific values to human-readable names
+
+    note: "serves_http" is a custom argument that controls the publishing of
+          the DNS records through which the webservers can serve HTTP traffic
   EOT
 
   type = map(object({
@@ -33,5 +36,6 @@ variable "instance_args" {
     os_id       = number
     os_name     = optional(string)
     tags        = list(string)
+    serves_http = optional(bool, false)
   }))
 }

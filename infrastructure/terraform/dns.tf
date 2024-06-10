@@ -13,7 +13,7 @@ resource "vultr_dns_record" "host" {
 }
 
 resource "vultr_dns_record" "www_next" {
-  for_each = local.deployed_hosts.webservers
+  for_each = local.active_webservers
 
   domain = data.vultr_dns_domain.rtsa.id
   name   = "www-next"
