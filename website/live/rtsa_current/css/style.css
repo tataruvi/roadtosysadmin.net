@@ -27,20 +27,15 @@ body > p#outdatedIE {
 }
 
 body > main {
-  margin: 12em auto 4.8em;
-  padding-top: 3em;
+  margin: 12em auto 5em;
+  padding: 2em;
 }
 
 body#error > main > p:not(.exclusions) { margin-top: 5em; }
 
 body#error > main > a { margin-left: 2em; }
 
-body#content > main.md {
-  /* margin: 12em auto 4.8em; */
-  margin: 12em auto 4.8em;
-  padding: 2em;
-  text-align: left;
-}
+body#content > main.md { text-align: left; }
 
 a:link {
   color: #0000EE;
@@ -98,13 +93,14 @@ header > p {
 
 header > p#updated { font-family:monospace; }
 
-header > p:last-child { padding-bottom: 2em; }
+header > p:last-child { padding-bottom: 0; }
 
 /* ----------------------- */
 /* footer specific styling */
 footer {
   /* https://stackoverflow.com/questions/13609006/floating-footer-always-on-the-bottom-and-visible#13609095 */
   bottom: 0;
+  height: 4em;
   padding-top: 1em;
 } /*http://jsfiddle.net/ZsnuZ/*/
 
