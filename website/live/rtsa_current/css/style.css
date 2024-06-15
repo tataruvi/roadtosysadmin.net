@@ -13,21 +13,19 @@ body {
   text-align: center;
 }
 
-body#about > main > p, body#contact > main > p {
-  line-height: 2em;
-  margin-left: 10em;
-  margin-right: 10em;
-}
+body#about > main > p, body#contact > main > p { line-height: 1.5em; }
+
+body#about > main, body#contact > main { text-align: left; }
 
 body > p#outdatedIE {
   margin: 0.2em 0;
   background: #ccc;
   color: #000;
-  padding:0.2em 0;
+  padding: 0;
 }
 
 body > main {
-  margin: 12em auto 5em;
+  margin: 14em auto 5em;
   padding: 2em;
 }
 
@@ -81,7 +79,7 @@ main > nav > a {
 header {
   /* https://stackoverflow.com/questions/6431881/css-layout-for-fixed-header-and-100-content-height#6432052 */
   top: 0;
-  height: 12em;
+  height: 13em;
 }
 
 header > h3 { padding-top: 1em; }
@@ -93,7 +91,7 @@ header > p {
 
 header > p#updated { font-family:monospace; }
 
-header > p:last-child { padding-bottom: 0; }
+header > p:last-child { padding-bottom: 1em; }
 
 /* ----------------------- */
 /* footer specific styling */
