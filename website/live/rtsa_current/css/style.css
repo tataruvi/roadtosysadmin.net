@@ -25,9 +25,9 @@ body > p#outdatedIE {
 }
 
 body > main {
-  margin: 12em auto 5em;
-  padding: 2em;
-  position: unset;
+  padding: 1em 2em 1em 2em;
+  margin-bottom: 5em;
+  position: static;
 }
 
 body#error > main > p:not(.exclusions) { margin-top: 5em; }
@@ -50,7 +50,6 @@ a:hover { text-decoration: underline; }
 /* ------------ */
 /* Common main, header and footer styling */
 main, header, footer {
-  position: fixed;
   right: 0;
   left: 0;
 }
@@ -62,7 +61,7 @@ header, footer { background-color: #e0e0e0; }
 main {
   top: 0;
   bottom: 0;
-  overflow-y: scroll;
+  overflow-y: hidden;
 }
 
 main > nav > a {
@@ -79,12 +78,15 @@ main > nav > a {
 /* header specific styling */
 header {
   /* https://stackoverflow.com/questions/6431881/css-layout-for-fixed-header-and-100-content-height#6432052 */
-  top: 0;
-  height: 10em;
-  padding-bottom: 2em;
+  top: -1px;
+  padding-bottom: 1em;
+  position: sticky;
 }
 
-header > h3 { padding-top: 1em; }
+header > h3 {
+  padding-top: 1em;
+  margin-top: 0;
+}
 
 header > p {
   background-color: #e0e0e0;
@@ -93,15 +95,16 @@ header > p {
 
 header > p#updated { font-family:monospace; }
 
-header > p:last-child { padding-bottom: 1em; }
+header > p:last-child { padding-bottom: 0; }
 
 /* ----------------------- */
 /* footer specific styling */
 footer {
   /* https://stackoverflow.com/questions/13609006/floating-footer-always-on-the-bottom-and-visible#13609095 */
-  bottom: 0;
+  bottom: -1px;
   height: 4em;
   padding-top: 1em;
+  position: fixed;
 } /*http://jsfiddle.net/ZsnuZ/*/
 
 footer > nav > ul {
