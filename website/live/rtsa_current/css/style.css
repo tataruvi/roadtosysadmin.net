@@ -56,6 +56,16 @@ main, header, footer {
 
 header, footer { background-color: #e0e0e0; }
 
+/* overwrite normalize.css */
+main.md > sup {
+  font-size: unset;
+  font-weight: bold;
+  line-height: unset;
+  position: unset;
+  display: block;
+  overflow-x: hidden;
+}
+
 /* --------------------- */
 /* main specific styling */
 main {
