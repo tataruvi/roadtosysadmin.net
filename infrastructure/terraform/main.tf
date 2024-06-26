@@ -104,13 +104,7 @@ resource "vultr_instance" "host" {
       os_shortname = local.os_shortname[each.key]
       hostname     = self.hostname
       ip_addr      = self.main_ip
-      playbook     = (
-        each.key == "bastion" ?
-        "setup_bastion_playbook.yaml" :
-        "setup_${local.os_shortname[each.key]}_playbook.yaml"
-      )
-      #TODO: and normalize the naming of the Ansible playbook files or move
-      #      the creation of the bastion to the core_resources configuration
+      playbook     = "setup_${local.os_shortname[each.key]}_playbook.yaml"
     }
   }
 
