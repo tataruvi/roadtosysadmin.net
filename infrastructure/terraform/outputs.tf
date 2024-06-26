@@ -39,12 +39,12 @@ output "website_dns_records" {
 
   value = merge(
     {
-      for dns_record in vultr_dns_record.www_next :
+      for dns_record in vultr_dns_record.www :
       "${dns_record.name}.${dns_record.domain}" => dns_record.data...
     },
     {
-      for dns_record in vultr_dns_record.apex_next :
-      "${dns_record.name}.${dns_record.domain}" => dns_record.data...
+      for dns_record in vultr_dns_record.zone_apex :
+      "${dns_record.domain}" => dns_record.data...
     }
   )
 }

@@ -27,6 +27,7 @@ instance_args = {
     os_id       = 2136
     os_name     = "Debian 12"
     tags        = ["http", "https", "icmp"]
+    serves_http = true
   }
   webserver02 = {
     plan_id     = "vhp-1c-1gb-amd"
@@ -35,5 +36,6 @@ instance_args = {
     os_id       = 1869
     os_name     = "Rocky Linux 9"
     tags        = ["http", "https", "icmp"]
+    serves_http = true
   }
 }

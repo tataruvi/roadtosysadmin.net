@@ -12,21 +12,21 @@ resource "vultr_dns_record" "host" {
   ttl    = var.CONST.dns_rr_ttl
 }
 
-resource "vultr_dns_record" "apex_next" {
+resource "vultr_dns_record" "zone_apex" {
   for_each = local.active_webservers
 
   domain = data.vultr_dns_domain.rtsa.id
-  name   = "apex-next"
+  name   = ""
   data   = vultr_instance.host[each.key].main_ip
   type   = "A"
   ttl    = var.CONST.dns_rr_ttl
 }
 
-resource "vultr_dns_record" "www_next" {
+resource "vultr_dns_record" "www" {
   for_each = local.active_webservers
 
   domain = data.vultr_dns_domain.rtsa.id
-  name   = "www-next"
+  name   = "www"
   data   = vultr_instance.host[each.key].main_ip
   type   = "A"
   ttl    = var.CONST.dns_rr_ttl
