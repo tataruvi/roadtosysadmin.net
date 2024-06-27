@@ -1,0 +1,15 @@
+---
+infrastructure:
+  children:
+    jumphost:
+    webservers:
+
+jumphost:
+  children:
+    openbsd:
+
+webservers:
+  children:
+    debian:
+    rocky:
+...

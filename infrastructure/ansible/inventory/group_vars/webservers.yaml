@@ -1,0 +1,6 @@
+---
+ansible_ssh_common_args: >
+  -J cm_user@bastion.roadtosysadmin.net
+  -o PreferredAuthentications=publickey
+  -o VerifyHostKeyDNS=yes
+...
