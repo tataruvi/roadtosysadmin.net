@@ -1,6 +1,6 @@
 ---
 - name: Perform the initial setup of the bastion host
-  hosts: bastion
+  hosts: openbsd
   vars:
     pf_bruteforce_table_f: /var/db/pf/ssh_bruteforce.table
 

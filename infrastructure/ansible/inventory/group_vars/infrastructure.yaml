@@ -3,7 +3,7 @@ ansible_user: cm_user
 ansible_become: true
 ansible_become_method: sudo
 ansible_python_interpreter: /usr/bin/python3
-ansible_ssh_common_args: >
+ansible_ssh_common_args: >-
   -o PreferredAuthentications=publickey
   -o VerifyHostKeyDNS=yes
 ...

@@ -92,17 +92,16 @@ resource "vultr_instance" "host" {
   provisioner "local-exec" {
     command = <<-EOT
       cd ./inventory/
-      envsubst < .hosts.tf_override_template.yml > hosts.tf_override.yml
-      cp .vars.tf_override_source.yml vars.tf_override.yml
+      envsubst < .deploy_host.yml.tftpl > deploy_host.yml
       cd ..
-      env "ANSIBLE_INVENTORY_IGNORE=.yaml" ansible-playbook "$playbook"
-      trap 'rm ./inventory/*.tf_override.yml' INT TERM EXIT
+      ansible-playbook --limit "$hostname" "$playbook"
+      trap 'rm ./inventory/deploy_host.yml' INT TERM EXIT
     EOT
 
     working_dir = "../ansible"
     environment = {
       os_shortname = local.os_shortname[each.key]
-      hostname     = self.hostname
+      hostname     = "deploy_${replace(self.hostname, "/\\d{2}$/", "")}"
       ip_addr      = self.main_ip
       playbook     = "setup_${local.os_shortname[each.key]}_playbook.yaml"
     }
