@@ -20,9 +20,9 @@
 
     <main class="md">
       <p><strong>About:</strong> The purpose of this document is to record a method by which a NFS share can be mounted in a persistent-like fashion on a Windows Server 2008R2/2012R2 system, considering that this bevahiour is, apparently, <a href="https://social.technet.microsoft.com/Forums/windowsserver/en-US/44445dc3-0185-407f-b8ad-711f22cd4ec6/windows-nfs-client-reconnect-to-nfs-target-on-reboot?forum=winserverfiles">not supported officially by the vendor</a>.</p>
-      
+
       <p><strong>The why:</strong> As mentioned previously, mounting NFS shares on a Windows 2008R2/2012R2 system in a persistent fashion is not something that is supposed to be possible at this time, not to mention that the mountpoints are associated with the individual uses and cannot be provided in a system-wide manner. One could map the NFS export using the Explorer's Map Network Drive function, but that drive would show up as disconnected at boot-up (which is esthetically unpleasant, suggests to the users that there is a problem and possibly slows down the boot process if the NFS server is unreachable) and each individual user does have to map the share on his own initially, which denies the practicality of having a system administrator doing the necessary changes for the concerned users.</p>
-      
+
       <p><strong>The how:</strong> Given the listed limitations (mountpoints being tied to an user's login identity, need for persistence and the need to implement the same mountpoint for multiple users, without their interaction/assistance), the workaround solution found was to mount the NFS export via each user's <a href="https://support.microsoft.com/en-us/help/324803/how-to-assign-a-logon-script-to-a-profile-for-a-local-user-in-windows-server-2003">Profile-specific Logon Script</a>. The steps below list the actions taken in order to achieve the desired outcome:</p>
 
       <ul>

@@ -41,17 +41,17 @@
               <li><p>no quotes are needed if only one ‘peer’ is provided; if multiple peers are provided, the addresses need to be separated by space characters</p></li>
               <li><p>alternatively, the time synchronization can be set via GPO - see this <a href="https://technet.microsoft.com/en-us/library/cc773263%28v=ws.10%29.aspx#w2k3tr_times_tools_vwtt">TechNet article</a> for more details</p></li>
               <li><p>one can also find an interesting read from VMware regarding the <a href="https://kb.vmware.com/selfservice/microsites/search.do?language=en_US&amp;cmd=displayKC&amp;externalId=1318">timekeeping best practices for Windows</a></p></li>
-            </ul>	
+            </ul>
         </li>
       </ol>
 
       <p style="text-indent: 0.5em;"><strong>NTP configuration (with authentication)</strong></p>
-      
+
       <ol>
         <li><p>No VMware documentation has been found that would indicate that NTP authentication is supported for the ESXi hosts - however, the NTP Client included with the hypervisor seemed to be capable of such a facility and it was determined empirically that the ESXi 5.5 NTP package does indeed support the NTPv4 authentication.</p></li>
-      
+
         <p>The set-up, however, is quite specific: after configuring the ESXi NTP Client as described in the above section (without authentication), one would have to login via SSH to the ESXi host and modify the <code>/etc/ntp.conf</code> and <code>/etc/ntp.keys</code> files so that they will look like the below samples.</p>
-        
+
         <p>
           <details>
             <summary>/etc/ntp.conf</summary>
