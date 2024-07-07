@@ -2,14 +2,10 @@
 
 <html lang="en">
 	<head>
-		<!--[if lte IE 9]>
-    	<p id="#outdatedIE">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-  		<![endif]-->
 		<link rel="stylesheet" type="text/css" href="/css/style.css">
 		<link rel="stylesheet" type="text/css" href="/css/normalize.css">
 		<link rel="stylesheet" type="text/css" href="/css/markdown.css">
 		<title>RTSA - on the road to becoming a sysadmin</title>
-		<!-- https://www.w3schools.com/tags/tag_meta.asp -->
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work.">
@@ -18,8 +14,7 @@
 	<body id="content">
 		<header>
 			<h3>NTP configuration considerations for VMware/Windows systems</h3>
-			<p>System: vCSA 6.0/ESXi 5.5/Server 2008R2/2012R2</p>
-			<p>Category: VMware/Windows</p>
+			<p>System: VMware vCSA 6.0/ESXi 5.5 & Windows Server 2008R2/2012R2</p>
 			<p id="updated">- last updated on <time datetime="2019-02-19">19.02.2019</time> -</p>
 		</header>
 
@@ -81,9 +76,6 @@ trustedkey 1</code></pre>
 				<li><p>The <code>W32TM.exe</code> tool is not a full NTP implementation and seems to be incapable of supporting NTP authentication (outside of an Active Directory domain, in which NTP authentication is provided via Windows specific mechanisms, which are not standard-compliant and operable with an NTP server). In this case (DMZ Windows systems), the systems can be configured (via GPO would be easiest, as the suggested configuration is the default one in this case) to synchronize their time with Microsoft’s time servers; since the machines are placed in the DMZ, this should work without a need to intervene on the Internet facing firewalls (this also ensures that the NTP time sources have a known identity - still, no authentication is provided in this case, as membership to an AD domain would be needed for that).
 				Alternatively, a third-party NTP client package could be used, and the Windows Time service disabled.</p></li>
 			</ol>
-
-		<p><strong>keywords: VMware, Windows, NTP, infrastructure, time, synchronization/sync, client, server, DMZ</strong></p>
-
 		</main>
 
 		<footer>

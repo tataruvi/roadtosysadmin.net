@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 
 <html lang="en">
-
 	<head>
-		<!--[if lte IE 9]>
-    	<p id="#outdatedIE">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-  		<![endif]-->
 		<link rel="stylesheet" type="text/css" href="/css/style.css">
 		<link rel="stylesheet" type="text/css" href="/css/normalize.css">
 		<link rel="stylesheet" type="text/css" href="/css/markdown.css">
@@ -18,8 +14,7 @@
 	<body id="content">
 		<header>
 			<h3>Controlling the Desktop shortcuts of users on a non-domain joined Windows Server</h3>
-			<p>System: Server 2008R2/2012R2</p>
-			<p>Category: Windows</p>
+			<p>System: Windows Server 2008R2/2012R2</p>
 			<p id="updated">- last updated on <time datetime="2018-08-04">04.08.2018</time> -</p>
 		</header>
 
@@ -52,8 +47,6 @@
 				</ul>
 				<p>If the same shortcut configuration needs to be applied to new user accounts as well (appear on their initial Desktop), run the below command (again from an elevated Powershell console):</p>
 				<p><code>copy-item C:\Users\$env:username\shortcuts\* C:\Users\Default\Desktop\</code></p>
-
-			<p><strong>keywords:</strong> Windows, Server, 2008R2/2012R2, Desktop, shortcut, default, initial, Public, user, profile</p>
 		</main>
 
 		<footer>

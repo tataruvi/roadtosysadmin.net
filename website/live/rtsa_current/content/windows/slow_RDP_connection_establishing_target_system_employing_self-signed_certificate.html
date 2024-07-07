@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 
 <html lang="en">
-
 	<head>
-		<!--[if lte IE 9]>
-    	<p id="#outdatedIE">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-  		<![endif]-->
 		<link rel="stylesheet" href="/css/style.css">
 		<link rel="stylesheet" href="/css/normalize.css">
 		<link rel="stylesheet" href="/css/markdown.css">
@@ -18,8 +14,7 @@
 	<body id="content">
 		<header>
 			<h3>Slow RDP connection establishing to a target system employing a self-signed certificate</h3>
-			<p>System: Server 2008R2/2012R2</p>
-			<p>Category: Windows</p>
+			<p>System: Windows Server 2008R2/2012R2</p>
 			<p id="updated">- last updated on <time datetime="2018-12-28">28.12.2018</time> -</p>
 		</header>
 
@@ -53,8 +48,6 @@
       <p><strong>Corollary:</strong> The proper fix for such an issue, especially in a production environment, is using certificates issued
         by a proper third party CA and making sure that the system initiating the connection has the CA's certificate(s) installed in its
         respective certificate store(s).</p>
-      <p><strong>keywords:</strong> RDP, seconds, slow, connection, initiation, 10-15-20 seconds, remote desktop connection/remote desktop
-        protocol, certificate, SSL, self-signed/self signed</p>
     </main>
 
 <footer>
