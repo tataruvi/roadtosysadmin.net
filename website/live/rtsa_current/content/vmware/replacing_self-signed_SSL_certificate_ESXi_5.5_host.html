@@ -1,91 +1,90 @@
 <!DOCTYPE html>
 
 <html lang="en">
-	<head>
-		<link rel="stylesheet" type="text/css" href="/css/style.css">
-		<link rel="stylesheet" type="text/css" href="/css/normalize.css">
-		<link rel="stylesheet" type="text/css" href="/css/markdown.css">
-		<title>RTSA - on the road to becoming a sysadmin</title>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work.">
-	</head>
+  <head>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="/css/markdown.css">
+    <title>RTSA - on the road to becoming a sysadmin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work.">
+  </head>
 
-	<body id="content">
-		<header>
-			<h3>Replacing the self-signed SSL certificate on an ESXi 5.5 host</h3>
-			<p>System: VMware ESXi 5.5</p>
-			<p id="updated">- last updated on <time datetime="2018-09-17">17.09.2018</time> -</p>
-		</header>
+  <body id="content">
+    <header>
+      <h3>Replacing the self-signed SSL certificate on an ESXi 5.5 host</h3>
+      <p>System: VMware ESXi 5.5</p>
+      <p id="updated">- last updated on <time datetime="2018-09-17">17.09.2018</time> -</p>
+    </header>
 
-		<main class="md">
-			<strong>About:</strong> The purpose of this document is to provide a step-by-step guide on how one can replace an ESXi's self-signed certificates, which are used to encrypt the management traffic sent over port 443, usually to a vCenter Server.</p>
-			<p><strong>Work instructions:</strong></p>
-				Note that it might be a good idea to migrate all of the VMs (even the ones that are shut down) off of the ESXi host for which the certificate will be replaced, as complications with its re-addition to the inventory might mean that the VMs which it used to hold will have to be manually re-registered in vCenter; on a large host, it might not be worth the risk of leaving them in place. This would be done prior to following the below instructions.</p>
-			<ul>
-				<li><p>place the host in Maintenance Mode</p></li>
-				<li><p>remove the host from the vCenter inventory altogether</p></li>
-				<li><p>connect to the ESXi host via SSH</p></li>
-				<li><p>switch to the <code>/etc/vmware/ssl</code> directory</p></li>
-				<li><p>move the <code>rui.*</code> files found there to <code>/vmfs/volumes/volume-of-your-choice/esxiBackup</code>  
-					<ul><p>
-						<li>the name of the folder to which the files are to be moved to can be set at will</li>
-						<li>the files (which are the host's certificate and its private key) are to be moved for backup purposes</li>
-						<li>the files are: <code>rui.crt</code>, the actual certificate, and <code>rui.key</code>, the corresponding private key</li>
-					</p></ul>
-				</li>
-				<li><p>run the <code>/sbin/generate-certificates</code> script (no need for parameters)</p>
-					<ul><p>
-						<li>run the tool while the working directory is the <code>/etc/vmware/ssl</code></li>
-						<li>should generate an SHA256 signed certificate in the same directory</li>
-						<li>ignore any warnings about a missing/unopenable <code>openssl.cnf</code> file</li>
-					</p></ul>
-				</li>
-				<li><p>run <code>ls -l</code> in order to confirm that the <code>rui.*</code> files have been generated</p></li>
-				<li><p>run <code>chmod +t rui.*</code> (not clear why this would be required, since the files belong to <code>root:root</code>, but the sticky bit was set on the original files)</p></li>
-			</ul>
-			<!-- <hr style="all: none;" /> -->
-			<sup>________________________________________________________________________________________________________________________</sup>
-			<ul>
-				<li><p>access the host's out-of-band management interface (be it IMM, RSA, iLO, iDRAC or something else) and
-					<ul>
-						<li><p>launch a Remote Control session</p></li>
-						<li><p>log in to the <a href="http://techgenix.com/understanding-vmware-esxi-direct-console-user-interface-dcui/">DCUI</a> and restart the <code>Management Agents</code> (under <code>Troubleshooting Options</code>)</p></li>
-					</ul>
-				</p></li>
-			<p><strong>OR</strong></p>
-				<li><p>run the below commands via the SSH session:
-					<ul>
-						<li><p><code>/etc/init.d/hostd restart</code></p></li>
-						<li><p><code>/etc/init.d/vpxa restart</code></p></li>
-					</ul>
-				</p></li>
-				<li><p>wait for the agents to restart, as this might take a minute</p></li>
-			</ul>
-			<sup>________________________________________________________________________________________________________________________</sup>
-			<ul>
-				<li><p>re-add the host to the vCenter inventory (via <code>Add Host</code>)</p></li>
-				<li><p>take it out of Maintenance Mode</p></li>
-				<li><p>access <code>https://host's_management_IP_address:443</code> and verify that the certificate has changed</p></li>
-			</ul>
-			<p>Note that this implicit certificate-regenerating approach has likely been made possible due to the ESXi 5.5 Update 3a (the version for which these steps have been put together) having the <code>/sbin/generate-certificates</code> script already configured to output SHA256 certificates. Based on the version of the ESXi installation and/or arguments supplied to the script (normally, no arguments are necessary), <strong>your mileage may vary.</strong></p>
-			<p><strong>References:</strong></p>
-				<ol>
-					<li><a href="http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&amp;cmd=displayKC&amp;externalId=2015499" target="_blank">http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&amp;cmd=displayKC&amp;externalId=2015499</a></li>
-					<li><a href="http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&amp;cmd=displayKC&amp;externalId=2076665" target="_blank">http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&amp;cmd=displayKC&amp;externalId=2076665</a></li>
-				</ol>
-		</main>
+    <main class="md">
+      <strong>About:</strong> The purpose of this document is to provide a step-by-step guide on how one can replace an ESXi's self-signed certificates, which are used to encrypt the management traffic sent over port 443, usually to a vCenter Server.</p>
+      <p><strong>Work instructions:</strong></p>
+        Note that it might be a good idea to migrate all of the VMs (even the ones that are shut down) off of the ESXi host for which the certificate will be replaced, as complications with its re-addition to the inventory might mean that the VMs which it used to hold will have to be manually re-registered in vCenter; on a large host, it might not be worth the risk of leaving them in place. This would be done prior to following the below instructions.</p>
+      <ul>
+        <li><p>place the host in Maintenance Mode</p></li>
+        <li><p>remove the host from the vCenter inventory altogether</p></li>
+        <li><p>connect to the ESXi host via SSH</p></li>
+        <li><p>switch to the <code>/etc/vmware/ssl</code> directory</p></li>
+        <li><p>move the <code>rui.*</code> files found there to <code>/vmfs/volumes/volume-of-your-choice/esxiBackup</code>  
+          <ul><p>
+            <li>the name of the folder to which the files are to be moved to can be set at will</li>
+            <li>the files (which are the host's certificate and its private key) are to be moved for backup purposes</li>
+            <li>the files are: <code>rui.crt</code>, the actual certificate, and <code>rui.key</code>, the corresponding private key</li>
+          </p></ul>
+        </li>
+        <li><p>run the <code>/sbin/generate-certificates</code> script (no need for parameters)</p>
+          <ul><p>
+            <li>run the tool while the working directory is the <code>/etc/vmware/ssl</code></li>
+            <li>should generate an SHA256 signed certificate in the same directory</li>
+            <li>ignore any warnings about a missing/unopenable <code>openssl.cnf</code> file</li>
+          </p></ul>
+        </li>
+        <li><p>run <code>ls -l</code> in order to confirm that the <code>rui.*</code> files have been generated</p></li>
+        <li><p>run <code>chmod +t rui.*</code> (not clear why this would be required, since the files belong to <code>root:root</code>, but the sticky bit was set on the original files)</p></li>
+      </ul>
+      <sup>________________________________________________________________________________________________________________________</sup>
+      <ul>
+        <li><p>access the host's out-of-band management interface (be it IMM, RSA, iLO, iDRAC or something else) and
+          <ul>
+            <li><p>launch a Remote Control session</p></li>
+            <li><p>log in to the <a href="http://techgenix.com/understanding-vmware-esxi-direct-console-user-interface-dcui/">DCUI</a> and restart the <code>Management Agents</code> (under <code>Troubleshooting Options</code>)</p></li>
+          </ul>
+        </p></li>
+        <p><strong>OR</strong></p>
+        <li><p>run the below commands via the SSH session:
+          <ul>
+            <li><p><code>/etc/init.d/hostd restart</code></p></li>
+            <li><p><code>/etc/init.d/vpxa restart</code></p></li>
+          </ul>
+        </p></li>
+        <li><p>wait for the agents to restart, as this might take a minute</p></li>
+      </ul>
+      <sup>________________________________________________________________________________________________________________________</sup>
+      <ul>
+        <li><p>re-add the host to the vCenter inventory (via <code>Add Host</code>)</p></li>
+        <li><p>take it out of Maintenance Mode</p></li>
+        <li><p>access <code>https://host's_management_IP_address:443</code> and verify that the certificate has changed</p></li>
+      </ul>
+      <p>Note that this implicit certificate-regenerating approach has likely been made possible due to the ESXi 5.5 Update 3a (the version for which these steps have been put together) having the <code>/sbin/generate-certificates</code> script already configured to output SHA256 certificates. Based on the version of the ESXi installation and/or arguments supplied to the script (normally, no arguments are necessary), <strong>your mileage may vary.</strong></p>
 
-		<footer>
-			<hr />
-			<nav>
-				<ul>
-					<li> <a href="/">Home</a>				</li>
-					<li> <a href="/about.html">About</a>	</li>
-					<li> <a href="/contact.html">Contact</a></li>
-				</ul>
-			</nav>
-		</footer>
-	</body>
+      <p><strong>References:</strong></p>
+      <ol>
+        <li><a href="http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&amp;cmd=displayKC&amp;externalId=2015499" target="_blank">http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&amp;cmd=displayKC&amp;externalId=2015499</a></li>
+        <li><a href="http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&amp;cmd=displayKC&amp;externalId=2076665" target="_blank">http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&amp;cmd=displayKC&amp;externalId=2076665</a></li>
+      </ol>
+    </main>
+
+    <footer>
+      <hr />
+      <nav>
+        <ul>
+          <li> <a href="/">Home</a> </li>
+          <li> <a href="/about.html">About</a> </li>
+          <li> <a href="/contact.html">Contact</a> </li>
+        </ul>
+      </nav>
+    </footer>
+  </body>
 </html>
-
