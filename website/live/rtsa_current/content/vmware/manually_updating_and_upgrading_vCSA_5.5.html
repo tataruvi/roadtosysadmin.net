@@ -2,13 +2,13 @@
 
 <html lang="en">
   <head>
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <link rel="stylesheet" type="text/css" href="/css/normalize.css">
-    <link rel="stylesheet" type="text/css" href="/css/markdown.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/css/markdown.css" />
     <title>RTSA - on the road to becoming a sysadmin</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work.">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work." />
   </head>
 
   <body id="content">
@@ -66,34 +66,35 @@
           <li><p>after the revert is done, run <code>vim-cmd vmsvc/power.on #previousVmid</code></p></li>
           <li><p>some 10 to 15 minutes later, the vCSA should be back to the state it was in before the update attempt</p></li>
         </ul>
-      <p>Note: the manual snapshot reverting has not been tested so far, but it should work as intended.
+      <p>Note: the manual snapshot reverting has not been tested so far, but it should work as intended.</p>
       </details></p>
       <p><details>
         <summary>Upgrading a 5.5 vCSA</summary>
         <p>Note: this section should provide sufficient information for assisting in migrating a 5.5 vCSA to the newer 6.0 variant.</p>
         <ol>
           <li><p>Prepare the source vCSA by taking backups of important configuration details, such as users, licenses, local name resolution, network time synchronization and so on - basically, take a backup of whatever customization was performed on the system. Also, take a memory snapshot of the appliance, set DRS on the cluster(s) to Manual and disable HA.</p></li>
-          <li><p>Download the latest version of the target vCSA in the <em>.iso</em> format to a Windows system that's placed in the same subnet as the source vCSA. Mount the <em>.iso</em> and open <code>vcsa-setup.html</code> from its root directory. Also install the Client Integration Plugin 6.0, available on the <em>.iso</em> at the <driveLetter>:\vcsa\VMware-ClientIntegrationPlugin-6.0.0.exe path, if you use this Windows system to access the webClient and manage vSphere.</p></li>
+          <li><p>Download the latest version of the target vCSA in the <em>.iso</em> format to a Windows system that's placed in the same subnet as the source vCSA. Mount the <em>.iso</em> and open <code>vcsa-setup.html</code> from its root directory. Also install the Client Integration Plugin 6.0, available on the <em>.iso</em> at the <code>[driveLetter]:\vcsa\VMware-ClientIntegrationPlugin-6.0.0.exe</code> path, if you use this Windows system to access the webClient and manage vSphere.</p></li>
           <li><p>Select the <code>Upgrade</code> option and specify the ESXi host, on which the target vCSA will be deployed, via its IP address (known as the <em>target ESXi</em>); provide the <code>root</code> account's password for authenticatio and bypass the ensuing certificate warning, if you don't have a proper PKI set up in the environment. Next provide the name of the new appliance by appending a <em>V6</em> (make the name distinct from the old one) to the source appliance's name and select the <code>Enable ssh</code> option.</p></li>
           <li><p>Provide the requested information in the next window, which are the details of the source vCSA and the ESXi hosting it (also know as the <em>source ESXi</em>). NOTE: the wizard needs the FQDN or routable IP address of the old vCSA, because it expects a corresponding DNS PTR record (so the FQDN can be mapped to the IP address and vice versa; this is not possible via the <code>hosts</code> file mechanism, so actual DNS records are needed). Possible problems at this step:</p>
             <ul>
-              <li><p>if you encounter the <code>Could not find VM with the hostname &lt;vCSA's_FQDN&gt;</code> error message, try using the IP address corresponding to the FQDN instead, or otherwise check the name resolution on the Windows system</p></li>
+              <li><p>if you encounter the <code>Could not find VM with the hostname [vCSA's_FQDN]</code> error message, try using the IP address corresponding to the FQDN instead, or otherwise check the name resolution on the Windows system</p></li>
               <li><p>if, when using the IP address instead of the FQDN, you get the below error message, then consider applying this <a href="https://kb.vmware.com/s/article/2110772">VMware KB article</a>:</p></li>
             </ul>
             <blockquote>
-              <p>vCenterServer FQDN <vCSA's_FQDN> does not match DNS servers "hostname#1,hostname#2" and ip addresses "" from VC certificate. Examine the VC certificate and make sure it is valid and point to vCenterServer FQDN.</p>
+              <p>vCenterServer FQDN [vCSA's_FQDN] does not match DNS servers "hostname#1,hostname#2" and ip addresses "" from VC certificate. Examine the VC certificate and make sure it is valid and point to vCenterServer FQDN.</p>
             </blockquote>
             <ul>
               <li>if the wizard returns the error message seen below, check if the <code>hosts</code> file of the system happens to resolve the FQDN (the <code>hosts</code> file has a higher precedence in the name resolution process than the DNS client and it might be used for mapping the private, non-DNS registered, IP addresses the environment's systems; this was the case for the environment which originated the instructions) - if it does, comment out the line in question:</li>
             </ul>
             <blockquote>
-              <p>DNS server maps host name <vCSA's_FQDN> to address(es) ; &lt;&lt;&gt;&gt; DiG 9.9.6-P1 &lt;&lt;&gt;&gt; <vCSA's_FQDN> +short,;; global options: +cmd,;; connection timed out; no servers could be reached which seems to be not local ip address.
+              <p>DNS server maps host name [vCSA's_FQDN] to address(es) ; &lt;&lt;&gt;&gt; DiG 9.9.6-P1 &lt;&lt;&gt;&gt; [vCSA's_FQDN] +short,;; global options: +cmd,;; connection timed out; no servers could be reached which seems to be not local ip address.
                 Please either update appliance /etc/hosts file to properly access DNS servers or update appliance DNS servers with the proper host name mapping. To check if DNS has record about local host name, please execute <code>dig &lt;vCSA's_FQDN&gt; +short</code> locally on the appliance, or <code>nslookup &lt;vCSA's_FQDN&gt;</code> on a windows machine</p>
             </blockquote>
             <ul>
               <li>if the wizard complains that it cannot contact the vCenter Server, then the host from which the setup wizard is being run is likely based in a different subnet than the target vCSA, raising concerns with the firewalls/routers that control the network path between the two; if that's the case, consider using a Windows system that's based in the same subnet that the target vCSA is being placed in</li>
             </ul>
-          </p></li>
+          </li>
+          <br />
           <li><p>Select the appropriate size for the new appliance ('Tiny' should be OK for small environments) and deploy the appliance unto a datastore that has a sufficient amount of free space</p></li>
           <li><p>Set up a static IP address for the temporary network configuration; this IP address also needs to be registered in DNS, with both an A and a PTR record defined. Notes:</p>
           <ul>
@@ -101,10 +102,10 @@
             <li><p>only one DNS server must be provided, but that particular server has to satisfy the next condition:</p></li>
             <li><p>the DNS server defined <strong>MUST</strong> be one of those recorded in the vCSA's VAMI page, if any are defined there</p></li>
           </ul>
-        </p></li>
+        </li>
           <li><p>Review the settings and Finish the wizard. Note that the upgrade can take some 30-60 minutes to complete.</p></li>
           <li><p>Once the wizard has completed its work, use the vSphere Client to connect to the ESXi hosting the new vCSA and shut down the appliance's guest OS, then edit the VM's settings and make sure that its vNIC configuration matches that of the old vCSA</p></li>
-          <li><p>Start the vCSA again access its VAMI page (https://<FQDN>:5480) once fully booted up and go to the <code>Networking</code> tab. Edit the <code>Networking Interfaces</code> and provide the vNIC(s) with the IP address(es) of the old vCSA; the network prefix will likely be a 24. Save the changes and exit the vSphere Client session (possible inventory inconsistencies can occur otherwise).</p></li>
+          <li><p>Start the vCSA again access its VAMI page (https://[FQDN]:5480) once fully booted up and go to the <code>Networking</code> tab. Edit the <code>Networking Interfaces</code> and provide the vNIC(s) with the IP address(es) of the old vCSA; the network prefix will likely be a 24. Save the changes and exit the vSphere Client session (possible inventory inconsistencies can occur otherwise).</p></li>
           <li><p>If one is used, connect to the <a href="https://blogs.vmware.com/vsphere/2013/02/vmware-announces-vdpa.html">vDPA</a> and disable the backup job that is responsible for the old vCSA appliance, then clone it and assign the new vCSA VM to the cloned job; set the new job's name to reflect the name of the new VM and, once the cloning is done, make sure you enable it. This step is necessary because the vDPA's references to the VMs it protects are GUID based and cannot be modified - once a job is defined, then that job will not accept a different VM-to-GUID pairing than it has recorded initially. So we cannot have the new appliance use the old one's name, but instead use the <em>V6</em> suffix approach.</p></li>
         </ol>
       </details></p>

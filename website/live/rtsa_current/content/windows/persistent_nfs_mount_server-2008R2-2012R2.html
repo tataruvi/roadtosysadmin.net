@@ -2,13 +2,13 @@
 
 <html lang="en">
   <head>
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <link rel="stylesheet" type="text/css" href="/css/normalize.css">
-    <link rel="stylesheet" type="text/css" href="/css/markdown.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/css/markdown.css" />
     <title>RTSA - on the road to becoming a sysadmin</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work.">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work." />
   </head>
 
   <body id="content">
@@ -38,10 +38,13 @@
           <p>if it does not already exists, create the C:\Windows\System32\Repl\Import\Scripts folder on the Windows system, then create within it a meaningfully named subfolder, such as &quot;nfsMount&quot; (the subfolder creation is optional)</p>
         </li>
         <li>
-          <p>create a &quot;script&quot; called <code>logon.cmd</code> (the name does not matter, the extension does) and add the below line to it:<p>
+          <p>create a &quot;script&quot; called <code>logon.cmd</code> (the name does not matter, the extension does) and add the below line to it:</p>
           <p><code>mount IP_address_ofNFS_server:/NFS_share_name *</code></p>
-          <p><strong>notes:</strong> 1. make sure to check that the file has a .cmd, and not a .txt, extension</p>
-          2. the above command mounts the provided NFS export to the first available drive letter, starting with Z (this is the simplest form of the &quot;script&quot;)</p>
+          <p><strong>notes:</strong> <br />
+            1. make sure to check that the file has a .cmd, and not a .txt, extension <br />
+            2. the above command mounts the provided NFS export to the first available drive letter, starting with Z (this is the simplest form of the &quot;script&quot;)
+          </p>
+        <br />
         </li>
         <li>
           <p>open the <code>lusrmgr.msc</code> console and navigate to the <code>Profile</code> tab of the concerned user account(s)</p>

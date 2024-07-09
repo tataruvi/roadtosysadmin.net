@@ -2,13 +2,13 @@
 
 <html lang="en">
   <head>
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <link rel="stylesheet" type="text/css" href="/css/normalize.css">
-    <link rel="stylesheet" type="text/css" href="/css/markdown.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/css/markdown.css" />
     <title>RTSA - on the road to becoming a sysadmin</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work.">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work." />
   </head>
 
   <body id="content">
@@ -19,15 +19,16 @@
     </header>
 
     <main class="md">
-      <strong>About:</strong> The purpose of this document is to provide a step-by-step guide on how one can replace an ESXi's self-signed certificates, which are used to encrypt the management traffic sent over port 443, usually to a vCenter Server.</p>
+      <p><strong>About:</strong> The purpose of this document is to provide a step-by-step guide on how one can replace an ESXi's self-signed certificates, which are used to encrypt the management traffic sent over port 443, usually to a vCenter Server.</p>
       <p><strong>Work instructions:</strong></p>
-        Note that it might be a good idea to migrate all of the VMs (even the ones that are shut down) off of the ESXi host for which the certificate will be replaced, as complications with its re-addition to the inventory might mean that the VMs which it used to hold will have to be manually re-registered in vCenter; on a large host, it might not be worth the risk of leaving them in place. This would be done prior to following the below instructions.</p>
+        <p>Note that it might be a good idea to migrate all of the VMs (even the ones that are shut down) off of the ESXi host for which the certificate will be replaced, as complications with its re-addition to the inventory might mean that the VMs which it used to hold will have to be manually re-registered in vCenter; on a large host, it might not be worth the risk of leaving them in place. This would be done prior to following the below instructions.</p>
       <ul>
         <li><p>place the host in Maintenance Mode</p></li>
         <li><p>remove the host from the vCenter inventory altogether</p></li>
         <li><p>connect to the ESXi host via SSH</p></li>
         <li><p>switch to the <code>/etc/vmware/ssl</code> directory</p></li>
-        <li><p>move the <code>rui.*</code> files found there to <code>/vmfs/volumes/volume-of-your-choice/esxiBackup</code>
+        <li>
+          <p>move the <code>rui.*</code> files found there to <code>/vmfs/volumes/volume-of-your-choice/esxiBackup</code></p>
           <ul><p>
             <li>the name of the folder to which the files are to be moved to can be set at will</li>
             <li>the files (which are the host's certificate and its private key) are to be moved for backup purposes</li>
