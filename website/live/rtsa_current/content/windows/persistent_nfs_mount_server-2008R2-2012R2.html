@@ -8,7 +8,9 @@
     <title>RTSA - on the road to becoming a sysadmin</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work." />
+    <meta
+      name="description"
+      content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work." />
   </head>
 
   <body id="content">
@@ -19,41 +21,99 @@
     </header>
 
     <main class="md">
-      <p><strong>About:</strong> The purpose of this document is to record a method by which a NFS share can be mounted in a persistent-like fashion on a Windows Server 2008R2/2012R2 system, considering that this bevahiour is, apparently, <a href="https://social.technet.microsoft.com/Forums/windowsserver/en-US/44445dc3-0185-407f-b8ad-711f22cd4ec6/windows-nfs-client-reconnect-to-nfs-target-on-reboot?forum=winserverfiles">not supported officially by the vendor</a>.</p>
+      <p>
+        <strong>About:</strong> The purpose of this document is to record a method by which a NFS share can be mounted
+        in a persistent-like fashion on a Windows Server 2008R2/2012R2 system, considering that this bevahiour is,
+        apparently,
+        <a
+          href="https://social.technet.microsoft.com/Forums/windowsserver/en-US/44445dc3-0185-407f-b8ad-711f22cd4ec6/windows-nfs-client-reconnect-to-nfs-target-on-reboot?forum=winserverfiles"
+          >not supported officially by the vendor</a
+        >.
+      </p>
 
-      <p><strong>The why:</strong> As mentioned previously, mounting NFS shares on a Windows 2008R2/2012R2 system in a persistent fashion is not something that is supposed to be possible at this time, not to mention that the mountpoints are associated with the individual uses and cannot be provided in a system-wide manner. One could map the NFS export using the Explorer's Map Network Drive function, but that drive would show up as disconnected at boot-up (which is esthetically unpleasant, suggests to the users that there is a problem and possibly slows down the boot process if the NFS server is unreachable) and each individual user does have to map the share on his own initially, which denies the practicality of having a system administrator doing the necessary changes for the concerned users.</p>
+      <p>
+        <strong>The why:</strong> As mentioned previously, mounting NFS shares on a Windows 2008R2/2012R2 system in a
+        persistent fashion is not something that is supposed to be possible at this time, not to mention that the
+        mountpoints are associated with the individual uses and cannot be provided in a system-wide manner. One could
+        map the NFS export using the Explorer's Map Network Drive function, but that drive would show up as disconnected
+        at boot-up (which is esthetically unpleasant, suggests to the users that there is a problem and possibly slows
+        down the boot process if the NFS server is unreachable) and each individual user does have to map the share on
+        his own initially, which denies the practicality of having a system administrator doing the necessary changes
+        for the concerned users.
+      </p>
 
-      <p><strong>The how:</strong> Given the listed limitations (mountpoints being tied to an user's login identity, need for persistence and the need to implement the same mountpoint for multiple users, without their interaction/assistance), the workaround solution found was to mount the NFS export via each user's <a href="https://support.microsoft.com/en-us/help/324803/how-to-assign-a-logon-script-to-a-profile-for-a-local-user-in-windows-server-2003">Profile-specific Logon Script</a>. The steps below list the actions taken in order to achieve the desired outcome:</p>
+      <p>
+        <strong>The how:</strong> Given the listed limitations (mountpoints being tied to an user's login identity, need
+        for persistence and the need to implement the same mountpoint for multiple users, without their
+        interaction/assistance), the workaround solution found was to mount the NFS export via each user's
+        <a
+          href="https://support.microsoft.com/en-us/help/324803/how-to-assign-a-logon-script-to-a-profile-for-a-local-user-in-windows-server-2003"
+          >Profile-specific Logon Script</a
+        >. The steps below list the actions taken in order to achieve the desired outcome:
+      </p>
 
       <ul>
         <li>
-          <p>install the <code>Client for NFS</code> feature on Server 2012R2 and install the <a href="https://blogs.msdn.microsoft.com/saponsqlserver/2011/02/03/installation-configuration-of-windows-nfs-client-to-enable-windows-to-mount-a-unix-file-system/">Services for Network File System</a> service of the <code>File Services</code> role on Server 2008R2</p>
-        </li>
-        <li>
-          <p>verify that the needed NFS share is exported towards the system, by running the below cmd.exe shell command and verifying that the required export is part of the output list:</p>
-          <p><code>showmount -e IP_address_ofNFS_server</code></p>
-          <p><strong>note:</strong> if the share shows in the exports list, you are good to continue; otherwise, ensure that the NFS server has an export rule targeting the Windows system (or its subnet), or that the rule is otherwise correct, should it exist</p>
-        </li>
-        <li>
-          <p>if it does not already exists, create the C:\Windows\System32\Repl\Import\Scripts folder on the Windows system, then create within it a meaningfully named subfolder, such as &quot;nfsMount&quot; (the subfolder creation is optional)</p>
-        </li>
-        <li>
-          <p>create a &quot;script&quot; called <code>logon.cmd</code> (the name does not matter, the extension does) and add the below line to it:</p>
-          <p><code>mount IP_address_ofNFS_server:/NFS_share_name *</code></p>
-          <p><strong>notes:</strong> <br />
-            1. make sure to check that the file has a .cmd, and not a .txt, extension <br />
-            2. the above command mounts the provided NFS export to the first available drive letter, starting with Z (this is the simplest form of the &quot;script&quot;)
+          <p>
+            install the <code>Client for NFS</code> feature on Server 2012R2 and install the
+            <a
+              href="https://blogs.msdn.microsoft.com/saponsqlserver/2011/02/03/installation-configuration-of-windows-nfs-client-to-enable-windows-to-mount-a-unix-file-system/"
+              >Services for Network File System</a
+            >
+            service of the <code>File Services</code> role on Server 2008R2
           </p>
-        <br />
         </li>
         <li>
-          <p>open the <code>lusrmgr.msc</code> console and navigate to the <code>Profile</code> tab of the concerned user account(s)</p>
+          <p>
+            verify that the needed NFS share is exported towards the system, by running the below cmd.exe shell command
+            and verifying that the required export is part of the output list:
+          </p>
+          <p><code>showmount -e IP_address_ofNFS_server</code></p>
+          <p>
+            <strong>note:</strong> if the share shows in the exports list, you are good to continue; otherwise, ensure
+            that the NFS server has an export rule targeting the Windows system (or its subnet), or that the rule is
+            otherwise correct, should it exist
+          </p>
         </li>
         <li>
-          <p>select the <code>Logon script</code> text box and enter the path to the defined login script, relative to the <code>C:\Windows\System32\Repl\Import\Scripts</code> folder (so <code>nfsMount\logon.cmd</code> in this example)</p>
+          <p>
+            if it does not already exists, create the C:\Windows\System32\Repl\Import\Scripts folder on the Windows
+            system, then create within it a meaningfully named subfolder, such as &quot;nfsMount&quot; (the subfolder
+            creation is optional)
+          </p>
         </li>
         <li>
-          <p>save the modification and have the user(s) test the outcome; note that this can be done by the administrator as well</p>
+          <p>
+            create a &quot;script&quot; called <code>logon.cmd</code> (the name does not matter, the extension does) and
+            add the below line to it:
+          </p>
+          <p><code>mount IP_address_ofNFS_server:/NFS_share_name *</code></p>
+          <p>
+            <strong>notes:</strong> <br />
+            1. make sure to check that the file has a .cmd, and not a .txt, extension <br />
+            2. the above command mounts the provided NFS export to the first available drive letter, starting with Z
+            (this is the simplest form of the &quot;script&quot;)
+          </p>
+          <br />
+        </li>
+        <li>
+          <p>
+            open the <code>lusrmgr.msc</code> console and navigate to the <code>Profile</code> tab of the concerned user
+            account(s)
+          </p>
+        </li>
+        <li>
+          <p>
+            select the <code>Logon script</code> text box and enter the path to the defined login script, relative to
+            the <code>C:\Windows\System32\Repl\Import\Scripts</code> folder (so <code>nfsMount\logon.cmd</code> in this
+            example)
+          </p>
+        </li>
+        <li>
+          <p>
+            save the modification and have the user(s) test the outcome; note that this can be done by the administrator
+            as well
+          </p>
         </li>
       </ul>
     </main>
@@ -62,9 +122,9 @@
       <hr />
       <nav>
         <ul>
-          <li> <a href="/">Home</a> </li>
-          <li> <a href="/about.html">About</a> </li>
-          <li> <a href="/contact.html">Contact</a> </li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/contact.html">Contact</a></li>
         </ul>
       </nav>
     </footer>

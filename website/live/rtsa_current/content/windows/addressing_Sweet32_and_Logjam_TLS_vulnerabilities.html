@@ -8,7 +8,9 @@
     <title>RTSA - on the road to becoming a sysadmin</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work." />
+    <meta
+      name="description"
+      content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work." />
   </head>
 
   <body id="content">
@@ -19,16 +21,43 @@
     </header>
 
     <main class="md">
-      <p><strong>About:</strong> The purpose of this document is to detail a method of dealing with the newly published <a href="https://w3.secintel.ibm.com/vscan/refs/refs.php?nav=0&amp;vuln_id=388726">SWEET32</a> TLS vulnerability on a Windows Server 2008R2/2012R2 system, the result being achieved by manipulating the order of the ciphers implemented via the <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa374757%28v=vs.85%29.aspx">Schannel</a> subsystem. Note that this adjustment (some default ciphers will be removed from <code>Schannel</code>'s configuration) and reordering of the TLS ciphers might actually help mitigate other TLS vulnerabilities that rely on exploiting computational weaknesses in older, or export-grade, ciphers.</p>
-      <p><strong>NOTE on applicability:</strong> This notice is subject to change, but the <em>SWEET32</em> fix proposed in this document should also be capable of addressing other types of TLS vulnerabilities that target ciphers with blocks which are smaller in size than 128 bits (since all of the ciphers included in the final list have block sizes of at least 128 bits) and cipher suites that employ the Diffie-Hellman mechanism for key exchange (since the list only includes cipher suites that employ the new Elliptical Curve Diffie-Hellman key exchange mechanism, which is considered secure for the time being). In conclusion, the cipher list found at the end of this document (the revised cipher list) should also prove to be a fix for vulnerabilities such as the <a href="https://www.tenable.com/plugins/nessus/42873">SSL Medium Strength Cipher Suites Supported</a> and <a href="https://weakdh.org">Logjam</a>.</p>
-      <p><strong>The cipher suites:</strong> This paragraph details the default list of ciphers implemented in Server 2008R2/2012R2, as well as provides two additional lists, the first improving on the default by removing cipher suites that provide no encryption or either use <code>RC4</code> and <code>DES/3DES</code> for encryption, the second improving on the previous list by ordering (hopefully correctly) the cipher suites from strongest to weakest, so that the TLS cipher negotiation that will happen between the server and a connecting client might default on the strongest cipher that both endpoints support (webserver and web browser).</p>
-      <p><details>
+      <p>
+        <strong>About:</strong> The purpose of this document is to detail a method of dealing with the newly published
+        <a href="https://w3.secintel.ibm.com/vscan/refs/refs.php?nav=0&amp;vuln_id=388726">SWEET32</a> TLS vulnerability
+        on a Windows Server 2008R2/2012R2 system, the result being achieved by manipulating the order of the ciphers
+        implemented via the
+        <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa374757%28v=vs.85%29.aspx">Schannel</a>
+        subsystem. Note that this adjustment (some default ciphers will be removed from <code>Schannel</code>'s
+        configuration) and reordering of the TLS ciphers might actually help mitigate other TLS vulnerabilities that
+        rely on exploiting computational weaknesses in older, or export-grade, ciphers.
+      </p>
+      <p>
+        <strong>NOTE on applicability:</strong> This notice is subject to change, but the <em>SWEET32</em> fix proposed
+        in this document should also be capable of addressing other types of TLS vulnerabilities that target ciphers
+        with blocks which are smaller in size than 128 bits (since all of the ciphers included in the final list have
+        block sizes of at least 128 bits) and cipher suites that employ the Diffie-Hellman mechanism for key exchange
+        (since the list only includes cipher suites that employ the new Elliptical Curve Diffie-Hellman key exchange
+        mechanism, which is considered secure for the time being). In conclusion, the cipher list found at the end of
+        this document (the revised cipher list) should also prove to be a fix for vulnerabilities such as the
+        <a href="https://www.tenable.com/plugins/nessus/42873">SSL Medium Strength Cipher Suites Supported</a> and
+        <a href="https://weakdh.org">Logjam</a>.
+      </p>
+      <p>
+        <strong>The cipher suites:</strong> This paragraph details the default list of ciphers implemented in Server
+        2008R2/2012R2, as well as provides two additional lists, the first improving on the default by removing cipher
+        suites that provide no encryption or either use <code>RC4</code> and <code>DES/3DES</code> for encryption, the
+        second improving on the previous list by ordering (hopefully correctly) the cipher suites from strongest to
+        weakest, so that the TLS cipher negotiation that will happen between the server and a connecting client might
+        default on the strongest cipher that both endpoints support (webserver and web browser).
+      </p>
+      <p>
+        <details>
           <summary>Default cipher suites</summary>
-      <blockquote>
-      <p>This is the default list (membership and order) in Server 2008R2/2012R2</p>
-      </blockquote>
-      <p><strong>SSL2, SSL3, TLS 1.0 and TLS 1.1 cipher suites:</strong></p>
-<pre><code>TLS_RSA_WITH_AES_128_CBC_SHA
+          <blockquote>
+            <p>This is the default list (membership and order) in Server 2008R2/2012R2</p>
+          </blockquote>
+          <p><strong>SSL2, SSL3, TLS 1.0 and TLS 1.1 cipher suites:</strong></p>
+          <pre><code>TLS_RSA_WITH_AES_128_CBC_SHA
 TLS_RSA_WITH_AES_256_CBC_SHA
 TLS_RSA_WITH_RC4_128_SHA
 TLS_RSA_WITH_3DES_EDE_CBC_SHA
@@ -54,8 +83,8 @@ TLS_RSA_WITH_NULL_SHA
 TLS_RSA_WITH_NULL_MD5
 </code></pre>
 
-      <p><strong>TLS 1.2 SHA256 and SHA384 cipher suites:</strong></p>
-<pre><code>TLS_RSA_WITH_AES_128_CBC_SHA256
+          <p><strong>TLS 1.2 SHA256 and SHA384 cipher suites:</strong></p>
+          <pre><code>TLS_RSA_WITH_AES_128_CBC_SHA256
 TLS_RSA_WITH_AES_256_CBC_SHA256
 TLS_RSA_WITH_AES_128_GCM_SHA256
 TLS_RSA_WITH_AES_256_GCM_SHA384
@@ -79,22 +108,24 @@ TLS_DHE_RSA_WITH_AES_128_CBC_SHA
 TLS_RSA_WITH_NULL_SHA256
 </code></pre>
 
-      <p><strong>TLS 1.2 ECC GCM cipher suites:</strong></p>
-<pre><code>TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P256
+          <p><strong>TLS 1.2 ECC GCM cipher suites:</strong></p>
+          <pre><code>TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P256
 TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P384
 TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P521
 TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P384
 TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P521
 </code></pre>
-      </details></p>
+        </details>
+      </p>
 
-      <p><details>
+      <p>
+        <details>
           <summary>Adjusted cipher suites</summary>
-      <blockquote>
-      <p>This is the default list minus the SSL2/SSL3, RC4, DES/3DES and NULL ciphers</p>
-      </blockquote>
-      <p><strong>TLS 1.0 and TLS 1.1 cipher suites:</strong></p>
-<pre><code>TLS_RSA_WITH_AES_128_CBC_SHA
+          <blockquote>
+            <p>This is the default list minus the SSL2/SSL3, RC4, DES/3DES and NULL ciphers</p>
+          </blockquote>
+          <p><strong>TLS 1.0 and TLS 1.1 cipher suites:</strong></p>
+          <pre><code>TLS_RSA_WITH_AES_128_CBC_SHA
 TLS_RSA_WITH_AES_256_CBC_SHA
 TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P256
 TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P384
@@ -112,8 +143,8 @@ TLS_DHE_DSS_WITH_AES_128_CBC_SHA
 TLS_DHE_DSS_WITH_AES_256_CBC_SHA
 </code></pre>
 
-      <p><strong>TLS 1.2 SHA256 and SHA384 cipher suites:</strong></p>
-<pre><code>TLS_RSA_WITH_AES_128_CBC_SHA256
+          <p><strong>TLS 1.2 SHA256 and SHA384 cipher suites:</strong></p>
+          <pre><code>TLS_RSA_WITH_AES_128_CBC_SHA256
 TLS_RSA_WITH_AES_256_CBC_SHA256
 TLS_RSA_WITH_AES_128_GCM_SHA256
 TLS_RSA_WITH_AES_256_GCM_SHA384
@@ -136,30 +167,36 @@ TLS_DHE_RSA_WITH_AES_256_CBC_SHA
 TLS_DHE_RSA_WITH_AES_128_CBC_SHA
 </code></pre>
 
-      <p><strong>TLS 1.2 ECC GCM cipher suites:</strong></p>
-<pre><code>TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P256
+          <p><strong>TLS 1.2 ECC GCM cipher suites:</strong></p>
+          <pre><code>TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P256
 TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P384
 TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P521
 TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P384
 TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P521
 </code></pre>
-      </details></p>
+        </details>
+      </p>
 
-      <p><details>
+      <p>
+        <details>
           <summary>Reordered cipher suites</summary>
-      <blockquote>
-      <p>This is the above list, reordered so that cipher negotiation should go from strongest to weakest; it might very well turn out that this list is not quite correct, or that it can be improved (it should have been OK at the time of this text being composed, which happened back in December 2016)</p>
-      </blockquote>
-      <p><strong>TLS 1.2 ECC GCM cipher suites:</strong></p>
-<pre><code>TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P521
+          <blockquote>
+            <p>
+              This is the above list, reordered so that cipher negotiation should go from strongest to weakest; it might
+              very well turn out that this list is not quite correct, or that it can be improved (it should have been OK
+              at the time of this text being composed, which happened back in December 2016)
+            </p>
+          </blockquote>
+          <p><strong>TLS 1.2 ECC GCM cipher suites:</strong></p>
+          <pre><code>TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P521
 TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P384
 TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P521
 TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P384
 TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P256
 </code></pre>
 
-      <p><strong>TLS 1.2 SHA256 and SHA384 cipher suites:</strong></p>
-<pre><code>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384_P521
+          <p><strong>TLS 1.2 SHA256 and SHA384 cipher suites:</strong></p>
+          <pre><code>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384_P521
 TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384_P384
 TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256_P521
 TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256_P384
@@ -182,8 +219,8 @@ TLS_RSA_WITH_AES_128_GCM_SHA256
 TLS_RSA_WITH_AES_128_CBC_SHA256
 </code></pre>
 
-      <p><strong>TLS 1.0 and TLS 1.1 cipher suites:</strong></p>
-<pre><code>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P521
+          <p><strong>TLS 1.0 and TLS 1.1 cipher suites:</strong></p>
+          <pre><code>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P521
 TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P384
 TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P256
 TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA_P521
@@ -200,37 +237,80 @@ TLS_DHE_DSS_WITH_AES_128_CBC_SHA
 TLS_RSA_WITH_AES_256_CBC_SHA
 TLS_RSA_WITH_AES_128_CBC_SHA
 </code></pre>
-      </details></p>
+        </details>
+      </p>
 
-      <p><strong>The 'fix':</strong> Resolving this vulnerability requires implementing the reordered cipher suites list (see the above section) via a mechanism that allows the ordering of the <code>Schannel</code> cipher suites, which is implemented as a <code>(Local) Group Policy</code> available under the <code>Local Group Policy Editor's (gpedit.msc) Computer Configuration\Administrative Templates\Network\SSL Configuration Settings\SSL Cipher Suite Order</code> object; inputting the reordered cipher suites list into the object's <code>SSL Cipher Suites</code> field requires that the list be reformatted as seen in the below section (henceforth called the 'cipher list'). However, the current cipher list is unfortunately not usable, as it suffers from an implementation problem which will be detailed in the next paragraph.</p>
-      <p><details>
+      <p>
+        <strong>The 'fix':</strong> Resolving this vulnerability requires implementing the reordered cipher suites list
+        (see the above section) via a mechanism that allows the ordering of the <code>Schannel</code> cipher suites,
+        which is implemented as a <code>(Local) Group Policy</code> available under the
+        <code
+          >Local Group Policy Editor's (gpedit.msc) Computer Configuration\Administrative Templates\Network\SSL
+          Configuration Settings\SSL Cipher Suite Order</code
+        >
+        object; inputting the reordered cipher suites list into the object's <code>SSL Cipher Suites</code> field
+        requires that the list be reformatted as seen in the below section (henceforth called the 'cipher list').
+        However, the current cipher list is unfortunately not usable, as it suffers from an implementation problem which
+        will be detailed in the next paragraph.
+      </p>
+      <p>
+        <details>
           <summary>The cipher list</summary>
-      <blockquote>
-      <p>Unfortunately, this rather complete list cannot be implemented directly - see the next paragraph for details</p>
-      </blockquote>
-<pre><code>TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P521,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P521,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384_P521,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384_P384,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256_P521,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256_P384,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256_P256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P521,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P521,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,TLS_DHE_DSS_WITH_AES_256_CBC_SHA256,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_DSS_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P521,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P384,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA_P521,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA_P384,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA_P256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA_P521,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA_P384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA_P256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P521,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P256,TLS_DHE_DSS_WITH_AES_256_CBC_SHA,TLS_DHE_DSS_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA
+          <blockquote>
+            <p>
+              Unfortunately, this rather complete list cannot be implemented directly - see the next paragraph for
+              details
+            </p>
+          </blockquote>
+          <pre><code>TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P521,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P521,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384_P521,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384_P384,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256_P521,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256_P384,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256_P256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P521,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P521,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,TLS_DHE_DSS_WITH_AES_256_CBC_SHA256,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_DSS_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P521,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P384,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA_P521,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA_P384,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA_P256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA_P521,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA_P384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA_P256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P521,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P256,TLS_DHE_DSS_WITH_AES_256_CBC_SHA,TLS_DHE_DSS_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA
 </code></pre>
-      </details></p>
+        </details>
+      </p>
 
-      <p><strong>The implementation problem:</strong> According to the mentioned object's <code>Help</code> text, the <code>SSL Cipher Suites</code> field cannot accept a string that's longer than 1023 characters, whereas the obtained cipher list (see the above section), which is formatted as per the object's input requirements, is a string with a length of 1662 characters. This means that the obtained cipher list, despite being correct, is not usable in the current form: it contains a total of 42 cipher suites, of which only the first 25 fit into a string that's less than 1023 characters long - this is assuming that the list's order and membership are kept as they are.</p>
-      <p>Revising the cipher list, as required by the described problem, provided a (hopefully) final list that has been obtained by removing ciphers deemed 'not strictly necessary', as based on the requirements/context and the provided references (mainly the NIST publication).
-      <strong>IMPORTANT NOTE:</strong> this 'revised cipher list' is based on limited understanding of the subject matter and, as such, cannot and should not be considered as definitive; it will be used for now as a means of addressing the <em>SWEET32</em> vulnerability (this it does almost certainly) and an acceptable configuration for the <code>SChannel</code> cipher suites list, but it most likely can be improved in the future (note that the information containd on this page has not been revised ever since having first been written on the 19th of December 2016).</p>
+      <p>
+        <strong>The implementation problem:</strong> According to the mentioned object's <code>Help</code> text, the
+        <code>SSL Cipher Suites</code> field cannot accept a string that's longer than 1023 characters, whereas the
+        obtained cipher list (see the above section), which is formatted as per the object's input requirements, is a
+        string with a length of 1662 characters. This means that the obtained cipher list, despite being correct, is not
+        usable in the current form: it contains a total of 42 cipher suites, of which only the first 25 fit into a
+        string that's less than 1023 characters long - this is assuming that the list's order and membership are kept as
+        they are.
+      </p>
+      <p>
+        Revising the cipher list, as required by the described problem, provided a (hopefully) final list that has been
+        obtained by removing ciphers deemed 'not strictly necessary', as based on the requirements/context and the
+        provided references (mainly the NIST publication). <strong>IMPORTANT NOTE:</strong> this 'revised cipher list'
+        is based on limited understanding of the subject matter and, as such, cannot and should not be considered as
+        definitive; it will be used for now as a means of addressing the <em>SWEET32</em> vulnerability (this it does
+        almost certainly) and an acceptable configuration for the <code>SChannel</code> cipher suites list, but it most
+        likely can be improved in the future (note that the information containd on this page has not been revised ever
+        since having first been written on the 19th of December 2016).
+      </p>
       <p>Also keep in mind that applying the changes to the <code>SChannel</code> requires a system reboot!</p>
-      <p><details>
+      <p>
+        <details>
           <summary>The revised cipher list</summary>
-      <blockquote>
-      <p>The below string has a length of 956 characters and as such it can be implemented via the described Local Group Policy mechanism</p>
-      </blockquote>
-<pre><code>TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P521,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256_P384,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256_P256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P384,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA_P384,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA_P256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA_P384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA_P256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P256,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA
+          <blockquote>
+            <p>
+              The below string has a length of 956 characters and as such it can be implemented via the described Local
+              Group Policy mechanism
+            </p>
+          </blockquote>
+          <pre><code>TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P521,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256_P384,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256_P256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P384,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA_P384,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA_P256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA_P384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA_P256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P256,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA
 </code></pre>
-      </details></p>
+        </details>
+      </p>
 
-      <p><details>
+      <p>
+        <details>
           <summary>The revised cipher list, human readable</summary>
-      <blockquote>
-      <p>The same list as above, now in an easier on the eye format (and annotated), with each of the selected (from the 'reordered cipher suites' list) 24 ciphers being printed on its own individual line</p>
-      </blockquote>
-<pre><code>//TLS 1.2 ECC GCM ciphers (all of them):
+          <blockquote>
+            <p>
+              The same list as above, now in an easier on the eye format (and annotated), with each of the selected
+              (from the 'reordered cipher suites' list) 24 ciphers being printed on its own individual line
+            </p>
+          </blockquote>
+          <pre><code>//TLS 1.2 ECC GCM ciphers (all of them):
 TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P521
 TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384_P384
 TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256_P384
@@ -260,19 +340,59 @@ TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P256
 TLS_RSA_WITH_AES_256_CBC_SHA
 TLS_RSA_WITH_AES_128_CBC_SHA
 </code></pre>
-      </details></p>
+        </details>
+      </p>
 
       <p><strong>References:</strong></p>
       <ol>
-        <li><a href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-52r1.pdf">NIST's Guidelines for the Selection, Configuration, and Use of Transport Layer Security (TLS) Implementations</a></li>
-        <li><a href="http://security.stackexchange.com/questions/14731/what-is-ecdhe-rsa#14732">http://security.stackexchange.com/questions/14731/what-is-ecdhe-rsa#14732</a></li>
-        <li><a href="http://security.stackexchange.com/questions/43360/is-possible-that-a-tls-server-send-more-than-one-certificate-to-the-client-for-t">http://security.stackexchange.com/questions/43360/is-possible-that-a-tls-server-send-more-than-one-certificate-to-the-client-for-t</a></li>
-        <li><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa374757%28v=vs.85%29.aspx">https://msdn.microsoft.com/en-us/library/windows/desktop/aa374757%28v=vs.85%29.aspx</a></li>
-        <li><a href="https://blog.cloudflare.com/a-relatively-easy-to-understand-primer-on-elliptic-curve-cryptography/">https://blog.cloudflare.com/a-relatively-easy-to-understand-primer-on-elliptic-curve-cryptography/</a></li>
-        <li><a href="https://blog.cloudflare.com/ecdsa-the-digital-signature-algorithm-of-a-better-internet/">https://blog.cloudflare.com/ecdsa-the-digital-signature-algorithm-of-a-better-internet/</a></li>
-        <li><a href="https://blog.cloudflare.com/why-are-some-keys-small/">https://blog.cloudflare.com/why-are-some-keys-small/</a></li>
-        <li><a href="http://security.stackexchange.com/questions/76993/now-that-it-is-2015-what-ssl-tls-cipher-suites-should-be-used-in-a-high-securit">http://security.stackexchange.com/questions/76993/now-that-it-is-2015-what-ssl-tls-cipher-suites-should-be-used-in-a-high-securit</a></li>
-        <li><a href="http://security.stackexchange.com/questions/46279/for-dhe-rsa-cipher-suites-what-is-rsa-used-for">http://security.stackexchange.com/questions/46279/for-dhe-rsa-cipher-suites-what-is-rsa-used-for</a></li>
+        <li>
+          <a href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-52r1.pdf"
+            >NIST's Guidelines for the Selection, Configuration, and Use of Transport Layer Security (TLS)
+            Implementations</a
+          >
+        </li>
+        <li>
+          <a href="http://security.stackexchange.com/questions/14731/what-is-ecdhe-rsa#14732"
+            >http://security.stackexchange.com/questions/14731/what-is-ecdhe-rsa#14732</a
+          >
+        </li>
+        <li>
+          <a
+            href="http://security.stackexchange.com/questions/43360/is-possible-that-a-tls-server-send-more-than-one-certificate-to-the-client-for-t"
+            >http://security.stackexchange.com/questions/43360/is-possible-that-a-tls-server-send-more-than-one-certificate-to-the-client-for-t</a
+          >
+        </li>
+        <li>
+          <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa374757%28v=vs.85%29.aspx"
+            >https://msdn.microsoft.com/en-us/library/windows/desktop/aa374757%28v=vs.85%29.aspx</a
+          >
+        </li>
+        <li>
+          <a href="https://blog.cloudflare.com/a-relatively-easy-to-understand-primer-on-elliptic-curve-cryptography/"
+            >https://blog.cloudflare.com/a-relatively-easy-to-understand-primer-on-elliptic-curve-cryptography/</a
+          >
+        </li>
+        <li>
+          <a href="https://blog.cloudflare.com/ecdsa-the-digital-signature-algorithm-of-a-better-internet/"
+            >https://blog.cloudflare.com/ecdsa-the-digital-signature-algorithm-of-a-better-internet/</a
+          >
+        </li>
+        <li>
+          <a href="https://blog.cloudflare.com/why-are-some-keys-small/"
+            >https://blog.cloudflare.com/why-are-some-keys-small/</a
+          >
+        </li>
+        <li>
+          <a
+            href="http://security.stackexchange.com/questions/76993/now-that-it-is-2015-what-ssl-tls-cipher-suites-should-be-used-in-a-high-securit"
+            >http://security.stackexchange.com/questions/76993/now-that-it-is-2015-what-ssl-tls-cipher-suites-should-be-used-in-a-high-securit</a
+          >
+        </li>
+        <li>
+          <a href="http://security.stackexchange.com/questions/46279/for-dhe-rsa-cipher-suites-what-is-rsa-used-for"
+            >http://security.stackexchange.com/questions/46279/for-dhe-rsa-cipher-suites-what-is-rsa-used-for</a
+          >
+        </li>
       </ol>
     </main>
 
@@ -280,9 +400,9 @@ TLS_RSA_WITH_AES_128_CBC_SHA
       <hr />
       <nav>
         <ul>
-          <li> <a href="/">Home</a> </li>
-          <li> <a href="/about.html">About</a> </li>
-          <li> <a href="/contact.html">Contact</a> </li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/contact.html">Contact</a></li>
         </ul>
       </nav>
     </footer>

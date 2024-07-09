@@ -8,7 +8,9 @@
     <title>RTSA - on the road to becoming a sysadmin</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work." />
+    <meta
+      name="description"
+      content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work." />
   </head>
 
   <body id="content">
@@ -19,34 +21,83 @@
     </header>
 
     <main class="md">
-      <p><strong>About:</strong> The purpose of this document is to detail a method by which one can control the default/initial Desktop shortcuts of a non domain-joined Windows Server's users - this is apparently done via GPO on domain-joined systems, but in the case of an workgroup-based system an alternative method of achieving this goal becomes necessary; one is proposed below.</p>
+      <p>
+        <strong>About:</strong> The purpose of this document is to detail a method by which one can control the
+        default/initial Desktop shortcuts of a non domain-joined Windows Server's users - this is apparently done via
+        GPO on domain-joined systems, but in the case of an workgroup-based system an alternative method of achieving
+        this goal becomes necessary; one is proposed below.
+      </p>
 
       <p><strong>How-to:</strong></p>
-        <ul>
-          <li><p>create a folder called <code>shortcuts</code> under your own user profile (<code>C:\Users\%username%</code>)</p></li>
-          <li><p>copy/create there the shortcuts that you want to provide to all of the system's users</p></li>
-          <li>
-            <p>in order to prevent the possibility that the users would not be able to delete (some of) the shortcuts, the permissions of the shortcuts folder need to be modified as follows:</p>
-            <ul>
-              <li>go to the <code>Security</code> tab of the folder's <code>Properties</code>, then click on <code>Advanced</code></li>
-              <li><code>Disable inheritance</code> and then <code>Convert inherited permissions into explicit permissions on this object.</code></li>
-              <li>Remove all permissions with the exception of those for <code>SYSTEM</code> and <code>Administrators</code>, which should have <code>Full Control</code></li>
-              <li>Add a <code>Modify</code> permission for the <code>Users</code> principal in the <code>Permission Entry for shortcuts</code> dialog box (select the <code>Allow</code> checkbox for <code>Full Control</code>, then uncheck it and the <code>Delete subfolders and files</code>, <code>Change permissions</code> and <code>Take ownership</code> checkboxes - the resulting selection of special permissions will translate to an overall <code>Modify</code> folder permission)</li>
-              <li>Then <code>Replace all child object permission entries with inheritable permission entries from this object</code> and save the modifications</li>
-            </ul>
-          </li>
-          <br />
-          <li>
-            <p>copying the prepared shortcuts out to the users' Desktops will require that you run the below commands from an elevated Powershell console:</p>
-            <p><code>get-childItem C:\Users | forEach-object -begin { $userList = @() } -process { if ($_.name -ne &quot;Public&quot;) { $userList += $_.name } }</code></p>
-            <p><code>$userList | forEach-object -process { copy-item C:\Users\$env:username\shortcuts\* C:\Users\$_\Desktop\ }</code></p>
-          </li>
-          <li>
-            <p>you should be done at this point and might want to verify the outcome</p>
-          </li>
-        </ul>
+      <ul>
+        <li>
+          <p>
+            create a folder called <code>shortcuts</code> under your own user profile (<code>C:\Users\%username%</code>)
+          </p>
+        </li>
+        <li><p>copy/create there the shortcuts that you want to provide to all of the system's users</p></li>
+        <li>
+          <p>
+            in order to prevent the possibility that the users would not be able to delete (some of) the shortcuts, the
+            permissions of the shortcuts folder need to be modified as follows:
+          </p>
+          <ul>
+            <li>
+              go to the <code>Security</code> tab of the folder's <code>Properties</code>, then click on
+              <code>Advanced</code>
+            </li>
+            <li>
+              <code>Disable inheritance</code> and then
+              <code>Convert inherited permissions into explicit permissions on this object.</code>
+            </li>
+            <li>
+              Remove all permissions with the exception of those for <code>SYSTEM</code> and
+              <code>Administrators</code>, which should have <code>Full Control</code>
+            </li>
+            <li>
+              Add a <code>Modify</code> permission for the <code>Users</code> principal in the
+              <code>Permission Entry for shortcuts</code> dialog box (select the <code>Allow</code> checkbox for
+              <code>Full Control</code>, then uncheck it and the <code>Delete subfolders and files</code>,
+              <code>Change permissions</code> and <code>Take ownership</code> checkboxes - the resulting selection of
+              special permissions will translate to an overall <code>Modify</code> folder permission)
+            </li>
+            <li>
+              Then
+              <code
+                >Replace all child object permission entries with inheritable permission entries from this object</code
+              >
+              and save the modifications
+            </li>
+          </ul>
+        </li>
+        <br />
+        <li>
+          <p>
+            copying the prepared shortcuts out to the users' Desktops will require that you run the below commands from
+            an elevated Powershell console:
+          </p>
+          <p>
+            <code
+              >get-childItem C:\Users | forEach-object -begin { $userList = @() } -process { if ($_.name -ne
+              &quot;Public&quot;) { $userList += $_.name } }</code
+            >
+          </p>
+          <p>
+            <code
+              >$userList | forEach-object -process { copy-item C:\Users\$env:username\shortcuts\* C:\Users\$_\Desktop\
+              }</code
+            >
+          </p>
+        </li>
+        <li>
+          <p>you should be done at this point and might want to verify the outcome</p>
+        </li>
+      </ul>
 
-      <p>If the same shortcut configuration needs to be applied to new user accounts as well (appear on their initial Desktop), run the below command (again from an elevated Powershell console):</p>
+      <p>
+        If the same shortcut configuration needs to be applied to new user accounts as well (appear on their initial
+        Desktop), run the below command (again from an elevated Powershell console):
+      </p>
       <p><code>copy-item C:\Users\$env:username\shortcuts\* C:\Users\Default\Desktop\</code></p>
     </main>
 
@@ -54,9 +105,9 @@
       <hr />
       <nav>
         <ul>
-          <li> <a href="/">Home</a> </li>
-          <li> <a href="/about.html">About</a> </li>
-          <li> <a href="/contact.html">Contact</a> </li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/contact.html">Contact</a></li>
         </ul>
       </nav>
     </footer>

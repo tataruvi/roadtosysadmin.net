@@ -8,7 +8,9 @@
     <title>RTSA - on the road to becoming a sysadmin</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work." />
+    <meta
+      name="description"
+      content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work." />
   </head>
 
   <body id="content">
@@ -19,13 +21,34 @@
     </header>
 
     <main class="md">
-      <p><strong>About:</strong> The document is meant to record an issue where the backup of an ESXi 5.5 based Windows VM to the <a href="https://en.wikipedia.org/wiki/IBM_Tivoli_Storage_Manager">Tivoli Storage Manager</a> fails due the VMware Tools package that is deployed on the VM's OS not managing to quiesce its filesystem, which is a requirement in this scenario because TSM uses VMware's <a href="https://kb.vmware.com/s/article/1015180">filesystem quiesced snapshotting mechanism</a> to ensure the consistency of the data to be backed up.</p>
-      <p>What has been observed was that a long-standing VMware Tools installation will appear to eventually &quot;break down&quot; and have problems communicating with the underlying hypervisor, which in turn causes the filesystem quiescing feature to not work, the net result of this being that TSM-based backups of live VMs will simply not work. The fix, in this context, is to perform a clean reinstallation of the affected VMware Tools package.</p>
-      <p><strong>Symptoms:</strong> The below fix should be implemented if the VMware Tools are found to be behaving erratically, as evidenced by two types of behaviour: the Tools cannot be properly restarted, as their service refuses to obey Windows' Service Control Manager, and/or the TSM backups of the hosting VM break due to a failure on the part of the VMware Tools to quiesce the OS' filesystem. For the purposes of exemplifying this sort of behaviour, the below sections have been included in this document: one shows the outcome of a backup attempt from TSM's point of view, the other shows the same outcome from the point of view of the hypervisor running the VM.</p>
+      <p>
+        <strong>About:</strong> The document is meant to record an issue where the backup of an ESXi 5.5 based Windows
+        VM to the <a href="https://en.wikipedia.org/wiki/IBM_Tivoli_Storage_Manager">Tivoli Storage Manager</a> fails
+        due the VMware Tools package that is deployed on the VM's OS not managing to quiesce its filesystem, which is a
+        requirement in this scenario because TSM uses VMware's
+        <a href="https://kb.vmware.com/s/article/1015180">filesystem quiesced snapshotting mechanism</a> to ensure the
+        consistency of the data to be backed up.
+      </p>
+      <p>
+        What has been observed was that a long-standing VMware Tools installation will appear to eventually &quot;break
+        down&quot; and have problems communicating with the underlying hypervisor, which in turn causes the filesystem
+        quiescing feature to not work, the net result of this being that TSM-based backups of live VMs will simply not
+        work. The fix, in this context, is to perform a clean reinstallation of the affected VMware Tools package.
+      </p>
+      <p>
+        <strong>Symptoms:</strong> The below fix should be implemented if the VMware Tools are found to be behaving
+        erratically, as evidenced by two types of behaviour: the Tools cannot be properly restarted, as their service
+        refuses to obey Windows' Service Control Manager, and/or the TSM backups of the hosting VM break due to a
+        failure on the part of the VMware Tools to quiesce the OS' filesystem. For the purposes of exemplifying this
+        sort of behaviour, the below sections have been included in this document: one shows the outcome of a backup
+        attempt from TSM's point of view, the other shows the same outcome from the point of view of the hypervisor
+        running the VM.
+      </p>
 
-      <p><details>
-        <summary>TSM interactive backup</summary>
-      <pre><code>tsm&gt; backup vm [name redacted] -vmbackuptype=fullvm -mode=IFIncremental
+      <p>
+        <details>
+          <summary>TSM interactive backup</summary>
+          <pre><code>tsm&gt; backup vm [name redacted] -vmbackuptype=fullvm -mode=IFIncremental
 Full BACKUP VM of virtual machines '[name redacted]'.
 
 
@@ -102,11 +125,13 @@ Total number of virtual machines failed: 1
   virtual machine [name redacted]
 Total number of virtual machines skipped: 0
 Total number of virtual machines processed: 1</code></pre>
-      </details></p>
+        </details>
+      </p>
 
-      <p><details>
-        <summary>VM logfile on ESXi</summary>
-      <pre><code>2016-10-10T13:10:27.849Z| vmx| I120: GuestRpcSendTimedOut: message to toolbox timed out.
+      <p>
+        <details>
+          <summary>VM logfile on ESXi</summary>
+          <pre><code>2016-10-10T13:10:27.849Z| vmx| I120: GuestRpcSendTimedOut: message to toolbox timed out.
 2016-10-10T13:10:41.358Z| vcpu-0| I120: Guest: toolbox: Version: build-3000743
 2016-10-10T13:10:41.358Z| vcpu-0| I120: GuestRpc: Channel 4, Timeout
 2016-10-10T13:10:41.358Z| vcpu-0| I120: GuestRpc: Reinitializing Channel 4(toolbox)
@@ -139,28 +164,86 @@ Total number of virtual machines processed: 1</code></pre>
 2016-10-10T13:11:32.795Z| vmx| I120: SnapshotVMXTakeSnapshotComplete: Done with snapshot 'TSM-VM Snapshot Mon Oct 10 15:11:34 2016': 0
 2016-10-10T13:11:32.795Z| vmx| I120: <strong>SnapshotVMXTakeSnapshotComplete: Snapshot 0 failed: Failed to quiesce the virtual machine (40).</strong>
 2016-10-10T13:11:42.861Z| vmx| I120: <strong>GuestRpcSendTimedOut: message to toolbox timed out.</strong></code></pre>
-      </details></p>
+        </details>
+      </p>
 
       <p><strong>Resolution:</strong></p>
       <ul>
-        <li><p>take a memory-enabled snapshot of the VM, to allow the recovery of its current state in case of unforeseen trouble</p></li>
-        <li><p>once the snapshot has been taken, edit the VM's hardware by performing the following actions on its <code>CD/DVD drive 1</code> device:</p>
+        <li>
+          <p>
+            take a memory-enabled snapshot of the VM, to allow the recovery of its current state in case of unforeseen
+            trouble
+          </p>
+        </li>
+        <li>
+          <p>
+            once the snapshot has been taken, edit the VM's hardware by performing the following actions on its
+            <code>CD/DVD drive 1</code> device:
+          </p>
           <ul>
-            <li><p>switch the type to Datastore ISO File in the resulting pop-up window, navigate to <code>vmimages\tools-isoimages</code> and from there select the <code>windows.iso</code> file</p></li>
-            <li><p>make sure that you put a check in the <code>Connected</code> and <code>Connect At Power On</code> checkboxes that correspond to the CD/DVD device, then save the changes</p></li>
+            <li>
+              <p>
+                switch the type to Datastore ISO File in the resulting pop-up window, navigate to
+                <code>vmimages\tools-isoimages</code> and from there select the <code>windows.iso</code> file
+              </p>
+            </li>
+            <li>
+              <p>
+                make sure that you put a check in the <code>Connected</code> and
+                <code>Connect At Power On</code> checkboxes that correspond to the CD/DVD device, then save the changes
+              </p>
+            </li>
           </ul>
         </li>
         <li><p>now log in to the system via RDP using the an administrative account</p></li>
-        <li><p>open up the <code>Programs and Features</code> applet and uninstall the <code>VMware Tools</code> package, which will require that the system be rebooted</p></li>
-        <li><p>once the system has restarted, log back in, open up an elevated <code>cmd.exe</code> shell and run the <code>d:\setup64.exe /c</code> command within it, then press <code>OK</code> in the resulting window</p>
+        <li>
+          <p>
+            open up the <code>Programs and Features</code> applet and uninstall the <code>VMware Tools</code> package,
+            which will require that the system be rebooted
+          </p>
+        </li>
+        <li>
+          <p>
+            once the system has restarted, log back in, open up an elevated <code>cmd.exe</code> shell and run the
+            <code>d:\setup64.exe /c</code> command within it, then press <code>OK</code> in the resulting window
+          </p>
           <ul>
-            <li><p>note that the command assumes the DVD drive to be labeled as D: and that the OS is 64-bit; if the assumptions are incorrect, adjust accordingly,for example: <code>e:\setup.exe /c</code> (DVD drive mapped as drive E:, 32-bit OS)</p></li>
-            <li><p>if the wizard returns a <code>Setup couldn't find any installation registration information for VMware Tools.</code> message, then that's perfectly acceptable; if, however, it finds remnants of the package and performs some corresponding clean-up actions, reboot the system even if you were not instructed to do so by the wizard</p></li>
+            <li>
+              <p>
+                note that the command assumes the DVD drive to be labeled as D: and that the OS is 64-bit; if the
+                assumptions are incorrect, adjust accordingly,for example: <code>e:\setup.exe /c</code> (DVD drive
+                mapped as drive E:, 32-bit OS)
+              </p>
+            </li>
+            <li>
+              <p>
+                if the wizard returns a
+                <code>Setup couldn't find any installation registration information for VMware Tools.</code> message,
+                then that's perfectly acceptable; if, however, it finds remnants of the package and performs some
+                corresponding clean-up actions, reboot the system even if you were not instructed to do so by the wizard
+              </p>
+            </li>
           </ul>
         </li>
-        <li><p>at this point, run the setup file corresponding to the system's architecture (<code>setup64.exe</code> for a 64-bit OS, <code>setup.exe</code> for a 32-bit) in an elevated <code>cmd.exe</code> shell; this will also require a reboot of the system</p></li>
-        <li><p>as the VMware Tools package has been reinstalled, test the outcome by taking a quiesce-enabled snapshot of the VM directly from the vSphere web/fatClient, which should work just fine now</p></li>
-        <li><p>if the quiesce-enabled snapshot has been successfully taken, feel free to remove it and undo the modifications on the VM's CD/DVD device; TSM backups will work correctly now</p></li>
+        <li>
+          <p>
+            at this point, run the setup file corresponding to the system's architecture (<code>setup64.exe</code> for a
+            64-bit OS, <code>setup.exe</code> for a 32-bit) in an elevated <code>cmd.exe</code> shell; this will also
+            require a reboot of the system
+          </p>
+        </li>
+        <li>
+          <p>
+            as the VMware Tools package has been reinstalled, test the outcome by taking a quiesce-enabled snapshot of
+            the VM directly from the vSphere web/fatClient, which should work just fine now
+          </p>
+        </li>
+        <li>
+          <p>
+            if the quiesce-enabled snapshot has been successfully taken, feel free to remove it and undo the
+            modifications on the VM's CD/DVD device; TSM backups will work correctly now
+          </p>
+        </li>
       </ul>
 
       <p><strong>References:</strong></p>
@@ -174,12 +257,11 @@ Total number of virtual machines processed: 1</code></pre>
       <hr />
       <nav>
         <ul>
-          <li> <a href="/">Home</a> </li>
-          <li> <a href="/about.html">About</a> </li>
-          <li> <a href="/contact.html">Contact</a> </li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/contact.html">Contact</a></li>
         </ul>
       </nav>
     </footer>
   </body>
 </html>
-

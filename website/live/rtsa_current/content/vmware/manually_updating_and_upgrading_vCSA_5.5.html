@@ -8,7 +8,9 @@
     <title>RTSA - on the road to becoming a sysadmin</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work." />
+    <meta
+      name="description"
+      content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work." />
   </head>
 
   <body id="content">
@@ -19,110 +21,382 @@
     </header>
 
     <main class="md">
-      <p><strong>About:</strong> The purpose of this document is to provide a guide on how to update and upgrade the 5.5 vCenter Server Appliance through a hands-on approach.</p>
+      <p>
+        <strong>About:</strong> The purpose of this document is to provide a guide on how to update and upgrade the 5.5
+        vCenter Server Appliance through a hands-on approach.
+      </p>
       <p><strong>How-to:</strong></p>
-      <p>It should be noted that a better way to monitor the update than what is described below might be to connect to the ESXi that's hosting the vCSA, via the VMware fatClient (Windows C# client), and monitor the console of the VM itself.</p>
-      <p><details>
-        <summary>Preparations</summary>
-        <ul>
-        <li><p>login to your <a href="https://my.vmware.com">https://my.vmware.com</a> account</p></li>
-        <li><p>download the appropriate appliance version in the <em>.iso</em> file variant (filename ending in <em>-updaterepo.iso</em>)</p></li>
-        <li><p>upload the <em>.iso</em> file to a datastore accesible to the ESXi host running the appliance</p></li>
-        <li><p>go to the vSphere interface and provide the same <em>.iso</em> to the vCSA VM, via it's CD/DVD drive</p></li>
-        <li><p>take a simple snapshot (no memory state, no filesystem quiescing) of the vCSA VM</p></li>
-        <li><p>note down on which ESXi host can the vCSA be found - if the update fails horribly, see the <strong>Revert to snapshot</strong> section below</p></li>
-        <li><p>close/disconnect all user sessions to the vCSA and, to avoid browser cache problems, close the webClient tabs</p></li>
-        <li><p>connect to the appliance's management interface (<em>VAMI</em>): https://vCSA's FQDN:5480</p></li>
-        <li><p>login using the <code>root</code> account</p></li>
-        <li><p>go to the <code>Update</code> tab, select the <code>Settings</code> subsection and make sure that the <code>Update Repository</code> is set to <code>Use CDROM Updates</code></p></li>
-        <li><p>switch to the <code>Status</code> subsection and do a <code>Check Updates</code> - once the update is detected, move the to the next section</p></li>
-        </ul>
-      </details></p>
-      <p><details>
-        <summary>Update process</summary>
-        <ul>
-          <li><p>login to the appliance via SSH, using the <code>root</code> account</p></li>
-          <li><p>run the <code>tail -f /opt/vmware/var/log/vami/updatecli.log</code> command</p></li>
-          <li><p>switch back to the <em>VAMI</em> and hit the <code>Install Updates</code> button</p></li>
-          <li><p>monitor the update via the SSH session - note that it might take some 5 minutes for the log to start updating</p></li>
-          <li><p>you are done after the logfile displays the <code>[INFO] Update status: Update completed successfully</code> message</p></li>
-          <li><p>hit <code>Ctrl+C</code> and run the <code>head /opt/vmware/etc/appliance-manifest.xml | grep Build</code> command; the build number should now match what's provided by <a href="https://kb.vmware.com/s/article/2143838">VMware</a></p></li>
-          <li><p>go back to the <em>VAMI</em>, select the <code>System</code> tab of the interface and then hit the <code>Reboot</code> button</p></li>
-          <li><p>start a continuos ping to the VM and wait for it to come back online</p></li>
-          <li><p>after it does, you will have to wait some 5-10 minutes before you are able to login via the webClient or the fatClient - errors regarding the SSO authentication, failures to load the webpage (webClient) or contact the server (fatClient) are pretty much normal, as the vCSA takes a while to reestablish all of its services</p></li>
-          <li><p>once logged in, try to make sure that everything is working correctly (you are likely to see health status monitoring alerts for a while yet)</p></li>
-          <li><p>you should be done at this point; in case of trouble, take a look at the next section</p></li>
-        </ul>
-      </details></p>
-      <p><details>
-        <summary>Revert to snapshot</summary>
-        <p>The below assumes that the update has failed - considering that it is done automatically and that the vCSA should be, more or less, considered a black box, the safest bet is to restore the initial snapshot and get the appliance back to a consistent/working state.</p>
-        <ul>
-          <li><p>SSH into the ESXi that's hosting the vCSA, using the <code>root</code> account</p></li>
-          <li><p>run the <code>vim-cmd vmsvc/getallvms</code> command and note the <code>#Vmid</code> of the vCSA</p></li>
-          <li><p>run <code>vim-cmd vmsvc/snapshot.get #previousVmid</code> - make a note of the <code>#SnapshotId</code> (for the snapshot that you have taken during the <strong>Preparations</strong>)</p></li>
-          <li><p>run the <code>vim-cmd vmsvc/power.off #Vmid</code> in order to kill the broken appliance</p></li>
-          <li><p>run <code>vim-cmd vmsvc/snapshot.revert #previousVmid #previousSnapshotId 0</code> - please doublecheck that you are providing the correct VM and Snapshot IDs</p></li>
-          <li><p>after the revert is done, run <code>vim-cmd vmsvc/power.on #previousVmid</code></p></li>
-          <li><p>some 10 to 15 minutes later, the vCSA should be back to the state it was in before the update attempt</p></li>
-        </ul>
-      <p>Note: the manual snapshot reverting has not been tested so far, but it should work as intended.</p>
-      </details></p>
-      <p><details>
-        <summary>Upgrading a 5.5 vCSA</summary>
-        <p>Note: this section should provide sufficient information for assisting in migrating a 5.5 vCSA to the newer 6.0 variant.</p>
-        <ol>
-          <li><p>Prepare the source vCSA by taking backups of important configuration details, such as users, licenses, local name resolution, network time synchronization and so on - basically, take a backup of whatever customization was performed on the system. Also, take a memory snapshot of the appliance, set DRS on the cluster(s) to Manual and disable HA.</p></li>
-          <li><p>Download the latest version of the target vCSA in the <em>.iso</em> format to a Windows system that's placed in the same subnet as the source vCSA. Mount the <em>.iso</em> and open <code>vcsa-setup.html</code> from its root directory. Also install the Client Integration Plugin 6.0, available on the <em>.iso</em> at the <code>[driveLetter]:\vcsa\VMware-ClientIntegrationPlugin-6.0.0.exe</code> path, if you use this Windows system to access the webClient and manage vSphere.</p></li>
-          <li><p>Select the <code>Upgrade</code> option and specify the ESXi host, on which the target vCSA will be deployed, via its IP address (known as the <em>target ESXi</em>); provide the <code>root</code> account's password for authenticatio and bypass the ensuing certificate warning, if you don't have a proper PKI set up in the environment. Next provide the name of the new appliance by appending a <em>V6</em> (make the name distinct from the old one) to the source appliance's name and select the <code>Enable ssh</code> option.</p></li>
-          <li><p>Provide the requested information in the next window, which are the details of the source vCSA and the ESXi hosting it (also know as the <em>source ESXi</em>). NOTE: the wizard needs the FQDN or routable IP address of the old vCSA, because it expects a corresponding DNS PTR record (so the FQDN can be mapped to the IP address and vice versa; this is not possible via the <code>hosts</code> file mechanism, so actual DNS records are needed). Possible problems at this step:</p>
-            <ul>
-              <li><p>if you encounter the <code>Could not find VM with the hostname [vCSA's_FQDN]</code> error message, try using the IP address corresponding to the FQDN instead, or otherwise check the name resolution on the Windows system</p></li>
-              <li><p>if, when using the IP address instead of the FQDN, you get the below error message, then consider applying this <a href="https://kb.vmware.com/s/article/2110772">VMware KB article</a>:</p></li>
-            </ul>
-            <blockquote>
-              <p>vCenterServer FQDN [vCSA's_FQDN] does not match DNS servers "hostname#1,hostname#2" and ip addresses "" from VC certificate. Examine the VC certificate and make sure it is valid and point to vCenterServer FQDN.</p>
-            </blockquote>
-            <ul>
-              <li>if the wizard returns the error message seen below, check if the <code>hosts</code> file of the system happens to resolve the FQDN (the <code>hosts</code> file has a higher precedence in the name resolution process than the DNS client and it might be used for mapping the private, non-DNS registered, IP addresses the environment's systems; this was the case for the environment which originated the instructions) - if it does, comment out the line in question:</li>
-            </ul>
-            <blockquote>
-              <p>DNS server maps host name [vCSA's_FQDN] to address(es) ; &lt;&lt;&gt;&gt; DiG 9.9.6-P1 &lt;&lt;&gt;&gt; [vCSA's_FQDN] +short,;; global options: +cmd,;; connection timed out; no servers could be reached which seems to be not local ip address.
-                Please either update appliance /etc/hosts file to properly access DNS servers or update appliance DNS servers with the proper host name mapping. To check if DNS has record about local host name, please execute <code>dig &lt;vCSA's_FQDN&gt; +short</code> locally on the appliance, or <code>nslookup &lt;vCSA's_FQDN&gt;</code> on a windows machine</p>
-            </blockquote>
-            <ul>
-              <li>if the wizard complains that it cannot contact the vCenter Server, then the host from which the setup wizard is being run is likely based in a different subnet than the target vCSA, raising concerns with the firewalls/routers that control the network path between the two; if that's the case, consider using a Windows system that's based in the same subnet that the target vCSA is being placed in</li>
-            </ul>
-          </li>
-          <br />
-          <li><p>Select the appropriate size for the new appliance ('Tiny' should be OK for small environments) and deploy the appliance unto a datastore that has a sufficient amount of free space</p></li>
-          <li><p>Set up a static IP address for the temporary network configuration; this IP address also needs to be registered in DNS, with both an A and a PTR record defined. Notes:</p>
+      <p>
+        It should be noted that a better way to monitor the update than what is described below might be to connect to
+        the ESXi that's hosting the vCSA, via the VMware fatClient (Windows C# client), and monitor the console of the
+        VM itself.
+      </p>
+      <p>
+        <details>
+          <summary>Preparations</summary>
           <ul>
-            <li><p>the temporary network needs to correspond to the IP address that's defined for the appliance, the gateway and subnet mask information can be taken from the vCSA's VAMI page</p></li>
-            <li><p>only one DNS server must be provided, but that particular server has to satisfy the next condition:</p></li>
-            <li><p>the DNS server defined <strong>MUST</strong> be one of those recorded in the vCSA's VAMI page, if any are defined there</p></li>
+            <li>
+              <p>login to your <a href="https://my.vmware.com">https://my.vmware.com</a> account</p>
+            </li>
+            <li>
+              <p>
+                download the appropriate appliance version in the <em>.iso</em> file variant (filename ending in
+                <em>-updaterepo.iso</em>)
+              </p>
+            </li>
+            <li>
+              <p>upload the <em>.iso</em> file to a datastore accesible to the ESXi host running the appliance</p>
+            </li>
+            <li>
+              <p>
+                go to the vSphere interface and provide the same <em>.iso</em> to the vCSA VM, via it's CD/DVD drive
+              </p>
+            </li>
+            <li><p>take a simple snapshot (no memory state, no filesystem quiescing) of the vCSA VM</p></li>
+            <li>
+              <p>
+                note down on which ESXi host can the vCSA be found - if the update fails horribly, see the
+                <strong>Revert to snapshot</strong> section below
+              </p>
+            </li>
+            <li>
+              <p>
+                close/disconnect all user sessions to the vCSA and, to avoid browser cache problems, close the webClient
+                tabs
+              </p>
+            </li>
+            <li><p>connect to the appliance's management interface (<em>VAMI</em>): https://vCSA's FQDN:5480</p></li>
+            <li>
+              <p>login using the <code>root</code> account</p>
+            </li>
+            <li>
+              <p>
+                go to the <code>Update</code> tab, select the <code>Settings</code> subsection and make sure that the
+                <code>Update Repository</code> is set to <code>Use CDROM Updates</code>
+              </p>
+            </li>
+            <li>
+              <p>
+                switch to the <code>Status</code> subsection and do a <code>Check Updates</code> - once the update is
+                detected, move the to the next section
+              </p>
+            </li>
           </ul>
-        </li>
-          <li><p>Review the settings and Finish the wizard. Note that the upgrade can take some 30-60 minutes to complete.</p></li>
-          <li><p>Once the wizard has completed its work, use the vSphere Client to connect to the ESXi hosting the new vCSA and shut down the appliance's guest OS, then edit the VM's settings and make sure that its vNIC configuration matches that of the old vCSA</p></li>
-          <li><p>Start the vCSA again access its VAMI page (https://[FQDN]:5480) once fully booted up and go to the <code>Networking</code> tab. Edit the <code>Networking Interfaces</code> and provide the vNIC(s) with the IP address(es) of the old vCSA; the network prefix will likely be a 24. Save the changes and exit the vSphere Client session (possible inventory inconsistencies can occur otherwise).</p></li>
-          <li><p>If one is used, connect to the <a href="https://blogs.vmware.com/vsphere/2013/02/vmware-announces-vdpa.html">vDPA</a> and disable the backup job that is responsible for the old vCSA appliance, then clone it and assign the new vCSA VM to the cloned job; set the new job's name to reflect the name of the new VM and, once the cloning is done, make sure you enable it. This step is necessary because the vDPA's references to the VMs it protects are GUID based and cannot be modified - once a job is defined, then that job will not accept a different VM-to-GUID pairing than it has recorded initially. So we cannot have the new appliance use the old one's name, but instead use the <em>V6</em> suffix approach.</p></li>
-        </ol>
-      </details></p>
+        </details>
+      </p>
+      <p>
+        <details>
+          <summary>Update process</summary>
+          <ul>
+            <li>
+              <p>login to the appliance via SSH, using the <code>root</code> account</p>
+            </li>
+            <li>
+              <p>run the <code>tail -f /opt/vmware/var/log/vami/updatecli.log</code> command</p>
+            </li>
+            <li>
+              <p>switch back to the <em>VAMI</em> and hit the <code>Install Updates</code> button</p>
+            </li>
+            <li>
+              <p>
+                monitor the update via the SSH session - note that it might take some 5 minutes for the log to start
+                updating
+              </p>
+            </li>
+            <li>
+              <p>
+                you are done after the logfile displays the
+                <code>[INFO] Update status: Update completed successfully</code> message
+              </p>
+            </li>
+            <li>
+              <p>
+                hit <code>Ctrl+C</code> and run the
+                <code>head /opt/vmware/etc/appliance-manifest.xml | grep Build</code> command; the build number should
+                now match what's provided by <a href="https://kb.vmware.com/s/article/2143838">VMware</a>
+              </p>
+            </li>
+            <li>
+              <p>
+                go back to the <em>VAMI</em>, select the <code>System</code> tab of the interface and then hit the
+                <code>Reboot</code> button
+              </p>
+            </li>
+            <li><p>start a continuos ping to the VM and wait for it to come back online</p></li>
+            <li>
+              <p>
+                after it does, you will have to wait some 5-10 minutes before you are able to login via the webClient or
+                the fatClient - errors regarding the SSO authentication, failures to load the webpage (webClient) or
+                contact the server (fatClient) are pretty much normal, as the vCSA takes a while to reestablish all of
+                its services
+              </p>
+            </li>
+            <li>
+              <p>
+                once logged in, try to make sure that everything is working correctly (you are likely to see health
+                status monitoring alerts for a while yet)
+              </p>
+            </li>
+            <li><p>you should be done at this point; in case of trouble, take a look at the next section</p></li>
+          </ul>
+        </details>
+      </p>
+      <p>
+        <details>
+          <summary>Revert to snapshot</summary>
+          <p>
+            The below assumes that the update has failed - considering that it is done automatically and that the vCSA
+            should be, more or less, considered a black box, the safest bet is to restore the initial snapshot and get
+            the appliance back to a consistent/working state.
+          </p>
+          <ul>
+            <li>
+              <p>SSH into the ESXi that's hosting the vCSA, using the <code>root</code> account</p>
+            </li>
+            <li>
+              <p>run the <code>vim-cmd vmsvc/getallvms</code> command and note the <code>#Vmid</code> of the vCSA</p>
+            </li>
+            <li>
+              <p>
+                run <code>vim-cmd vmsvc/snapshot.get #previousVmid</code> - make a note of the
+                <code>#SnapshotId</code> (for the snapshot that you have taken during the <strong>Preparations</strong>)
+              </p>
+            </li>
+            <li>
+              <p>run the <code>vim-cmd vmsvc/power.off #Vmid</code> in order to kill the broken appliance</p>
+            </li>
+            <li>
+              <p>
+                run <code>vim-cmd vmsvc/snapshot.revert #previousVmid #previousSnapshotId 0</code> - please doublecheck
+                that you are providing the correct VM and Snapshot IDs
+              </p>
+            </li>
+            <li>
+              <p>after the revert is done, run <code>vim-cmd vmsvc/power.on #previousVmid</code></p>
+            </li>
+            <li>
+              <p>
+                some 10 to 15 minutes later, the vCSA should be back to the state it was in before the update attempt
+              </p>
+            </li>
+          </ul>
+          <p>Note: the manual snapshot reverting has not been tested so far, but it should work as intended.</p>
+        </details>
+      </p>
+      <p>
+        <details>
+          <summary>Upgrading a 5.5 vCSA</summary>
+          <p>
+            Note: this section should provide sufficient information for assisting in migrating a 5.5 vCSA to the newer
+            6.0 variant.
+          </p>
+          <ol>
+            <li>
+              <p>
+                Prepare the source vCSA by taking backups of important configuration details, such as users, licenses,
+                local name resolution, network time synchronization and so on - basically, take a backup of whatever
+                customization was performed on the system. Also, take a memory snapshot of the appliance, set DRS on the
+                cluster(s) to Manual and disable HA.
+              </p>
+            </li>
+            <li>
+              <p>
+                Download the latest version of the target vCSA in the <em>.iso</em> format to a Windows system that's
+                placed in the same subnet as the source vCSA. Mount the <em>.iso</em> and open
+                <code>vcsa-setup.html</code> from its root directory. Also install the Client Integration Plugin 6.0,
+                available on the <em>.iso</em> at the
+                <code>[driveLetter]:\vcsa\VMware-ClientIntegrationPlugin-6.0.0.exe</code> path, if you use this Windows
+                system to access the webClient and manage vSphere.
+              </p>
+            </li>
+            <li>
+              <p>
+                Select the <code>Upgrade</code> option and specify the ESXi host, on which the target vCSA will be
+                deployed, via its IP address (known as the <em>target ESXi</em>); provide the
+                <code>root</code> account's password for authenticatio and bypass the ensuing certificate warning, if
+                you don't have a proper PKI set up in the environment. Next provide the name of the new appliance by
+                appending a <em>V6</em> (make the name distinct from the old one) to the source appliance's name and
+                select the <code>Enable ssh</code> option.
+              </p>
+            </li>
+            <li>
+              <p>
+                Provide the requested information in the next window, which are the details of the source vCSA and the
+                ESXi hosting it (also know as the <em>source ESXi</em>). NOTE: the wizard needs the FQDN or routable IP
+                address of the old vCSA, because it expects a corresponding DNS PTR record (so the FQDN can be mapped to
+                the IP address and vice versa; this is not possible via the <code>hosts</code> file mechanism, so actual
+                DNS records are needed). Possible problems at this step:
+              </p>
+              <ul>
+                <li>
+                  <p>
+                    if you encounter the <code>Could not find VM with the hostname [vCSA's_FQDN]</code> error message,
+                    try using the IP address corresponding to the FQDN instead, or otherwise check the name resolution
+                    on the Windows system
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    if, when using the IP address instead of the FQDN, you get the below error message, then consider
+                    applying this <a href="https://kb.vmware.com/s/article/2110772">VMware KB article</a>:
+                  </p>
+                </li>
+              </ul>
+              <blockquote>
+                <p>
+                  vCenterServer FQDN [vCSA's_FQDN] does not match DNS servers "hostname#1,hostname#2" and ip addresses
+                  "" from VC certificate. Examine the VC certificate and make sure it is valid and point to
+                  vCenterServer FQDN.
+                </p>
+              </blockquote>
+              <ul>
+                <li>
+                  if the wizard returns the error message seen below, check if the <code>hosts</code> file of the system
+                  happens to resolve the FQDN (the <code>hosts</code> file has a higher precedence in the name
+                  resolution process than the DNS client and it might be used for mapping the private, non-DNS
+                  registered, IP addresses the environment's systems; this was the case for the environment which
+                  originated the instructions) - if it does, comment out the line in question:
+                </li>
+              </ul>
+              <blockquote>
+                <p>
+                  DNS server maps host name [vCSA's_FQDN] to address(es) ; &lt;&lt;&gt;&gt; DiG 9.9.6-P1
+                  &lt;&lt;&gt;&gt; [vCSA's_FQDN] +short,;; global options: +cmd,;; connection timed out; no servers
+                  could be reached which seems to be not local ip address. Please either update appliance /etc/hosts
+                  file to properly access DNS servers or update appliance DNS servers with the proper host name mapping.
+                  To check if DNS has record about local host name, please execute
+                  <code>dig &lt;vCSA's_FQDN&gt; +short</code> locally on the appliance, or
+                  <code>nslookup &lt;vCSA's_FQDN&gt;</code> on a windows machine
+                </p>
+              </blockquote>
+              <ul>
+                <li>
+                  if the wizard complains that it cannot contact the vCenter Server, then the host from which the setup
+                  wizard is being run is likely based in a different subnet than the target vCSA, raising concerns with
+                  the firewalls/routers that control the network path between the two; if that's the case, consider
+                  using a Windows system that's based in the same subnet that the target vCSA is being placed in
+                </li>
+              </ul>
+            </li>
+            <br />
+            <li>
+              <p>
+                Select the appropriate size for the new appliance ('Tiny' should be OK for small environments) and
+                deploy the appliance unto a datastore that has a sufficient amount of free space
+              </p>
+            </li>
+            <li>
+              <p>
+                Set up a static IP address for the temporary network configuration; this IP address also needs to be
+                registered in DNS, with both an A and a PTR record defined. Notes:
+              </p>
+              <ul>
+                <li>
+                  <p>
+                    the temporary network needs to correspond to the IP address that's defined for the appliance, the
+                    gateway and subnet mask information can be taken from the vCSA's VAMI page
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    only one DNS server must be provided, but that particular server has to satisfy the next condition:
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    the DNS server defined <strong>MUST</strong> be one of those recorded in the vCSA's VAMI page, if
+                    any are defined there
+                  </p>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <p>
+                Review the settings and Finish the wizard. Note that the upgrade can take some 30-60 minutes to
+                complete.
+              </p>
+            </li>
+            <li>
+              <p>
+                Once the wizard has completed its work, use the vSphere Client to connect to the ESXi hosting the new
+                vCSA and shut down the appliance's guest OS, then edit the VM's settings and make sure that its vNIC
+                configuration matches that of the old vCSA
+              </p>
+            </li>
+            <li>
+              <p>
+                Start the vCSA again access its VAMI page (https://[FQDN]:5480) once fully booted up and go to the
+                <code>Networking</code> tab. Edit the <code>Networking Interfaces</code> and provide the vNIC(s) with
+                the IP address(es) of the old vCSA; the network prefix will likely be a 24. Save the changes and exit
+                the vSphere Client session (possible inventory inconsistencies can occur otherwise).
+              </p>
+            </li>
+            <li>
+              <p>
+                If one is used, connect to the
+                <a href="https://blogs.vmware.com/vsphere/2013/02/vmware-announces-vdpa.html">vDPA</a> and disable the
+                backup job that is responsible for the old vCSA appliance, then clone it and assign the new vCSA VM to
+                the cloned job; set the new job's name to reflect the name of the new VM and, once the cloning is done,
+                make sure you enable it. This step is necessary because the vDPA's references to the VMs it protects are
+                GUID based and cannot be modified - once a job is defined, then that job will not accept a different
+                VM-to-GUID pairing than it has recorded initially. So we cannot have the new appliance use the old one's
+                name, but instead use the <em>V6</em> suffix approach.
+              </p>
+            </li>
+          </ol>
+        </details>
+      </p>
 
       <p><strong>Quirks:</strong></p>
       <p>The 6.0 vCSA has been found to exhibit a few quirks, which will be listed below:</p>
       <ol>
-        <li><p>The new <code>VMware Syslog Service</code>, which the appliance uses in order to export its system logs to a remote syslog collector (via <code>rsyslogd</code>) did a rather silly thing in that its health check was to attempt a telnet connection on the port on which the remote <code>rsyslogd</code> is listening, the problem with which being that this means a connection attempt on TCP/514, while <code>rsyslogd</code> only listens on UDP/514.</p></li>
-        <li><p>The vSphere fatClient experienced timeouts when used to login to the vSphere environment. This behaviour did not occur when using the webClient and the root cause was under investigation with the vendor; I have no idea what the outcome has been.</p></li>
+        <li>
+          <p>
+            The new <code>VMware Syslog Service</code>, which the appliance uses in order to export its system logs to a
+            remote syslog collector (via <code>rsyslogd</code>) did a rather silly thing in that its health check was to
+            attempt a telnet connection on the port on which the remote <code>rsyslogd</code> is listening, the problem
+            with which being that this means a connection attempt on TCP/514, while <code>rsyslogd</code> only listens
+            on UDP/514.
+          </p>
+        </li>
+        <li>
+          <p>
+            The vSphere fatClient experienced timeouts when used to login to the vSphere environment. This behaviour did
+            not occur when using the webClient and the root cause was under investigation with the vendor; I have no
+            idea what the outcome has been.
+          </p>
+        </li>
       </ol>
       <p><strong>References:</strong></p>
       <ol>
-        <li><a href="https://docs.vmware.com/en/VMware-vSphere/6.0/com.vmware.vsphere.upgrade.doc/GUID-30485437-B107-42EC-A0A8-A03334CFC825.html">https://docs.vmware.com/en/VMware-vSphere/6.0/com.vmware.vsphere.upgrade.doc/GUID-30485437-B107-42EC-A0A8-A03334CFC825.html</a></li>
-        <li><a href="https://docs.vmware.com/en/VMware-vSphere/6.0/com.vmware.vsphere.install.doc/GUID-CE128B59-E236-45FF-9976-D134DADC8178.html">https://docs.vmware.com/en/VMware-vSphere/6.0/com.vmware.vsphere.install.doc/GUID-CE128B59-E236-45FF-9976-D134DADC8178.html</a></li>
-        <li><a href="http://www.vm-help.com/esx40i/manage_without_VI_client_1.php">http://www.vm-help.com/esx40i/manage_without_VI_client_1.php</a></li>
-        <li><a href="http://www.doublecloud.org/2013/11/vmware-esxi-vim-cmd-command-a-quick-tutorial">http://www.doublecloud.org/2013/11/vmware-esxi-vim-cmd-command-a-quick-tutorial</a></li>
-        <li><a href="https://docs.vmware.com/en/VMware-vSphere/6.0/com.vmware.vsphere.upgrade.doc/GUID-66836F60-A095-4749-86C9-1DAFB5D21070.html">https://docs.vmware.com/en/VMware-vSphere/6.0/com.vmware.vsphere.upgrade.doc/GUID-66836F60-A095-4749-86C9-1DAFB5D21070.html</a></li>
+        <li>
+          <a
+            href="https://docs.vmware.com/en/VMware-vSphere/6.0/com.vmware.vsphere.upgrade.doc/GUID-30485437-B107-42EC-A0A8-A03334CFC825.html"
+            >https://docs.vmware.com/en/VMware-vSphere/6.0/com.vmware.vsphere.upgrade.doc/GUID-30485437-B107-42EC-A0A8-A03334CFC825.html</a
+          >
+        </li>
+        <li>
+          <a
+            href="https://docs.vmware.com/en/VMware-vSphere/6.0/com.vmware.vsphere.install.doc/GUID-CE128B59-E236-45FF-9976-D134DADC8178.html"
+            >https://docs.vmware.com/en/VMware-vSphere/6.0/com.vmware.vsphere.install.doc/GUID-CE128B59-E236-45FF-9976-D134DADC8178.html</a
+          >
+        </li>
+        <li>
+          <a href="http://www.vm-help.com/esx40i/manage_without_VI_client_1.php"
+            >http://www.vm-help.com/esx40i/manage_without_VI_client_1.php</a
+          >
+        </li>
+        <li>
+          <a href="http://www.doublecloud.org/2013/11/vmware-esxi-vim-cmd-command-a-quick-tutorial"
+            >http://www.doublecloud.org/2013/11/vmware-esxi-vim-cmd-command-a-quick-tutorial</a
+          >
+        </li>
+        <li>
+          <a
+            href="https://docs.vmware.com/en/VMware-vSphere/6.0/com.vmware.vsphere.upgrade.doc/GUID-66836F60-A095-4749-86C9-1DAFB5D21070.html"
+            >https://docs.vmware.com/en/VMware-vSphere/6.0/com.vmware.vsphere.upgrade.doc/GUID-66836F60-A095-4749-86C9-1DAFB5D21070.html</a
+          >
+        </li>
       </ol>
     </main>
 
@@ -130,9 +404,9 @@
       <hr />
       <nav>
         <ul>
-          <li> <a href="/">Home</a> </li>
-          <li> <a href="/about.html">About</a> </li>
-          <li> <a href="/contact.html">Contact</a> </li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/contact.html">Contact</a></li>
         </ul>
       </nav>
     </footer>

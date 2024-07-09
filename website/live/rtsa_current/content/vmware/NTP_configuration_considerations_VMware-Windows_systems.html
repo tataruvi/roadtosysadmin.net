@@ -8,7 +8,9 @@
     <title>RTSA - on the road to becoming a sysadmin</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work." />
+    <meta
+      name="description"
+      content="One man's attempt to impress complete strangers. On the Internet! Hopefully it'll work." />
   </head>
 
   <body id="content">
@@ -19,43 +21,101 @@
     </header>
 
     <main class="md">
-      <p><strong>About:</strong> The purpose of this document is to provide an overview of the NTP configuration required in order to synchronize the clocks on a VMware+Windows infrastructure.</p>
+      <p>
+        <strong>About:</strong> The purpose of this document is to provide an overview of the NTP configuration required
+        in order to synchronize the clocks on a VMware+Windows infrastructure.
+      </p>
 
-      <p><strong>How:</strong> There are two main types of NTP configurations that might need implementing, based on whether or not NTP authentication is a requirement.</p>
+      <p>
+        <strong>How:</strong> There are two main types of NTP configurations that might need implementing, based on
+        whether or not NTP authentication is a requirement.
+      </p>
 
       <p style="text-indent: 0.5em;"><strong>NTP configuration (without authentication)</strong></p>
 
       <ol>
         <li>
-          <p>For the vCSA, one would access its management page (VAMI) at the <code>https://vCSA_IP_address:5480</code> URL, login using the root account, go to the `Time` section in the `Navigator` pane and set the time synchronization mode to `NTP`, then provide the necessary details.</p>
+          <p>
+            For the vCSA, one would access its management page (VAMI) at the
+            <code>https://vCSA_IP_address:5480</code> URL, login using the root account, go to the `Time` section in the
+            `Navigator` pane and set the time synchronization mode to `NTP`, then provide the necessary details.
+          </p>
         </li>
         <li>
-          <p>In order to configure the ESXi hosts, one can either use the vSphere fat Client, as per this <a href="https://kb.vmware.com/selfservice/microsites/search.do?language=en_US&amp;cmd=displayKC&amp;externalId=2012069">KB article</a>, or the vSphere Web Client, as per the <a href="http://pubs.vmware.com/vsphere-55/index.jsp?topic=%2Fcom.vmware.vsphere.vcenterhost.doc%2FGUID-8756D419-A878-4AE0-9183-C6D5A91A8FB1.html">vSphere 5.5 documentation</a>; the set-up manner is quite similar, only the interface differs.</p>
+          <p>
+            In order to configure the ESXi hosts, one can either use the vSphere fat Client, as per this
+            <a
+              href="https://kb.vmware.com/selfservice/microsites/search.do?language=en_US&amp;cmd=displayKC&amp;externalId=2012069"
+              >KB article</a
+            >, or the vSphere Web Client, as per the
+            <a
+              href="http://pubs.vmware.com/vsphere-55/index.jsp?topic=%2Fcom.vmware.vsphere.vcenterhost.doc%2FGUID-8756D419-A878-4AE0-9183-C6D5A91A8FB1.html"
+              >vSphere 5.5 documentation</a
+            >; the set-up manner is quite similar, only the interface differs.
+          </p>
         </li>
         <li>
-          <p>As for Windows machines, one would have to use the <code>w32tm.exe</code> command-line tool - it needs to be invoked from an elevated Command Prompt with the following assortment of flags:</p>
-          <p style="text-indent: 3em;"><code>w32tm.exe /config /update /manualpeerlist:"IP_addr_#1 IP_addr_#2 IP_addr_#3" /syncfromflags:manual</code></p>
+          <p>
+            As for Windows machines, one would have to use the <code>w32tm.exe</code> command-line tool - it needs to be
+            invoked from an elevated Command Prompt with the following assortment of flags:
+          </p>
+          <p style="text-indent: 3em;">
+            <code
+              >w32tm.exe /config /update /manualpeerlist:"IP_addr_#1 IP_addr_#2 IP_addr_#3" /syncfromflags:manual</code
+            >
+          </p>
 
           <p><strong>notes:</strong></p>
-            <ul>
-              <li><p>no quotes are needed if only one ‘peer’ is provided; if multiple peers are provided, the addresses need to be separated by space characters</p></li>
-              <li><p>alternatively, the time synchronization can be set via GPO - see this <a href="https://technet.microsoft.com/en-us/library/cc773263%28v=ws.10%29.aspx#w2k3tr_times_tools_vwtt">TechNet article</a> for more details</p></li>
-              <li><p>one can also find an interesting read from VMware regarding the <a href="https://kb.vmware.com/selfservice/microsites/search.do?language=en_US&amp;cmd=displayKC&amp;externalId=1318">timekeeping best practices for Windows</a></p></li>
-            </ul>
+          <ul>
+            <li>
+              <p>
+                no quotes are needed if only one ‘peer’ is provided; if multiple peers are provided, the addresses need
+                to be separated by space characters
+              </p>
+            </li>
+            <li>
+              <p>
+                alternatively, the time synchronization can be set via GPO - see this
+                <a href="https://technet.microsoft.com/en-us/library/cc773263%28v=ws.10%29.aspx#w2k3tr_times_tools_vwtt"
+                  >TechNet article</a
+                >
+                for more details
+              </p>
+            </li>
+            <li>
+              <p>
+                one can also find an interesting read from VMware regarding the
+                <a
+                  href="https://kb.vmware.com/selfservice/microsites/search.do?language=en_US&amp;cmd=displayKC&amp;externalId=1318"
+                  >timekeeping best practices for Windows</a
+                >
+              </p>
+            </li>
+          </ul>
         </li>
       </ol>
 
       <p style="text-indent: 0.5em;"><strong>NTP configuration (with authentication)</strong></p>
 
       <ol>
-        <li><p>No VMware documentation has been found that would indicate that NTP authentication is supported for the ESXi hosts - however, the NTP Client included with the hypervisor seemed to be capable of such a facility and it was determined empirically that the ESXi 5.5 NTP package does indeed support the NTPv4 authentication.</p></li>
+        <li>
+          <p>
+            No VMware documentation has been found that would indicate that NTP authentication is supported for the ESXi
+            hosts - however, the NTP Client included with the hypervisor seemed to be capable of such a facility and it
+            was determined empirically that the ESXi 5.5 NTP package does indeed support the NTPv4 authentication.
+          </p>
+        </li>
 
-        <p>The set-up, however, is quite specific: after configuring the ESXi NTP Client as described in the above section (without authentication), one would have to login via SSH to the ESXi host and modify the <code>/etc/ntp.conf</code> and <code>/etc/ntp.keys</code> files so that they will look like the below samples.</p>
+        <p>
+          The set-up, however, is quite specific: after configuring the ESXi NTP Client as described in the above
+          section (without authentication), one would have to login via SSH to the ESXi host and modify the
+          <code>/etc/ntp.conf</code> and <code>/etc/ntp.keys</code> files so that they will look like the below samples.
+        </p>
 
         <p>
           <details>
             <summary>/etc/ntp.conf</summary>
-          <pre><code>restrict default kod nomodify notrap nopeer notrust
+            <pre><code>restrict default kod nomodify notrap nopeer notrust
 restrict 127.0.0.1
 server [ip address redacted] iburst key 1
 driftfile /etc/ntp.drift
@@ -67,14 +127,31 @@ trustedkey 1</code></pre>
         <p>
           <details>
             <summary>/etc/ntp.keys</summary>
-          <pre><code>1 M [key redacted]</code></pre>
+            <pre><code>1 M [key redacted]</code></pre>
           </details>
         </p>
 
-        <p>Once the NTP configuration is in place on the host, the NTP daemon needs to be restarted (<code>/etc/init.d/ntpd restart</code>) and, finally, the NTP server’s configuration file needs to be amended with the <code>restrict ESXi_IP_address nomodify noquery notrust</code> directive (this might differ from implementation to implementation - in this case it was true for the NTP server that came with AIX 6/7).</p>
+        <p>
+          Once the NTP configuration is in place on the host, the NTP daemon needs to be restarted (<code
+            >/etc/init.d/ntpd restart</code
+          >) and, finally, the NTP server’s configuration file needs to be amended with the
+          <code>restrict ESXi_IP_address nomodify noquery notrust</code> directive (this might differ from
+          implementation to implementation - in this case it was true for the NTP server that came with AIX 6/7).
+        </p>
 
-        <li><p>The <code>W32TM.exe</code> tool is not a full NTP implementation and seems to be incapable of supporting NTP authentication (outside of an Active Directory domain, in which NTP authentication is provided via Windows specific mechanisms, which are not standard-compliant and operable with an NTP server). In this case (DMZ Windows systems), the systems can be configured (via GPO would be easiest, as the suggested configuration is the default one in this case) to synchronize their time with Microsoft’s time servers; since the machines are placed in the DMZ, this should work without a need to intervene on the Internet facing firewalls (this also ensures that the NTP time sources have a known identity - still, no authentication is provided in this case, as membership to an AD domain would be needed for that).
-        Alternatively, a third-party NTP client package could be used, and the Windows Time service disabled.</p></li>
+        <li>
+          <p>
+            The <code>W32TM.exe</code> tool is not a full NTP implementation and seems to be incapable of supporting NTP
+            authentication (outside of an Active Directory domain, in which NTP authentication is provided via Windows
+            specific mechanisms, which are not standard-compliant and operable with an NTP server). In this case (DMZ
+            Windows systems), the systems can be configured (via GPO would be easiest, as the suggested configuration is
+            the default one in this case) to synchronize their time with Microsoft’s time servers; since the machines
+            are placed in the DMZ, this should work without a need to intervene on the Internet facing firewalls (this
+            also ensures that the NTP time sources have a known identity - still, no authentication is provided in this
+            case, as membership to an AD domain would be needed for that). Alternatively, a third-party NTP client
+            package could be used, and the Windows Time service disabled.
+          </p>
+        </li>
       </ol>
     </main>
 
@@ -82,9 +159,9 @@ trustedkey 1</code></pre>
       <hr />
       <nav>
         <ul>
-          <li> <a href="/">Home</a> </li>
-          <li> <a href="/about.html">About</a> </li>
-          <li> <a href="/contact.html">Contact</a> </li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/contact.html">Contact</a></li>
         </ul>
       </nav>
     </footer>
