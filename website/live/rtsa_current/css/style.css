@@ -9,28 +9,19 @@
  */
 
 body {
-  color: #000000;
-  background-color: #ffffff;
-  font-size: 14px;
-  font-family: Verdana;
-  text-align: center;
+  color: #000;
+  background-color: #fff;
+  font-size: medium;
+  font-family: Helvetica, Verdana, Arial, sans-serif;
+  text-align: left;
+  line-height: 1.5em;
 }
 
-body#about > main > p, body#contact > main > p { line-height: 1.5em; }
-
-body#about > main, body#contact > main { text-align: left; }
-
-body > main {
-  padding: 1em 2em 1em 2em;
-  margin-bottom: 5em;
-  position: static;
-}
+body#index > main, body#error > main { text-align: center; }
 
 body#error > main > p:not(.exclusions) { margin-top: 5em; }
 
 body#error > main > a { margin-left: 2em; }
-
-body#content > main.md { text-align: left; }
 
 /**
  * === anchors ===
@@ -40,37 +31,22 @@ a:link {
   color: #0000EE;
   text-decoration: none;
 }
+
 a:visited { color: #551A8B; }
+
 a:hover { text-decoration: underline; }
 
-/**
- * === common ===
- */
-
-main, header, footer {
-  right: 0;
-  left: 0;
-}
-
-header, footer { background-color: #e0e0e0; }
-
-/* overwrite normalize.css */
-main.md > sup {
-  font-size: unset;
-  font-weight: bold;
-  line-height: unset;
-  position: unset;
-  display: block;
-  overflow-x: hidden;
-}
+/* overwrite markdown.css */
+main.md a { color: #0000EE; }
 
 /**
  * === main ===
  */
 
 main {
-  top: 0;
-  bottom: 0;
+  padding: 1em 2em 1em 2em;
+  margin-bottom: 5em;
+  position: static;
   overflow-y: hidden;
 }
 
@@ -82,6 +58,39 @@ main > nav > a {
   line-height: 2.5em;
 }
 
+/* overwrite normalize.css */
+/* #TODO: check if an overwrite is actually happening or is even needed */
+.md sup {
+  font-size: unset;
+  font-weight: bold;
+  line-height: unset;
+  position: unset;
+  display: block;
+  overflow-x: hidden;
+}
+
+/* overwrite markdown.css */
+/* #TODO: check if the overwrites are valid (same as in previous TODO) */
+.md ul > li > ul > li {
+  margin-top: 10px;
+  list-style-type: disc;
+}
+
+.md ul > li > p {
+  margin-bottom: 5px;
+}
+
+/**
+ * === common ===
+ */
+
+ header, footer {
+  right: 0;
+  left: 0;
+  background-color: #e0e0e0;
+  text-align: center;
+}
+
 /**
  * === header ===
  */
@@ -89,23 +98,21 @@ main > nav > a {
 header {
   /* https://stackoverflow.com/questions/6431881/css-layout-for-fixed-header-and-100-content-height#6432052 */
   top: -1px;
+  padding-top: 1em;
   padding-bottom: 1em;
   position: sticky;
 }
 
 header > h3 {
-  padding-top: 1em;
   margin-top: 0;
 }
 
 header > p {
-  background-color: #e0e0e0;
   line-height: 1em;
 }
 
-header > p#updated { font-family:monospace; }
-
-header > p:last-child { padding-bottom: 0; }
+/* #TODO: move dates (published, updated) to the head element */
+header > p#updated { font-family: monospace; }
 
 /**
  * === footer ===
@@ -121,40 +128,19 @@ footer {
 
 footer > nav > ul {
   margin-left: -35px;
-  background-color: #e0e0e0;
 }
 
 footer > nav > ul > li {
   display: inline;
-  background-color: #e0e0e0;
 }
 
-footer > nav > ul > li > a {
-  background-color: #e0e0e0;
+footer > nav > ul > li > a, footer > nav > ul > li > s {
   padding: 5px;
 }
 
 hr {
   border-top: 2px solid #8c8b8b;
   border-bottom: 2px solid #e0e0e0;
-  background-color: #e0e0e0;
   border-color: #8c8b8b;
   width: 15em;
-}
-
-/* overwrites for markdown.css - #TODO: integrate them properly in this file
-=============================================================================*/
-
-.md p {
-  text-align: left;
-  line-height: 1.5em;
-}
-
-.md ul > li > ul > li {
-  margin-top: 10px;
-  list-style-type: disc;
-}
-
-.md ul > li > p {
-  margin-bottom: 5px;
 }
