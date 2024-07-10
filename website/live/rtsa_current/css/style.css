@@ -38,7 +38,7 @@ body#error > main > a { margin-left: 2em; }
  */
 
 a {
-  letter-spacing: 0.05em;
+  letter-spacing: 0.075em;
   transition: text-shadow 0s;
   text-decoration: none;
 }
@@ -52,7 +52,7 @@ a:visited {
 }
 
 a:hover {
-  text-shadow: 0 0 0.7px;
+  text-shadow: 0 0 0.05em;
 }
 
 /**
@@ -124,7 +124,7 @@ main.md > ul > li > ul > p {
 
 header {
   /* https://stackoverflow.com/questions/6431881/css-layout-for-fixed-header-and-100-content-height#6432052 */
-  top: -1px;
+  top: 0;
   padding-top: 1em;
   padding-bottom: 1em;
   position: sticky;
@@ -147,14 +147,14 @@ header > p#updated { font-family: monospace; }
 
 footer {
   /* https://stackoverflow.com/questions/13609006/floating-footer-always-on-the-bottom-and-visible#13609095 */
-  bottom: -1px;
+  bottom: 0;
   height: 4em;
   padding-top: 1em;
   position: fixed;
 } /*http://jsfiddle.net/ZsnuZ/*/
 
 footer > nav > ul {
-  margin-left: -35px;
+  margin-left: -2.5em;
 }
 
 footer > nav > ul > li {
@@ -162,7 +162,14 @@ footer > nav > ul > li {
 }
 
 footer > nav > ul > li > a, footer > nav > ul > li > s {
-  padding: 5px;
+  padding: 0.5em;
+  letter-spacing: 0.15em;
+}
+
+.current-page {
+  text-decoration-line: underline;
+  text-decoration-style: double;
+  text-decoration-thickness: 0.1em;
 }
 
 hr {
