@@ -91,6 +91,11 @@ main.md > sup {
   position: unset;
   display: block;
   overflow-x: hidden;
+  word-break: normal;
+}
+
+ol ul {
+  list-style-type: disc;
 }
 
 main.md > ul > li > ul > li {
