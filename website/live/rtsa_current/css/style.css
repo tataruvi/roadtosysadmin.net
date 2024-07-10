@@ -27,17 +27,29 @@ body#error > main > a { margin-left: 2em; }
  * === anchors ===
  */
 
-a:link {
-  color: #0000EE;
+/* https://dev.to/chiboy_001/how-to-create-and-style-links-anchor-tags-using-css-n53
+ * https://www.sitepoint.com/quick-tip-fixing-font-weight-problem-hover-states/
+ * https://css-tricks.com/bold-on-hover-without-the-layout-shift/
+ * https://developer.mozilla.org/en-US/docs/Learn/CSS/Styling_text/Styling_links
+ */
+
+a {
+  letter-spacing: 0.05em;
+  transition: text-shadow 0s;
   text-decoration: none;
 }
 
-a:visited { color: #551A8B; }
+a:link {
+  color: #0000EE;
+}
 
-a:hover { text-decoration: underline; }
+a:visited {
+  color: #551A8B;
+}
 
-/* overwrite markdown.css */
-main.md a { color: #0000EE; }
+a:hover {
+  text-shadow: 0 0 0.7px;
+}
 
 /**
  * === main ===
