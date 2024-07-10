@@ -70,9 +70,7 @@ main > nav > a {
   line-height: 2.5em;
 }
 
-/* overwrite normalize.css */
-/* #TODO: check if an overwrite is actually happening or is even needed */
-.md sup {
+main.md > sup {
   font-size: unset;
   font-weight: bold;
   line-height: unset;
@@ -81,15 +79,13 @@ main > nav > a {
   overflow-x: hidden;
 }
 
-/* overwrite markdown.css */
-/* #TODO: check if the overwrites are valid (same as in previous TODO) */
-.md ul > li > ul > li {
-  margin-top: 10px;
+main.md > ul > li > ul > li {
+  margin-top: 0.75em;
   list-style-type: disc;
 }
 
-.md ul > li > p {
-  margin-bottom: 5px;
+main.md > ul > li > ul > p {
+  margin-bottom: 1em;
 }
 
 /**
