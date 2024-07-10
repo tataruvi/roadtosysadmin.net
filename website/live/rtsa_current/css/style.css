@@ -1,9 +1,12 @@
 
-/* Main CSS stylesheet for roadtosysadmin.net */
+/* custom CSS stylesheet for roadtosysadmin.net */
 
-/* GLOBAL values */
+/* #TODO: move the links out of the file; humans.txt might be a better choice */
 /* https://stackoverflow.com/questions/609517/why-em-instead-of-px#609561 */
-/* --------------*/
+
+/**
+ * === body ===
+ */
 
 body {
   color: #000000;
@@ -17,13 +20,6 @@ body#about > main > p, body#contact > main > p { line-height: 1.5em; }
 
 body#about > main, body#contact > main { text-align: left; }
 
-body > p#outdatedIE {
-  margin: 0;
-  background: #ccc;
-  color: #000;
-  padding: 0;
-}
-
 body > main {
   padding: 1em 2em 1em 2em;
   margin-bottom: 5em;
@@ -36,6 +32,10 @@ body#error > main > a { margin-left: 2em; }
 
 body#content > main.md { text-align: left; }
 
+/**
+ * === anchors ===
+ */
+
 a:link {
   color: #0000EE;
   text-decoration: none;
@@ -43,12 +43,10 @@ a:link {
 a:visited { color: #551A8B; }
 a:hover { text-decoration: underline; }
 
-/*strong { background-color: #e0e0e0; }*/
+/**
+ * === common ===
+ */
 
-/* ------------ */
-/* LOCAL values */
-/* ------------ */
-/* Common main, header and footer styling */
 main, header, footer {
   right: 0;
   left: 0;
@@ -66,8 +64,10 @@ main.md > sup {
   overflow-x: hidden;
 }
 
-/* --------------------- */
-/* main specific styling */
+/**
+ * === main ===
+ */
+
 main {
   top: 0;
   bottom: 0;
@@ -78,14 +78,14 @@ main > nav > a {
   /* https://www.w3.org/Style/Examples/007/center.en.html */
   margin-left: auto;
   margin-right: auto;
-  /* width: max-content; */
-  /* display: block;     */
   display: table;
   line-height: 2.5em;
 }
 
-/* ----------------------- */
-/* header specific styling */
+/**
+ * === header ===
+ */
+
 header {
   /* https://stackoverflow.com/questions/6431881/css-layout-for-fixed-header-and-100-content-height#6432052 */
   top: -1px;
@@ -107,8 +107,10 @@ header > p#updated { font-family:monospace; }
 
 header > p:last-child { padding-bottom: 0; }
 
-/* ----------------------- */
-/* footer specific styling */
+/**
+ * === footer ===
+ */
+
 footer {
   /* https://stackoverflow.com/questions/13609006/floating-footer-always-on-the-bottom-and-visible#13609095 */
   bottom: -1px;
@@ -118,15 +120,11 @@ footer {
 } /*http://jsfiddle.net/ZsnuZ/*/
 
 footer > nav > ul {
-  /*DISABLED -- margin-left: -35px;*/
-  /*DISABLED -- background-color: #e0e0e0;*/
   margin-left: -35px;
   background-color: #e0e0e0;
 }
 
 footer > nav > ul > li {
-  /*DISABLED -- display: inline;*/
-  /*DISABLED -- background-color: #e0e0e0;*/
   display: inline;
   background-color: #e0e0e0;
 }
@@ -144,7 +142,7 @@ hr {
   width: 15em;
 }
 
-/* overwrites for markdown.css #TODO: integrate them properly in this file
+/* overwrites for markdown.css - #TODO: integrate them properly in this file
 =============================================================================*/
 
 .md p {
