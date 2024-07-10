@@ -15,6 +15,10 @@ body {
   font-family: Helvetica, Verdana, Arial, sans-serif;
   text-align: left;
   line-height: 1.5em;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  text-wrap: wrap;
+  word-break: break-word;
 }
 
 body#index > main, body#error > main { text-align: center; }
@@ -55,11 +59,21 @@ a:hover {
  * === main ===
  */
 
+/* actual overwrite for markdown.css values */
+main.md code, main.md pre {
+  white-space: normal;
+  font-size: 1em;
+}
+
+main.md > details > pre > code {
+  white-space: pre-wrap;
+}
+/* end overwrite */
+
 main {
   padding: 1em 2em 1em 2em;
   margin-bottom: 5em;
   position: static;
-  overflow-y: hidden;
 }
 
 main > nav > a {
