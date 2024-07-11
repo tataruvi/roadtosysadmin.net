@@ -13,7 +13,7 @@ body {
   background-color: #fff;
   font-size: medium;
   font-family: Helvetica, Verdana, Arial, sans-serif;
-  text-align: left;
+  text-align: justify;
   line-height: 1.5em;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -71,9 +71,10 @@ main.md > details > pre > code {
 /* end overwrite */
 
 main {
-  padding: 1em 2em 1em 2em;
-  margin-bottom: 5em;
+  padding: 1em 2em 6em;
   position: static;
+  max-width: 32em;
+  margin: auto;
 }
 
 main > nav > a {
