@@ -21,11 +21,18 @@ body {
   word-break: break-word;
 }
 
-body#index > main, body#error > main { text-align: center; }
+body#index > main, body#error > main {
+  text-align: center;
+}
 
-body#error > main > p:not(.exclusions) { margin-top: 5em; }
+body#error > main > p:not(.exclusions) {
+  padding: 2em 0 0;
+}
 
-body#error > main > a { margin-left: 2em; }
+body#error > main > a {
+  display: block;
+  padding: 0.5em;
+}
 
 /**
  * === anchors ===
@@ -79,8 +86,7 @@ main {
 
 main > nav > a {
   /* https://www.w3.org/Style/Examples/007/center.en.html */
-  margin-left: auto;
-  margin-right: auto;
+  margin: auto;
   display: table;
   line-height: 2.5em;
 }
@@ -102,23 +108,19 @@ main.md > sup {
 
 main hr {
   border-top: 0.125em solid #2f4f4f;
-  max-width: 15em;
-  margin-top: 1em;
-  margin-bottom: 1em;
+  max-width: 16em;
+  margin: 1em auto;
 }
 
-ol ul {
+.md ol ul {
   list-style-type: disc;
 }
 
 main.md > ul > li > ul > li {
-  margin-top: 0.75em;
+  margin: 1em 0;
   list-style-type: disc;
-}
-
-main.md > ul > li > ul > p {
-  margin-bottom: 1em;
-}
+} /* #TODO: use paragraphs for margins, then turn
+   * selector to '.md ul ul' & merge with the above */
 
 /**
  * === common ===
@@ -129,6 +131,7 @@ main.md > ul > li > ul > p {
   left: 0;
   background-color: #e0e0e0;
   text-align: center;
+  padding: 1em;
 }
 
 /**
@@ -138,8 +141,6 @@ main.md > ul > li > ul > p {
 header {
   /* https://stackoverflow.com/questions/6431881/css-layout-for-fixed-header-and-100-content-height#6432052 */
   top: 0;
-  padding-top: 1em;
-  padding-bottom: 1em;
   position: sticky;
 }
 
@@ -162,7 +163,7 @@ footer {
   /* https://stackoverflow.com/questions/13609006/floating-footer-always-on-the-bottom-and-visible#13609095 */
   bottom: 0;
   height: 4em;
-  padding-top: 1em;
+  padding-bottom: 0;
   position: fixed;
 } /*http://jsfiddle.net/ZsnuZ/*/
 
@@ -186,8 +187,8 @@ footer > nav > ul > li > a, footer > nav > ul > li > s {
 }
 
 footer hr {
-  border-top: 2px solid #8c8b8b;
-  border-bottom: 2px solid #e0e0e0;
+  border-top: 0.125em solid #8c8b8b;
+  border-bottom: 0.125em solid #e0e0e0;
   border-color: #8c8b8b;
-  width: 15em;
+  width: 16em;
 }
