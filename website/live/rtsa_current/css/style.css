@@ -19,6 +19,8 @@ body {
   overflow-x: hidden;
   text-wrap: wrap;
   word-break: break-word;
+  margin: 0 auto;
+  max-width: 75ch;
 }
 
 body#index > main, body#error > main {
@@ -78,10 +80,7 @@ main.md > details > pre > code {
 /* end overwrite */
 
 main {
-  padding: 1em 2em 6em;
-  position: static;
-  max-width: 32em;
-  margin: auto;
+  padding: 1em 2em;
 }
 
 main > nav > a {
@@ -127,8 +126,6 @@ main.md > ul > li > ul > li {
  */
 
  header, footer {
-  right: 0;
-  left: 0;
   background-color: #e0e0e0;
   text-align: center;
   padding: 1em;
@@ -168,7 +165,8 @@ footer {
 } /*http://jsfiddle.net/ZsnuZ/*/
 
 footer > nav > ul {
-  margin-left: -2.5em;
+  padding: 0;
+  margin: 0;
 }
 
 footer > nav > ul > li {
