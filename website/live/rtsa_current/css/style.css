@@ -76,6 +76,7 @@ a:hover {
 
 /* actual overwrite for markdown.css values */
 main.md code, main.md pre {
+  word-break: break-all;
   white-space: normal;
   font-size: 1em;
 }
@@ -156,7 +157,10 @@ header > p {
 }
 
 /* #TODO: move dates (published, updated) to the head element */
-header > p#updated { font-family: monospace; }
+header > p#updated {
+  display: none;
+  font-family: monospace;
+}
 
 /**
  * === footer ===
@@ -198,5 +202,5 @@ footer hr {
   border-top: 0.125em solid #8c8b8b;
   border-bottom: 0.125em solid #e0e0e0;
   border-color: #8c8b8b;
-  width: 16em;
+  max-width: 16em;
 }
