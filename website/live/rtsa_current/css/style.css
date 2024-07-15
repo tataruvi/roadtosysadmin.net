@@ -164,12 +164,12 @@ header > p#updated { font-family: monospace; }
 
 footer {
   /* https://stackoverflow.com/questions/13609006/floating-footer-always-on-the-bottom-and-visible#13609095 */
-  bottom: 0;
+  bottom: -5em;
   left: 0;
   right: 0;
   margin: 0 auto;
   height: 3.5em;
-  padding: 0.5em 0 0;
+  padding: 0.5em 0 5em;
   position: fixed;
   max-width: 75ch;
 } /*http://jsfiddle.net/ZsnuZ/*/
