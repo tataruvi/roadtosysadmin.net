@@ -4,6 +4,11 @@
 /* #TODO: move the links out of the file; humans.txt might be a better choice */
 /* https://stackoverflow.com/questions/609517/why-em-instead-of-px#609561 */
 
+html {
+  background: #121212;;
+  filter: brightness(0.95) contrast(1.1);
+}
+
 /**
  * === body ===
  */
@@ -21,6 +26,7 @@ body {
   word-break: break-word;
   margin: 0 auto;
   max-width: 75ch;
+  min-height: 100vh;
 }
 
 body#index > main, body#error > main {
@@ -80,7 +86,7 @@ main.md > details > pre > code {
 /* end overwrite */
 
 main {
-  padding: 1em 2em;
+  padding: 1em 2em 5em;
 }
 
 main > nav > a {
@@ -128,7 +134,6 @@ main.md > ul > li > ul > li {
  header, footer {
   background-color: #e0e0e0;
   text-align: center;
-  padding: 1em;
 }
 
 /**
@@ -139,6 +144,7 @@ header {
   /* https://stackoverflow.com/questions/6431881/css-layout-for-fixed-header-and-100-content-height#6432052 */
   top: 0;
   position: sticky;
+  padding: 1em 1em 0.01em;
 }
 
 header > h3 {
@@ -159,9 +165,13 @@ header > p#updated { font-family: monospace; }
 footer {
   /* https://stackoverflow.com/questions/13609006/floating-footer-always-on-the-bottom-and-visible#13609095 */
   bottom: 0;
-  height: 4em;
-  padding-bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  height: 3.5em;
+  padding: 0.5em 0 0;
   position: fixed;
+  max-width: 75ch;
 } /*http://jsfiddle.net/ZsnuZ/*/
 
 footer > nav > ul {
