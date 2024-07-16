@@ -1,10 +1,3 @@
-data "vultr_ssh_key" "rtsa" {
-  filter {
-    name   = "name"
-    values = ["RTSA"]
-  }
-}
-
 resource "tls_private_key" "ssh_host" {
   for_each = local.deployable_instances
 
@@ -20,7 +13,7 @@ resource "vultr_startup_script" "host" {
   script = sensitive(base64encode(templatefile(
     "templates/firstboot.exec.tftpl",
     {
-      rtsa_ssh_key = data.vultr_ssh_key.rtsa.ssh_key
+      rtsa_ssh_key = vultr_ssh_key.rtsa.ssh_key
       ssh_host_key = tls_private_key.ssh_host["bastion"].private_key_openssh
       ssh_host_pub = tls_private_key.ssh_host["bastion"].public_key_openssh
     }
@@ -64,7 +57,7 @@ resource "vultr_instance" "host" {
           { "pkg_manager" = "apt", "sudoers_group" = "sudo" } :
           { "pkg_manager" = "dnf", "sudoers_group" = "wheel" }
         )
-        rtsa_ssh_key = data.vultr_ssh_key.rtsa.ssh_key
+        rtsa_ssh_key = vultr_ssh_key.rtsa.ssh_key
         ssh_host_key = tls_private_key.ssh_host[each.key].private_key_openssh
         ssh_host_pub = tls_private_key.ssh_host[each.key].public_key_openssh
       }
